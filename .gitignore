@@ -427,3 +427,10 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# ===== Do an QuanLyQuanCafe =====
+# File cau hinh chua mat khau SQL: khong dua len Git
+App.config
+# File backup CSDL va file tam cua Word
+*.bak
+~$*
