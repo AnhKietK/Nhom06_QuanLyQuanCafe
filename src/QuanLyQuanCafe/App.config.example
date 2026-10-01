@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<connectionStrings>
+		<add name="AuthConn"    connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_auth;Password=MAT_KHAU;TrustServerCertificate=True;Connect Timeout=5" />
+		<add name="QuanLyConn"  connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_quantri;Password=MAT_KHAU;TrustServerCertificate=True;Connect Timeout=5" />
+		<add name="PhucVuConn"  connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_phucvu;Password=MAT_KHAU;TrustServerCertificate=True;Connect Timeout=5" />
+		<add name="ThuKhoConn"  connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_thukho;Password=MAT_KHAU;TrustServerCertificate=True;Connect Timeout=5" />
+		<add name="KeToanConn"  connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_ketoan;Password=MAT_KHAU;TrustServerCertificate=True;Connect Timeout=5" />
+	</connectionStrings>
+</configuration>
