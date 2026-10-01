@@ -33,4 +33,4 @@ C# WinForms (.NET 8), ADO.NET (Microsoft.Data.SqlClient), Microsoft SQL Server.
 ## Quy ước làm việc
 - Không commit trực tiếp vào `main`. Làm trên nhánh `feature/...`, xong mở Pull Request.
 - Mỗi Pull Request do một thành viên khác duyệt.
-- Mỗi file chỉ một người sở hữu, xem `docs/phan-cong.md`.
+- Mỗi file chỉ một người sở hữu, xem `docs/phan-cong.md`. 
