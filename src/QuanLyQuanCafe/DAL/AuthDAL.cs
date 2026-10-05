@@ -30,5 +30,17 @@ namespace QuanLyQuanCafe.DAL
                 ChucVu = r["ChucVu"].ToString() ?? ""
             };
         }
+
+        /// <summary>
+        /// Gọi sp_DoiMatKhau bằng kết nối phiên hiện tại.
+        /// SP ném lỗi 50000 nếu mật khẩu cũ không đúng.
+        /// </summary>
+        public void DoiMatKhau(string maNV, string matKhauCu, string matKhauMoi)
+        {
+            DbHelper.ExecSP("sp_DoiMatKhau",
+                new SqlParameter("@MaNV", maNV),
+                new SqlParameter("@MatKhauCu", matKhauCu),
+                new SqlParameter("@MatKhauMoi", matKhauMoi));
+        }
     }
 }

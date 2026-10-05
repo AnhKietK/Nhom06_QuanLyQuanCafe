@@ -34,5 +34,22 @@ namespace QuanLyQuanCafe.BLL
         {
             CurrentUser.Clear();
         }
+
+        /// <summary>
+        /// Đổi mật khẩu: kiểm tra đầu vào rồi gọi DAL.
+        /// </summary>
+        public void DoiMatKhau(string matKhauCu, string matKhauMoi, string xacNhan)
+        {
+            ValidationHelper.BatBuocNhap(matKhauCu, "Mật khẩu cũ");
+            ValidationHelper.BatBuocMatKhau(matKhauMoi);
+
+            if (matKhauMoi == matKhauCu)
+                throw new ArgumentException("Mật khẩu mới phải khác mật khẩu cũ.");
+
+            if (xacNhan != matKhauMoi)
+                throw new ArgumentException("Mật khẩu xác nhận không khớp.");
+
+            _dal.DoiMatKhau(CurrentUser.MaNV, matKhauCu, matKhauMoi);
+        }
     }
 }
