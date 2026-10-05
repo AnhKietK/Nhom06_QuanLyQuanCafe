@@ -1,21 +1,34 @@
-using Microsoft.Data.SqlClient;
-using QuanLyQuanCafe.DAL;
-using QuanLyQuanCafe.Session;
-using QuanLyQuanCafe.Utils;
-using System.Data;
+using System;
+using System.Windows.Forms;
+using QuanLyQuanCafe.GUI.Auth;
+using QuanLyQuanCafe.GUI.Main;
 
 namespace QuanLyQuanCafe
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+
+            // Vòng lặp: Đăng nhập -> Vào FormMain -> Nếu Đăng xuất thì quay lại Đăng nhập
+            while (true)
+            {
+                using var dangNhap = new FormDangNhap();
+                if (dangNhap.ShowDialog() != DialogResult.OK)
+                {
+                    break;
+                }
+
+                using var main = new FormMain();
+                Application.Run(main);
+
+                if (!main.DangXuat)
+                {
+                    break;
+                }
+            }
         }
     }
 }

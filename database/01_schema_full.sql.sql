@@ -1,4 +1,4 @@
-﻿create database quanlyquancafe;
+create database quanlyquancafe;
 go
 
 use quanlyquancafe;
@@ -1750,4 +1750,28 @@ GRANT EXECUTE ON sp_DoiMatKhau       TO KeToan;
 GRANT SELECT  ON dbo.fn_MonBanChayNhat TO KeToan;
 
 ALTER ROLE KeToan ADD MEMBER user_ketoan;
+GO
+-- ======================================================================
+-- PHẦN H. THỦ TỤC BỔ SUNG
+-- ======================================================================
+
+-- Đặt lại mật khẩu nhân viên (dành riêng cho Quản lý)
+CREATE OR ALTER PROCEDURE sp_DatLaiMatKhau
+    @MaNV VARCHAR(20),
+    @MatKhauMoi VARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM NhanVien WHERE MaNV = @MaNV)
+            THROW 50000, N'Nhân viên không tồn tại.', 1;
+        UPDATE NhanVien
+        SET MatKhau = CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', @MatKhauMoi), 2)
+        WHERE MaNV = @MaNV;
+        SELECT N'Đặt lại mật khẩu thành công' AS KetQua;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
 GO
