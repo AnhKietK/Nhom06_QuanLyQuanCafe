@@ -1,4 +1,4 @@
-﻿create database quanlyquancafe;
+create database quanlyquancafe;
 go
 
 use quanlyquancafe;
