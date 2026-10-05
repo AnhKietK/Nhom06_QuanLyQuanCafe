@@ -31,6 +31,7 @@ namespace QuanLyQuanCafe.GUI.Auth
             this.SuspendLayout();
 
             // lblTieuDe
+            this.lblTieuDe.Name = "lblTieuDe";
             this.lblTieuDe.Dock = DockStyle.Top;
             this.lblTieuDe.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             this.lblTieuDe.Text = "☕ Quản lý quán cà phê";
@@ -38,6 +39,7 @@ namespace QuanLyQuanCafe.GUI.Auth
             this.lblTieuDe.Height = 60;
 
             // tlpMain
+            this.tlpMain.Name = "tlpMain";
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 130F));
             this.tlpMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
@@ -50,22 +52,26 @@ namespace QuanLyQuanCafe.GUI.Auth
             this.tlpMain.Padding = new Padding(20, 10, 20, 10);
 
             // lblSoDienThoai
+            this.lblSoDienThoai.Name = "lblSoDienThoai";
             this.lblSoDienThoai.Text = "Số điện thoại:";
             this.lblSoDienThoai.Dock = DockStyle.Fill;
             this.lblSoDienThoai.TextAlign = ContentAlignment.MiddleLeft;
 
             // txtSoDienThoai
+            this.txtSoDienThoai.Name = "txtSoDienThoai";
             this.txtSoDienThoai.Dock = DockStyle.Fill;
             this.txtSoDienThoai.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             this.txtSoDienThoai.MaxLength = 15;
             this.txtSoDienThoai.TabIndex = 0;
 
             // lblMatKhau
+            this.lblMatKhau.Name = "lblMatKhau";
             this.lblMatKhau.Text = "Mật khẩu:";
             this.lblMatKhau.Dock = DockStyle.Fill;
             this.lblMatKhau.TextAlign = ContentAlignment.MiddleLeft;
 
             // txtMatKhau
+            this.txtMatKhau.Name = "txtMatKhau";
             this.txtMatKhau.Dock = DockStyle.Fill;
             this.txtMatKhau.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             this.txtMatKhau.UseSystemPasswordChar = true;
@@ -73,21 +79,25 @@ namespace QuanLyQuanCafe.GUI.Auth
             this.txtMatKhau.TabIndex = 1;
 
             // chkHienMatKhau
+            this.chkHienMatKhau.Name = "chkHienMatKhau";
             this.chkHienMatKhau.Text = "Hiện mật khẩu";
             this.chkHienMatKhau.Dock = DockStyle.Fill;
             this.chkHienMatKhau.TabIndex = 2;
 
             // tlpButtons
+            this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.FlowDirection = FlowDirection.RightToLeft;
             this.tlpButtons.Dock = DockStyle.Fill;
 
             // btnDangNhap
+            this.btnDangNhap.Name = "btnDangNhap";
             this.btnDangNhap.Text = "Đăng nhập";
             this.btnDangNhap.Size = new Size(110, 35);
             this.btnDangNhap.TabIndex = 3;
             this.btnDangNhap.UseVisualStyleBackColor = true;
 
             // btnThoat
+            this.btnThoat.Name = "btnThoat";
             this.btnThoat.Text = "Thoát";
             this.btnThoat.Size = new Size(90, 35);
             this.btnThoat.TabIndex = 4;
