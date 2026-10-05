@@ -7,7 +7,9 @@ namespace QuanLyQuanCafe.GUI.Main
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
+            {
                 components.Dispose();
+            }
             base.Dispose(disposing);
         }
 
@@ -16,53 +18,27 @@ namespace QuanLyQuanCafe.GUI.Main
         private void InitializeComponent()
         {
             this.mnuMain = new MenuStrip();
-            this.mnuHeThong = new ToolStripMenuItem();
-            this.mnuDangXuat = new ToolStripMenuItem();
-            this.mnuSepHeThong = new ToolStripSeparator();
-            this.mnuThoat = new ToolStripMenuItem();
             this.stsMain = new StatusStrip();
             this.lblTrangThai = new ToolStripStatusLabel();
 
-            this.mnuMain.SuspendLayout();
             this.stsMain.SuspendLayout();
             this.SuspendLayout();
 
             // mnuMain
-            this.mnuMain.Font = new Font("Segoe UI", 10F);
-            this.mnuMain.Items.AddRange(new ToolStripItem[] { this.mnuHeThong });
-            this.mnuMain.Location = new Point(0, 0);
-            this.mnuMain.MdiWindowListItem = null;
             this.mnuMain.Name = "mnuMain";
-            this.mnuMain.Size = new Size(900, 27);
+            this.mnuMain.Font = new Font("Segoe UI", 10F);
+            this.mnuMain.Location = new Point(0, 0);
+            this.mnuMain.Size = new Size(900, 28);
             this.mnuMain.TabIndex = 0;
 
-            // mnuHeThong
-            this.mnuHeThong.Name = "mnuHeThong";
-            this.mnuHeThong.Text = "Hệ thống";
-            this.mnuHeThong.DropDownItems.AddRange(new ToolStripItem[]
-            {
-                this.mnuDangXuat,
-                this.mnuSepHeThong,
-                this.mnuThoat
-            });
-
-            // mnuDangXuat
-            this.mnuDangXuat.Name = "mnuDangXuat";
-            this.mnuDangXuat.Text = "Đăng xuất";
-
-            // mnuSepHeThong
-            this.mnuSepHeThong.Name = "mnuSepHeThong";
-
-            // mnuThoat
-            this.mnuThoat.Name = "mnuThoat";
-            this.mnuThoat.Text = "Thoát";
-
             // stsMain
+            this.stsMain.Name = "stsMain";
             this.stsMain.Font = new Font("Segoe UI", 10F);
             this.stsMain.Items.AddRange(new ToolStripItem[] { this.lblTrangThai });
-            this.stsMain.Location = new Point(0, 528);
+            this.stsMain.Location = new Point(0, 524);
             this.stsMain.Name = "stsMain";
-            this.stsMain.Size = new Size(900, 22);
+            this.stsMain.Size = new Size(900, 26);
+            this.stsMain.TabIndex = 1;
 
             // lblTrangThai
             this.lblTrangThai.Name = "lblTrangThai";
@@ -82,8 +58,6 @@ namespace QuanLyQuanCafe.GUI.Main
             this.Text = "Quản lý quán cà phê";
             this.WindowState = FormWindowState.Maximized;
 
-            this.mnuMain.ResumeLayout(false);
-            this.mnuMain.PerformLayout();
             this.stsMain.ResumeLayout(false);
             this.stsMain.PerformLayout();
             this.ResumeLayout(false);
@@ -93,11 +67,8 @@ namespace QuanLyQuanCafe.GUI.Main
         #endregion
 
         private MenuStrip mnuMain;
-        private ToolStripMenuItem mnuHeThong;
-        private ToolStripMenuItem mnuDangXuat;
-        private ToolStripSeparator mnuSepHeThong;
-        private ToolStripMenuItem mnuThoat;
         private StatusStrip stsMain;
         private ToolStripStatusLabel lblTrangThai;
     }
 }
+
