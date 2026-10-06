@@ -49,9 +49,28 @@ namespace QuanLyQuanCafe.GUI.Main
         {
             InitializeComponent();
 
-            lblTrangThai.Text = $"Xin chào: {CurrentUser.TenNV} ({CurrentUser.ChucVu})";
+            Theme.Apply(this);
+            Theme.DrawGradientHeader(pnlHeader);
+
+            pnlHeader.Resize += (s, e) => pnlHeader.Invalidate();
+
+            mnuMain.Renderer = new ModernMenuRenderer();
+            stsMain.Renderer = new ModernMenuRenderer();
+            stsMain.BackColor = Theme.NenStatusStrip;
+
+            CaiDatVungMdi();
+            CapNhatThongTinNguoiDung();
+
+            this.ControlAdded += (s, e) =>
+            {
+                if (e.Control is MdiClient mdi)
+                {
+                    mdi.BackColor = Theme.Nen;
+                }
+            };
 
             this.Load += FormMain_Load;
+            btnDangXuat.Click += (s, e) => MnuDangXuat_Click(s, e);
 
             KhoiTaoMenu();
             PhanQuyenMenu();
@@ -59,8 +78,31 @@ namespace QuanLyQuanCafe.GUI.Main
 
         private void FormMain_Load(object? sender, EventArgs e)
         {
-            lblTrangThai.Text = $"Xin chào: {CurrentUser.TenNV} ({CurrentUser.ChucVu})";
+            CaiDatVungMdi();
+            CapNhatThongTinNguoiDung();
             PhanQuyenMenu();
+        }
+
+        private void CaiDatVungMdi()
+        {
+            foreach (Control c in Controls)
+            {
+                if (c is MdiClient mdiClient)
+                {
+                    mdiClient.BackColor = Theme.Nen;
+                    break;
+                }
+            }
+        }
+
+        private void CapNhatThongTinNguoiDung()
+        {
+            string ten = string.IsNullOrWhiteSpace(CurrentUser.TenNV) ? "Chưa đăng nhập" : CurrentUser.TenNV;
+            string chucVu = string.IsNullOrWhiteSpace(CurrentUser.ChucVu) ? "" : $" ({CurrentUser.ChucVu})";
+            string info = $"Xin chào: {ten}{chucVu}";
+
+            lblTrangThai.Text = info;
+            lblNguoiDung.Text = $"{ten}{chucVu}";
         }
 
         public void KhoiTaoMenu()
@@ -69,27 +111,32 @@ namespace QuanLyQuanCafe.GUI.Main
 
             foreach (string nhom in ThuTuNhom)
             {
-                var topItem = new ToolStripMenuItem(nhom);
+                var topItem = new ToolStripMenuItem(nhom)
+                {
+                    Font = Theme.FontMenu,
+                    ForeColor = Theme.Chu,
+                    Padding = new Padding(14, 8, 14, 8)
+                };
+
+                if (topItem.DropDown is ToolStripDropDownMenu dropDownMenu)
+                {
+                    dropDownMenu.ShowImageMargin = false;
+                }
 
                 var itemsTrongNhom = DanhSachMenu.Where(m => m.Nhom == nhom);
                 foreach (var cfg in itemsTrongNhom)
                 {
                     var subItem = new ToolStripMenuItem(cfg.TenMuc)
                     {
-                        Tag = cfg
+                        Tag = cfg,
+                        Font = Theme.FontChinh,
+                        ForeColor = Theme.Chu,
+                        Padding = new Padding(10, 6, 10, 6)
                     };
 
                     subItem.Click += (s, e) =>
                     {
-                        if (cfg.TenDayDuKieu == "QuanLyQuanCafe.GUI.Auth.FormDoiMatKhau")
-                        {
-                            using var f = new FormDoiMatKhau();
-                            f.ShowDialog(this);
-                        }
-                        else
-                        {
-                            FormLauncher.Mo(this, cfg.TenDayDuKieu, cfg.TenMuc, cfg.Modal);
-                        }
+                        FormLauncher.Mo(this, cfg.TenDayDuKieu, cfg.TenMuc, cfg.Modal);
                     };
 
                     topItem.DropDownItems.Add(subItem);
@@ -99,11 +146,21 @@ namespace QuanLyQuanCafe.GUI.Main
                 {
                     topItem.DropDownItems.Add(new ToolStripSeparator());
 
-                    var mnuDangXuat = new ToolStripMenuItem("Đăng xuất");
+                    var mnuDangXuat = new ToolStripMenuItem("Đăng xuất")
+                    {
+                        Font = Theme.FontChinh,
+                        ForeColor = Theme.Chu,
+                        Padding = new Padding(10, 6, 10, 6)
+                    };
                     mnuDangXuat.Click += MnuDangXuat_Click;
                     topItem.DropDownItems.Add(mnuDangXuat);
 
-                    var mnuThoat = new ToolStripMenuItem("Thoát");
+                    var mnuThoat = new ToolStripMenuItem("Thoát")
+                    {
+                        Font = Theme.FontChinh,
+                        ForeColor = Theme.Chu,
+                        Padding = new Padding(10, 6, 10, 6)
+                    };
                     mnuThoat.Click += MnuThoat_Click;
                     topItem.DropDownItems.Add(mnuThoat);
                 }
