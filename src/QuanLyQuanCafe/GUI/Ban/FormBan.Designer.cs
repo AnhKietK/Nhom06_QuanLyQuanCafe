@@ -20,14 +20,6 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.tabMain = new TabControl();
             this.tabBan = new TabPage();
             this.pnlRightBan = new Panel();
-            this.grbDanhSachBan = new GroupBox();
-            this.dgvBan = new DataGridView();
-            this.colMaBan = new DataGridViewTextBoxColumn();
-            this.colSoBan = new DataGridViewTextBoxColumn();
-            this.colSoChoNgoi = new DataGridViewTextBoxColumn();
-            this.colTrangThai = new DataGridViewTextBoxColumn();
-            this.colKhuVuc = new DataGridViewTextBoxColumn();
-            this.pnlLeftBan = new Panel();
             this.grbThongTinBan = new GroupBox();
             this.tlpBan = new TableLayoutPanel();
             this.lblMaBan = new Label();
@@ -40,19 +32,21 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.cboViTri = new ComboBox();
             this.lblTrangThaiTitle = new Label();
             this.lblHienTrangThai = new Label();
-            this.flpButtonsBan = new FlowLayoutPanel();
-            this.btnLamMoiBan = new Button();
+            this.flpButtonsBan = new TableLayoutPanel();
             this.btnThemBan = new Button();
             this.btnSuaBan = new Button();
             this.btnXoaBan = new Button();
+            this.btnLamMoiBan = new Button();
+            this.pnlLeftBan = new Panel();
+            this.grbDanhSachBan = new GroupBox();
+            this.dgvBan = new DataGridView();
+            this.colMaBan = new DataGridViewTextBoxColumn();
+            this.colSoBan = new DataGridViewTextBoxColumn();
+            this.colSoChoNgoi = new DataGridViewTextBoxColumn();
+            this.colTrangThai = new DataGridViewTextBoxColumn();
+            this.colKhuVuc = new DataGridViewTextBoxColumn();
             this.tabKhuVuc = new TabPage();
             this.pnlRightViTri = new Panel();
-            this.grbDanhSachViTri = new GroupBox();
-            this.dgvViTri = new DataGridView();
-            this.colMaViTri = new DataGridViewTextBoxColumn();
-            this.colTenViTri = new DataGridViewTextBoxColumn();
-            this.colMoTa = new DataGridViewTextBoxColumn();
-            this.pnlLeftViTri = new Panel();
             this.grbThongTinViTri = new GroupBox();
             this.tlpViTri = new TableLayoutPanel();
             this.lblMaViTri = new Label();
@@ -61,31 +55,37 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.txtTenViTri = new TextBox();
             this.lblMoTa = new Label();
             this.txtMoTa = new TextBox();
-            this.flpButtonsViTri = new FlowLayoutPanel();
-            this.btnLamMoiViTri = new Button();
+            this.flpButtonsViTri = new TableLayoutPanel();
             this.btnThemViTri = new Button();
             this.btnSuaViTri = new Button();
             this.btnXoaViTri = new Button();
+            this.btnLamMoiViTri = new Button();
+            this.pnlLeftViTri = new Panel();
+            this.grbDanhSachViTri = new GroupBox();
+            this.dgvViTri = new DataGridView();
+            this.colMaViTri = new DataGridViewTextBoxColumn();
+            this.colTenViTri = new DataGridViewTextBoxColumn();
+            this.colMoTa = new DataGridViewTextBoxColumn();
 
             this.tabMain.SuspendLayout();
             this.tabBan.SuspendLayout();
             this.pnlRightBan.SuspendLayout();
-            this.grbDanhSachBan.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvBan)).BeginInit();
-            this.pnlLeftBan.SuspendLayout();
             this.grbThongTinBan.SuspendLayout();
             this.tlpBan.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSoBan)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSoChoNgoi)).BeginInit();
             this.flpButtonsBan.SuspendLayout();
+            this.pnlLeftBan.SuspendLayout();
+            this.grbDanhSachBan.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBan)).BeginInit();
             this.tabKhuVuc.SuspendLayout();
             this.pnlRightViTri.SuspendLayout();
-            this.grbDanhSachViTri.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvViTri)).BeginInit();
-            this.pnlLeftViTri.SuspendLayout();
             this.grbThongTinViTri.SuspendLayout();
             this.tlpViTri.SuspendLayout();
             this.flpButtonsViTri.SuspendLayout();
+            this.pnlLeftViTri.SuspendLayout();
+            this.grbDanhSachViTri.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvViTri)).BeginInit();
             this.SuspendLayout();
 
             // tabMain
@@ -93,40 +93,40 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.tabMain.Controls.Add(this.tabKhuVuc);
             this.tabMain.Dock = DockStyle.Fill;
             this.tabMain.Font = new Font("Segoe UI", 10F);
-            this.tabMain.Location = new Point(0, 0);
+            this.tabMain.Location = new Point(12, 12);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new Size(1000, 580);
+            this.tabMain.Size = new Size(976, 556);
             this.tabMain.TabIndex = 0;
 
             // tabBan
-            this.tabBan.Controls.Add(this.pnlRightBan);
             this.tabBan.Controls.Add(this.pnlLeftBan);
+            this.tabBan.Controls.Add(this.pnlRightBan);
             this.tabBan.Location = new Point(4, 32);
             this.tabBan.Name = "tabBan";
             this.tabBan.Padding = new Padding(8);
-            this.tabBan.Size = new Size(992, 544);
-            this.tabBan.Text = "Quản lý bàn";
+            this.tabBan.Size = new Size(968, 520);
+            this.tabBan.Text = "Bàn";
             this.tabBan.UseVisualStyleBackColor = true;
 
-            // pnlLeftBan
-            this.pnlLeftBan.Controls.Add(this.grbThongTinBan);
-            this.pnlLeftBan.Dock = DockStyle.Left;
-            this.pnlLeftBan.Location = new Point(8, 8);
-            this.pnlLeftBan.Name = "pnlLeftBan";
-            this.pnlLeftBan.Padding = new Padding(6);
-            this.pnlLeftBan.Size = new Size(380, 528);
-            this.pnlLeftBan.TabIndex = 0;
+            // pnlRightBan
+            this.pnlRightBan.Controls.Add(this.grbThongTinBan);
+            this.pnlRightBan.Dock = DockStyle.Right;
+            this.pnlRightBan.Location = new Point(570, 8);
+            this.pnlRightBan.Name = "pnlRightBan";
+            this.pnlRightBan.Padding = new Padding(8, 0, 0, 0);
+            this.pnlRightBan.Size = new Size(390, 504);
+            this.pnlRightBan.TabIndex = 1;
 
             // grbThongTinBan
             this.grbThongTinBan.Controls.Add(this.tlpBan);
             this.grbThongTinBan.Controls.Add(this.flpButtonsBan);
             this.grbThongTinBan.Dock = DockStyle.Fill;
-            this.grbThongTinBan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.grbThongTinBan.Location = new Point(6, 6);
+            this.grbThongTinBan.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            this.grbThongTinBan.Location = new Point(8, 0);
             this.grbThongTinBan.Name = "grbThongTinBan";
-            this.grbThongTinBan.Padding = new Padding(10);
-            this.grbThongTinBan.Size = new Size(368, 516);
+            this.grbThongTinBan.Padding = new Padding(14, 38, 14, 12);
+            this.grbThongTinBan.Size = new Size(382, 504);
             this.grbThongTinBan.TabIndex = 0;
             this.grbThongTinBan.TabStop = false;
             this.grbThongTinBan.Text = "Thông tin bàn";
@@ -147,15 +147,15 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.tlpBan.Controls.Add(this.lblHienTrangThai, 1, 4);
             this.tlpBan.Dock = DockStyle.Top;
             this.tlpBan.Font = new Font("Segoe UI", 10F);
-            this.tlpBan.Location = new Point(10, 33);
+            this.tlpBan.Location = new Point(14, 38);
             this.tlpBan.Name = "tlpBan";
             this.tlpBan.RowCount = 5;
-            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
-            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
-            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
-            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
-            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
-            this.tlpBan.Size = new Size(348, 220);
+            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            this.tlpBan.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            this.tlpBan.Size = new Size(354, 210);
             this.tlpBan.TabIndex = 0;
 
             // lblMaBan
@@ -166,8 +166,9 @@ namespace QuanLyQuanCafe.GUI.Ban
 
             // txtMaBan
             this.txtMaBan.Dock = DockStyle.Fill;
-            this.txtMaBan.Name = "txtMaBan";
+            this.txtMaBan.Font = new Font("Segoe UI", 10.5F);
             this.txtMaBan.MaxLength = 20;
+            this.txtMaBan.Name = "txtMaBan";
 
             // lblSoBan
             this.lblSoBan.Dock = DockStyle.Fill;
@@ -177,7 +178,8 @@ namespace QuanLyQuanCafe.GUI.Ban
 
             // numSoBan
             this.numSoBan.Dock = DockStyle.Fill;
-            this.numSoBan.Location = new Point(113, 45);
+            this.numSoBan.Font = new Font("Segoe UI", 10.5F);
+            this.numSoBan.Location = new Point(113, 43);
             this.numSoBan.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
             this.numSoBan.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             this.numSoBan.Name = "numSoBan";
@@ -191,7 +193,8 @@ namespace QuanLyQuanCafe.GUI.Ban
 
             // numSoChoNgoi
             this.numSoChoNgoi.Dock = DockStyle.Fill;
-            this.numSoChoNgoi.Location = new Point(113, 87);
+            this.numSoChoNgoi.Font = new Font("Segoe UI", 10.5F);
+            this.numSoChoNgoi.Location = new Point(113, 83);
             this.numSoChoNgoi.Maximum = new decimal(new int[] { 100, 0, 0, 0 });
             this.numSoChoNgoi.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             this.numSoChoNgoi.Name = "numSoChoNgoi";
@@ -206,6 +209,7 @@ namespace QuanLyQuanCafe.GUI.Ban
             // cboViTri
             this.cboViTri.Dock = DockStyle.Fill;
             this.cboViTri.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.cboViTri.Font = new Font("Segoe UI", 10F);
             this.cboViTri.Name = "cboViTri";
 
             // lblTrangThaiTitle
@@ -222,58 +226,99 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.lblHienTrangThai.TextAlign = ContentAlignment.MiddleLeft;
 
             // flpButtonsBan
-            this.flpButtonsBan.Controls.Add(this.btnLamMoiBan);
-            this.flpButtonsBan.Controls.Add(this.btnThemBan);
-            this.flpButtonsBan.Controls.Add(this.btnSuaBan);
-            this.flpButtonsBan.Controls.Add(this.btnXoaBan);
+            this.flpButtonsBan.ColumnCount = 2;
+            this.flpButtonsBan.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.flpButtonsBan.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.flpButtonsBan.Controls.Add(this.btnThemBan, 0, 0);
+            this.flpButtonsBan.Controls.Add(this.btnSuaBan, 1, 0);
+            this.flpButtonsBan.Controls.Add(this.btnXoaBan, 0, 1);
+            this.flpButtonsBan.Controls.Add(this.btnLamMoiBan, 1, 1);
             this.flpButtonsBan.Dock = DockStyle.Bottom;
-            this.flpButtonsBan.Font = new Font("Segoe UI", 10F);
-            this.flpButtonsBan.Location = new Point(10, 446);
+            this.flpButtonsBan.Location = new Point(14, 404);
             this.flpButtonsBan.Name = "flpButtonsBan";
-            this.flpButtonsBan.Size = new Size(348, 60);
+            this.flpButtonsBan.RowCount = 2;
+            this.flpButtonsBan.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            this.flpButtonsBan.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            this.flpButtonsBan.Size = new Size(354, 88);
             this.flpButtonsBan.TabIndex = 1;
 
-            // btnLamMoiBan
-            this.btnLamMoiBan.Name = "btnLamMoiBan";
-            this.btnLamMoiBan.Size = new Size(80, 38);
-            this.btnLamMoiBan.Text = "Làm mới";
-            this.btnLamMoiBan.UseVisualStyleBackColor = true;
-
             // btnThemBan
+            this.btnThemBan.Cursor = Cursors.Hand;
+            this.btnThemBan.Dock = DockStyle.Fill;
+            this.btnThemBan.FlatAppearance.BorderSize = 0;
+            this.btnThemBan.FlatStyle = FlatStyle.Flat;
+            this.btnThemBan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnThemBan.ForeColor = Color.White;
+            this.btnThemBan.Margin = new Padding(0, 0, 5, 5);
             this.btnThemBan.Name = "btnThemBan";
-            this.btnThemBan.Size = new Size(80, 38);
+            this.btnThemBan.Size = new Size(172, 39);
+            this.btnThemBan.TabIndex = 0;
+            this.btnThemBan.Tag = "success";
             this.btnThemBan.Text = "Thêm";
             this.btnThemBan.UseVisualStyleBackColor = true;
 
             // btnSuaBan
+            this.btnSuaBan.Cursor = Cursors.Hand;
+            this.btnSuaBan.Dock = DockStyle.Fill;
+            this.btnSuaBan.FlatAppearance.BorderSize = 0;
+            this.btnSuaBan.FlatStyle = FlatStyle.Flat;
+            this.btnSuaBan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnSuaBan.ForeColor = Color.White;
+            this.btnSuaBan.Margin = new Padding(5, 0, 0, 5);
             this.btnSuaBan.Name = "btnSuaBan";
-            this.btnSuaBan.Size = new Size(80, 38);
+            this.btnSuaBan.Size = new Size(172, 39);
+            this.btnSuaBan.TabIndex = 1;
+            this.btnSuaBan.Tag = "primary";
             this.btnSuaBan.Text = "Sửa";
             this.btnSuaBan.UseVisualStyleBackColor = true;
 
             // btnXoaBan
+            this.btnXoaBan.Cursor = Cursors.Hand;
+            this.btnXoaBan.Dock = DockStyle.Fill;
+            this.btnXoaBan.FlatAppearance.BorderSize = 0;
+            this.btnXoaBan.FlatStyle = FlatStyle.Flat;
+            this.btnXoaBan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnXoaBan.ForeColor = Color.White;
+            this.btnXoaBan.Margin = new Padding(0, 5, 5, 0);
             this.btnXoaBan.Name = "btnXoaBan";
-            this.btnXoaBan.Size = new Size(80, 38);
+            this.btnXoaBan.Size = new Size(172, 39);
+            this.btnXoaBan.TabIndex = 2;
+            this.btnXoaBan.Tag = "danger";
             this.btnXoaBan.Text = "Xóa";
             this.btnXoaBan.UseVisualStyleBackColor = true;
 
-            // pnlRightBan
-            this.pnlRightBan.Controls.Add(this.grbDanhSachBan);
-            this.pnlRightBan.Dock = DockStyle.Fill;
-            this.pnlRightBan.Location = new Point(388, 8);
-            this.pnlRightBan.Name = "pnlRightBan";
-            this.pnlRightBan.Padding = new Padding(6);
-            this.pnlRightBan.Size = new Size(596, 528);
-            this.pnlRightBan.TabIndex = 1;
+            // btnLamMoiBan
+            this.btnLamMoiBan.Cursor = Cursors.Hand;
+            this.btnLamMoiBan.Dock = DockStyle.Fill;
+            this.btnLamMoiBan.FlatAppearance.BorderSize = 0;
+            this.btnLamMoiBan.FlatStyle = FlatStyle.Flat;
+            this.btnLamMoiBan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnLamMoiBan.ForeColor = Color.White;
+            this.btnLamMoiBan.Margin = new Padding(5, 5, 0, 0);
+            this.btnLamMoiBan.Name = "btnLamMoiBan";
+            this.btnLamMoiBan.Size = new Size(172, 39);
+            this.btnLamMoiBan.TabIndex = 3;
+            this.btnLamMoiBan.Tag = "neutral";
+            this.btnLamMoiBan.Text = "Làm mới";
+            this.btnLamMoiBan.UseVisualStyleBackColor = true;
+
+            // pnlLeftBan
+            this.pnlLeftBan.Controls.Add(this.grbDanhSachBan);
+            this.pnlLeftBan.Dock = DockStyle.Fill;
+            this.pnlLeftBan.Location = new Point(8, 8);
+            this.pnlLeftBan.Name = "pnlLeftBan";
+            this.pnlLeftBan.Padding = new Padding(0, 0, 8, 0);
+            this.pnlLeftBan.Size = new Size(562, 504);
+            this.pnlLeftBan.TabIndex = 0;
 
             // grbDanhSachBan
             this.grbDanhSachBan.Controls.Add(this.dgvBan);
             this.grbDanhSachBan.Dock = DockStyle.Fill;
-            this.grbDanhSachBan.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.grbDanhSachBan.Location = new Point(6, 6);
+            this.grbDanhSachBan.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            this.grbDanhSachBan.Location = new Point(0, 0);
             this.grbDanhSachBan.Name = "grbDanhSachBan";
-            this.grbDanhSachBan.Padding = new Padding(8);
-            this.grbDanhSachBan.Size = new Size(584, 516);
+            this.grbDanhSachBan.Padding = new Padding(12, 38, 12, 12);
+            this.grbDanhSachBan.Size = new Size(554, 504);
             this.grbDanhSachBan.TabIndex = 0;
             this.grbDanhSachBan.TabStop = false;
             this.grbDanhSachBan.Text = "Danh sách bàn";
@@ -293,14 +338,14 @@ namespace QuanLyQuanCafe.GUI.Ban
             });
             this.dgvBan.Dock = DockStyle.Fill;
             this.dgvBan.Font = new Font("Segoe UI", 10F);
-            this.dgvBan.Location = new Point(8, 31);
+            this.dgvBan.Location = new Point(12, 38);
             this.dgvBan.MultiSelect = false;
             this.dgvBan.Name = "dgvBan";
             this.dgvBan.ReadOnly = true;
             this.dgvBan.RowHeadersVisible = false;
             this.dgvBan.RowHeadersWidth = 51;
             this.dgvBan.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dgvBan.Size = new Size(568, 477);
+            this.dgvBan.Size = new Size(530, 454);
             this.dgvBan.TabIndex = 0;
 
             // colMaBan
@@ -339,33 +384,33 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.colKhuVuc.ReadOnly = true;
 
             // tabKhuVuc
-            this.tabKhuVuc.Controls.Add(this.pnlRightViTri);
             this.tabKhuVuc.Controls.Add(this.pnlLeftViTri);
+            this.tabKhuVuc.Controls.Add(this.pnlRightViTri);
             this.tabKhuVuc.Location = new Point(4, 32);
             this.tabKhuVuc.Name = "tabKhuVuc";
             this.tabKhuVuc.Padding = new Padding(8);
-            this.tabKhuVuc.Size = new Size(992, 544);
-            this.tabKhuVuc.Text = "Khu vực / Vị trí";
+            this.tabKhuVuc.Size = new Size(968, 520);
+            this.tabKhuVuc.Text = "Khu vực";
             this.tabKhuVuc.UseVisualStyleBackColor = true;
 
-            // pnlLeftViTri
-            this.pnlLeftViTri.Controls.Add(this.grbThongTinViTri);
-            this.pnlLeftViTri.Dock = DockStyle.Left;
-            this.pnlLeftViTri.Location = new Point(8, 8);
-            this.pnlLeftViTri.Name = "pnlLeftViTri";
-            this.pnlLeftViTri.Padding = new Padding(6);
-            this.pnlLeftViTri.Size = new Size(380, 528);
-            this.pnlLeftViTri.TabIndex = 0;
+            // pnlRightViTri
+            this.pnlRightViTri.Controls.Add(this.grbThongTinViTri);
+            this.pnlRightViTri.Dock = DockStyle.Right;
+            this.pnlRightViTri.Location = new Point(570, 8);
+            this.pnlRightViTri.Name = "pnlRightViTri";
+            this.pnlRightViTri.Padding = new Padding(8, 0, 0, 0);
+            this.pnlRightViTri.Size = new Size(390, 504);
+            this.pnlRightViTri.TabIndex = 1;
 
             // grbThongTinViTri
             this.grbThongTinViTri.Controls.Add(this.tlpViTri);
             this.grbThongTinViTri.Controls.Add(this.flpButtonsViTri);
             this.grbThongTinViTri.Dock = DockStyle.Fill;
-            this.grbThongTinViTri.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.grbThongTinViTri.Location = new Point(6, 6);
+            this.grbThongTinViTri.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            this.grbThongTinViTri.Location = new Point(8, 0);
             this.grbThongTinViTri.Name = "grbThongTinViTri";
-            this.grbThongTinViTri.Padding = new Padding(10);
-            this.grbThongTinViTri.Size = new Size(368, 516);
+            this.grbThongTinViTri.Padding = new Padding(14, 38, 14, 12);
+            this.grbThongTinViTri.Size = new Size(382, 504);
             this.grbThongTinViTri.TabIndex = 0;
             this.grbThongTinViTri.TabStop = false;
             this.grbThongTinViTri.Text = "Thông tin khu vực";
@@ -382,13 +427,13 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.tlpViTri.Controls.Add(this.txtMoTa, 1, 2);
             this.tlpViTri.Dock = DockStyle.Top;
             this.tlpViTri.Font = new Font("Segoe UI", 10F);
-            this.tlpViTri.Location = new Point(10, 33);
+            this.tlpViTri.Location = new Point(14, 38);
             this.tlpViTri.Name = "tlpViTri";
             this.tlpViTri.RowCount = 3;
-            this.tlpViTri.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
-            this.tlpViTri.RowStyles.Add(new RowStyle(SizeType.Absolute, 42F));
-            this.tlpViTri.RowStyles.Add(new RowStyle(SizeType.Absolute, 90F));
-            this.tlpViTri.Size = new Size(348, 180);
+            this.tlpViTri.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            this.tlpViTri.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+            this.tlpViTri.RowStyles.Add(new RowStyle(SizeType.Absolute, 100F));
+            this.tlpViTri.Size = new Size(354, 190);
             this.tlpViTri.TabIndex = 0;
 
             // lblMaViTri
@@ -399,8 +444,9 @@ namespace QuanLyQuanCafe.GUI.Ban
 
             // txtMaViTri
             this.txtMaViTri.Dock = DockStyle.Fill;
-            this.txtMaViTri.Name = "txtMaViTri";
+            this.txtMaViTri.Font = new Font("Segoe UI", 10.5F);
             this.txtMaViTri.MaxLength = 20;
+            this.txtMaViTri.Name = "txtMaViTri";
 
             // lblTenViTri
             this.lblTenViTri.Dock = DockStyle.Fill;
@@ -410,8 +456,9 @@ namespace QuanLyQuanCafe.GUI.Ban
 
             // txtTenViTri
             this.txtTenViTri.Dock = DockStyle.Fill;
-            this.txtTenViTri.Name = "txtTenViTri";
+            this.txtTenViTri.Font = new Font("Segoe UI", 10.5F);
             this.txtTenViTri.MaxLength = 100;
+            this.txtTenViTri.Name = "txtTenViTri";
 
             // lblMoTa
             this.lblMoTa.Dock = DockStyle.Fill;
@@ -421,64 +468,106 @@ namespace QuanLyQuanCafe.GUI.Ban
 
             // txtMoTa
             this.txtMoTa.Dock = DockStyle.Fill;
+            this.txtMoTa.Font = new Font("Segoe UI", 10F);
+            this.txtMoTa.MaxLength = 255;
             this.txtMoTa.Multiline = true;
             this.txtMoTa.Name = "txtMoTa";
-            this.txtMoTa.MaxLength = 255;
             this.txtMoTa.ScrollBars = ScrollBars.Vertical;
 
             // flpButtonsViTri
-            this.flpButtonsViTri.Controls.Add(this.btnLamMoiViTri);
-            this.flpButtonsViTri.Controls.Add(this.btnThemViTri);
-            this.flpButtonsViTri.Controls.Add(this.btnSuaViTri);
-            this.flpButtonsViTri.Controls.Add(this.btnXoaViTri);
+            this.flpButtonsViTri.ColumnCount = 2;
+            this.flpButtonsViTri.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.flpButtonsViTri.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.flpButtonsViTri.Controls.Add(this.btnThemViTri, 0, 0);
+            this.flpButtonsViTri.Controls.Add(this.btnSuaViTri, 1, 0);
+            this.flpButtonsViTri.Controls.Add(this.btnXoaViTri, 0, 1);
+            this.flpButtonsViTri.Controls.Add(this.btnLamMoiViTri, 1, 1);
             this.flpButtonsViTri.Dock = DockStyle.Bottom;
-            this.flpButtonsViTri.Font = new Font("Segoe UI", 10F);
-            this.flpButtonsViTri.Location = new Point(10, 446);
+            this.flpButtonsViTri.Location = new Point(14, 404);
             this.flpButtonsViTri.Name = "flpButtonsViTri";
-            this.flpButtonsViTri.Size = new Size(348, 60);
+            this.flpButtonsViTri.RowCount = 2;
+            this.flpButtonsViTri.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            this.flpButtonsViTri.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            this.flpButtonsViTri.Size = new Size(354, 88);
             this.flpButtonsViTri.TabIndex = 1;
 
-            // btnLamMoiViTri
-            this.btnLamMoiViTri.Name = "btnLamMoiViTri";
-            this.btnLamMoiViTri.Size = new Size(80, 38);
-            this.btnLamMoiViTri.Text = "Làm mới";
-            this.btnLamMoiViTri.UseVisualStyleBackColor = true;
-
             // btnThemViTri
+            this.btnThemViTri.Cursor = Cursors.Hand;
+            this.btnThemViTri.Dock = DockStyle.Fill;
+            this.btnThemViTri.FlatAppearance.BorderSize = 0;
+            this.btnThemViTri.FlatStyle = FlatStyle.Flat;
+            this.btnThemViTri.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnThemViTri.ForeColor = Color.White;
+            this.btnThemViTri.Margin = new Padding(0, 0, 5, 5);
             this.btnThemViTri.Name = "btnThemViTri";
-            this.btnThemViTri.Size = new Size(80, 38);
+            this.btnThemViTri.Size = new Size(172, 39);
+            this.btnThemViTri.TabIndex = 0;
+            this.btnThemViTri.Tag = "success";
             this.btnThemViTri.Text = "Thêm";
             this.btnThemViTri.UseVisualStyleBackColor = true;
 
             // btnSuaViTri
+            this.btnSuaViTri.Cursor = Cursors.Hand;
+            this.btnSuaViTri.Dock = DockStyle.Fill;
+            this.btnSuaViTri.FlatAppearance.BorderSize = 0;
+            this.btnSuaViTri.FlatStyle = FlatStyle.Flat;
+            this.btnSuaViTri.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnSuaViTri.ForeColor = Color.White;
+            this.btnSuaViTri.Margin = new Padding(5, 0, 0, 5);
             this.btnSuaViTri.Name = "btnSuaViTri";
-            this.btnSuaViTri.Size = new Size(80, 38);
+            this.btnSuaViTri.Size = new Size(172, 39);
+            this.btnSuaViTri.TabIndex = 1;
+            this.btnSuaViTri.Tag = "primary";
             this.btnSuaViTri.Text = "Sửa";
             this.btnSuaViTri.UseVisualStyleBackColor = true;
 
             // btnXoaViTri
+            this.btnXoaViTri.Cursor = Cursors.Hand;
+            this.btnXoaViTri.Dock = DockStyle.Fill;
+            this.btnXoaViTri.FlatAppearance.BorderSize = 0;
+            this.btnXoaViTri.FlatStyle = FlatStyle.Flat;
+            this.btnXoaViTri.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnXoaViTri.ForeColor = Color.White;
+            this.btnXoaViTri.Margin = new Padding(0, 5, 5, 0);
             this.btnXoaViTri.Name = "btnXoaViTri";
-            this.btnXoaViTri.Size = new Size(80, 38);
+            this.btnXoaViTri.Size = new Size(172, 39);
+            this.btnXoaViTri.TabIndex = 2;
+            this.btnXoaViTri.Tag = "danger";
             this.btnXoaViTri.Text = "Xóa";
             this.btnXoaViTri.UseVisualStyleBackColor = true;
 
-            // pnlRightViTri
-            this.pnlRightViTri.Controls.Add(this.grbDanhSachViTri);
-            this.pnlRightViTri.Dock = DockStyle.Fill;
-            this.pnlRightViTri.Location = new Point(388, 8);
-            this.pnlRightViTri.Name = "pnlRightViTri";
-            this.pnlRightViTri.Padding = new Padding(6);
-            this.pnlRightViTri.Size = new Size(596, 528);
-            this.pnlRightViTri.TabIndex = 1;
+            // btnLamMoiViTri
+            this.btnLamMoiViTri.Cursor = Cursors.Hand;
+            this.btnLamMoiViTri.Dock = DockStyle.Fill;
+            this.btnLamMoiViTri.FlatAppearance.BorderSize = 0;
+            this.btnLamMoiViTri.FlatStyle = FlatStyle.Flat;
+            this.btnLamMoiViTri.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnLamMoiViTri.ForeColor = Color.White;
+            this.btnLamMoiViTri.Margin = new Padding(5, 5, 0, 0);
+            this.btnLamMoiViTri.Name = "btnLamMoiViTri";
+            this.btnLamMoiViTri.Size = new Size(172, 39);
+            this.btnLamMoiViTri.TabIndex = 3;
+            this.btnLamMoiViTri.Tag = "neutral";
+            this.btnLamMoiViTri.Text = "Làm mới";
+            this.btnLamMoiViTri.UseVisualStyleBackColor = true;
+
+            // pnlLeftViTri
+            this.pnlLeftViTri.Controls.Add(this.grbDanhSachViTri);
+            this.pnlLeftViTri.Dock = DockStyle.Fill;
+            this.pnlLeftViTri.Location = new Point(8, 8);
+            this.pnlLeftViTri.Name = "pnlLeftViTri";
+            this.pnlLeftViTri.Padding = new Padding(0, 0, 8, 0);
+            this.pnlLeftViTri.Size = new Size(562, 504);
+            this.pnlLeftViTri.TabIndex = 0;
 
             // grbDanhSachViTri
             this.grbDanhSachViTri.Controls.Add(this.dgvViTri);
             this.grbDanhSachViTri.Dock = DockStyle.Fill;
-            this.grbDanhSachViTri.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.grbDanhSachViTri.Location = new Point(6, 6);
+            this.grbDanhSachViTri.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            this.grbDanhSachViTri.Location = new Point(0, 0);
             this.grbDanhSachViTri.Name = "grbDanhSachViTri";
-            this.grbDanhSachViTri.Padding = new Padding(8);
-            this.grbDanhSachViTri.Size = new Size(584, 516);
+            this.grbDanhSachViTri.Padding = new Padding(12, 38, 12, 12);
+            this.grbDanhSachViTri.Size = new Size(554, 504);
             this.grbDanhSachViTri.TabIndex = 0;
             this.grbDanhSachViTri.TabStop = false;
             this.grbDanhSachViTri.Text = "Danh sách khu vực / vị trí";
@@ -496,14 +585,14 @@ namespace QuanLyQuanCafe.GUI.Ban
             });
             this.dgvViTri.Dock = DockStyle.Fill;
             this.dgvViTri.Font = new Font("Segoe UI", 10F);
-            this.dgvViTri.Location = new Point(8, 31);
+            this.dgvViTri.Location = new Point(12, 38);
             this.dgvViTri.MultiSelect = false;
             this.dgvViTri.Name = "dgvViTri";
             this.dgvViTri.ReadOnly = true;
             this.dgvViTri.RowHeadersVisible = false;
             this.dgvViTri.RowHeadersWidth = 51;
             this.dgvViTri.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dgvViTri.Size = new Size(568, 477);
+            this.dgvViTri.Size = new Size(530, 454);
             this.dgvViTri.TabIndex = 0;
 
             // colMaViTri
@@ -534,30 +623,31 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.Controls.Add(this.tabMain);
             this.Font = new Font("Segoe UI", 10F);
             this.Name = "FormBan";
+            this.Padding = new Padding(12);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Quản lý bàn và khu vực";
 
             this.tabMain.ResumeLayout(false);
             this.tabBan.ResumeLayout(false);
             this.pnlRightBan.ResumeLayout(false);
-            this.grbDanhSachBan.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvBan)).EndInit();
-            this.pnlLeftBan.ResumeLayout(false);
             this.grbThongTinBan.ResumeLayout(false);
             this.tlpBan.ResumeLayout(false);
             this.tlpBan.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSoBan)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSoChoNgoi)).EndInit();
             this.flpButtonsBan.ResumeLayout(false);
+            this.pnlLeftBan.ResumeLayout(false);
+            this.grbDanhSachBan.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvBan)).EndInit();
             this.tabKhuVuc.ResumeLayout(false);
             this.pnlRightViTri.ResumeLayout(false);
-            this.grbDanhSachViTri.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvViTri)).EndInit();
-            this.pnlLeftViTri.ResumeLayout(false);
             this.grbThongTinViTri.ResumeLayout(false);
             this.tlpViTri.ResumeLayout(false);
             this.tlpViTri.PerformLayout();
             this.flpButtonsViTri.ResumeLayout(false);
+            this.pnlLeftViTri.ResumeLayout(false);
+            this.grbDanhSachViTri.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvViTri)).EndInit();
             this.ResumeLayout(false);
         }
 
@@ -579,7 +669,7 @@ namespace QuanLyQuanCafe.GUI.Ban
         private ComboBox cboViTri;
         private Label lblTrangThaiTitle;
         private Label lblHienTrangThai;
-        private FlowLayoutPanel flpButtonsBan;
+        private TableLayoutPanel flpButtonsBan;
         private Button btnLamMoiBan;
         private Button btnThemBan;
         private Button btnSuaBan;
@@ -601,7 +691,7 @@ namespace QuanLyQuanCafe.GUI.Ban
         private TextBox txtTenViTri;
         private Label lblMoTa;
         private TextBox txtMoTa;
-        private FlowLayoutPanel flpButtonsViTri;
+        private TableLayoutPanel flpButtonsViTri;
         private Button btnLamMoiViTri;
         private Button btnThemViTri;
         private Button btnSuaViTri;
@@ -614,3 +704,4 @@ namespace QuanLyQuanCafe.GUI.Ban
         private DataGridViewTextBoxColumn colMoTa;
     }
 }
+

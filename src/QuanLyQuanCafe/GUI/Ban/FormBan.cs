@@ -21,6 +21,8 @@ namespace QuanLyQuanCafe.GUI.Ban
         {
             InitializeComponent();
 
+            Theme.Apply(this);
+
             KhoiTaoCacDieuKhien();
             DangKySuKien();
         }
@@ -76,22 +78,21 @@ namespace QuanLyQuanCafe.GUI.Ban
         {
             if (e.RowIndex >= 0 && dgvBan.Columns[e.ColumnIndex].Name == "colTrangThai" && e.Value != null)
             {
-                string tt = e.Value.ToString() ?? "";
-                if (string.Equals(tt, "TRONG", StringComparison.OrdinalIgnoreCase))
+                string tt = e.Value.ToString()?.Trim() ?? "";
+                Color bg = tt.ToUpperInvariant() switch
                 {
-                    e.CellStyle.ForeColor = Color.DarkGreen;
-                    e.CellStyle.Font = new Font(dgvBan.Font, FontStyle.Bold);
-                }
-                else if (string.Equals(tt, "COKHACH", StringComparison.OrdinalIgnoreCase))
-                {
-                    e.CellStyle.ForeColor = Color.Crimson;
-                    e.CellStyle.Font = new Font(dgvBan.Font, FontStyle.Bold);
-                }
-                else if (string.Equals(tt, "DATTRUOC", StringComparison.OrdinalIgnoreCase))
-                {
-                    e.CellStyle.ForeColor = Color.DarkOrange;
-                    e.CellStyle.Font = new Font(dgvBan.Font, FontStyle.Bold);
-                }
+                    "TRONG" => Theme.BanTrong,
+                    "COKHACH" => Theme.BanCoKhach,
+                    "DATTRUOC" => Theme.BanDatTruoc,
+                    _ => Theme.The
+                };
+
+                e.CellStyle.BackColor = bg;
+                e.CellStyle.ForeColor = Theme.Chu;
+                e.CellStyle.SelectionBackColor = bg;
+                e.CellStyle.SelectionForeColor = Theme.Chu;
+                e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                e.CellStyle.Font = Theme.FontNhanDam;
             }
         }
 
@@ -134,21 +135,22 @@ namespace QuanLyQuanCafe.GUI.Ban
         private void CapNhatNhanTrangThai(string trangThai)
         {
             lblHienTrangThai.Text = trangThai;
+            lblHienTrangThai.Font = Theme.FontNhanDam;
             if (string.Equals(trangThai, "TRONG", StringComparison.OrdinalIgnoreCase))
             {
-                lblHienTrangThai.ForeColor = Color.DarkGreen;
+                lblHienTrangThai.ForeColor = Theme.BanTrong;
             }
             else if (string.Equals(trangThai, "COKHACH", StringComparison.OrdinalIgnoreCase))
             {
-                lblHienTrangThai.ForeColor = Color.Crimson;
+                lblHienTrangThai.ForeColor = Theme.BanCoKhach;
             }
             else if (string.Equals(trangThai, "DATTRUOC", StringComparison.OrdinalIgnoreCase))
             {
-                lblHienTrangThai.ForeColor = Color.DarkOrange;
+                lblHienTrangThai.ForeColor = Theme.BanDatTruoc;
             }
             else
             {
-                lblHienTrangThai.ForeColor = SystemColors.ControlText;
+                lblHienTrangThai.ForeColor = Theme.Chu;
             }
         }
 
@@ -438,3 +440,4 @@ namespace QuanLyQuanCafe.GUI.Ban
         #endregion
     }
 }
+
