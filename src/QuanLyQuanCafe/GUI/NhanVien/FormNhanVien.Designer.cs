@@ -1,4 +1,4 @@
-﻿namespace QuanLyQuanCafe.GUI.NhanVien
+namespace QuanLyQuanCafe.GUI.NhanVien
 {
     partial class FormNhanVien
     {
@@ -17,7 +17,12 @@
 
         private void InitializeComponent()
         {
-            this.pnlLeft = new Panel();
+            this.pnlTop = new Panel();
+            this.lblTieuDeTrang = new Label();
+            this.pnlSearch = new Panel();
+            this.lblTimKiem = new Label();
+            this.txtTimKiem = new TextBox();
+            this.pnlRight = new Panel();
             this.grbThongTin = new GroupBox();
             this.tlpInput = new TableLayoutPanel();
             this.lblMaNV = new Label();
@@ -34,12 +39,12 @@
             this.cboQuanLy = new ComboBox();
             this.lblMatKhau = new Label();
             this.txtMatKhau = new TextBox();
-            this.flpButtons = new FlowLayoutPanel();
-            this.btnLamMoi = new Button();
+            this.flpButtons = new TableLayoutPanel();
             this.btnThem = new Button();
             this.btnSua = new Button();
             this.btnDatLaiMatKhau = new Button();
-            this.pnlRight = new Panel();
+            this.btnLamMoi = new Button();
+            this.pnlLeft = new Panel();
             this.grbDanhSach = new GroupBox();
             this.dgvNhanVien = new DataGridView();
             this.colMaNV = new DataGridViewTextBoxColumn();
@@ -48,45 +53,100 @@
             this.colSoDienThoai = new DataGridViewTextBoxColumn();
             this.colCaLamViec = new DataGridViewTextBoxColumn();
             this.colQuanLy = new DataGridViewTextBoxColumn();
-            this.pnlSearch = new Panel();
-            this.lblTimKiem = new Label();
-            this.txtTimKiem = new TextBox();
 
-            this.pnlLeft.SuspendLayout();
+            this.pnlTop.SuspendLayout();
+            this.pnlSearch.SuspendLayout();
+            this.pnlRight.SuspendLayout();
             this.grbThongTin.SuspendLayout();
             this.tlpInput.SuspendLayout();
             this.flpButtons.SuspendLayout();
-            this.pnlRight.SuspendLayout();
+            this.pnlLeft.SuspendLayout();
             this.grbDanhSach.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNhanVien)).BeginInit();
-            this.pnlSearch.SuspendLayout();
             this.SuspendLayout();
 
-            // pnlLeft
-            this.pnlLeft.Controls.Add(this.grbThongTin);
-            this.pnlLeft.Dock = DockStyle.Left;
-            this.pnlLeft.Location = new Point(0, 0);
-            this.pnlLeft.Name = "pnlLeft";
-            this.pnlLeft.Padding = new Padding(10);
-            this.pnlLeft.Size = new Size(390, 560);
-            this.pnlLeft.TabIndex = 0;
+            // pnlTop
+            this.pnlTop.Controls.Add(this.pnlSearch);
+            this.pnlTop.Controls.Add(this.lblTieuDeTrang);
+            this.pnlTop.Dock = DockStyle.Top;
+            this.pnlTop.Height = 50;
+            this.pnlTop.Location = new Point(12, 12);
+            this.pnlTop.Name = "pnlTop";
+            this.pnlTop.Padding = new Padding(4, 4, 4, 8);
+            this.pnlTop.Size = new Size(976, 50);
+            this.pnlTop.TabIndex = 0;
+
+            // lblTieuDeTrang
+            this.lblTieuDeTrang.AutoSize = true;
+            this.lblTieuDeTrang.Dock = DockStyle.Left;
+            this.lblTieuDeTrang.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            this.lblTieuDeTrang.ForeColor = Color.White;
+            this.lblTieuDeTrang.Location = new Point(4, 4);
+            this.lblTieuDeTrang.Name = "lblTieuDeTrang";
+            this.lblTieuDeTrang.Size = new Size(250, 37);
+            this.lblTieuDeTrang.TabIndex = 0;
+            this.lblTieuDeTrang.Tag = "tieude";
+            this.lblTieuDeTrang.Text = "Quản lý nhân viên";
+            this.lblTieuDeTrang.TextAlign = ContentAlignment.MiddleLeft;
+
+            // pnlSearch
+            this.pnlSearch.AutoSize = true;
+            this.pnlSearch.Controls.Add(this.txtTimKiem);
+            this.pnlSearch.Controls.Add(this.lblTimKiem);
+            this.pnlSearch.Dock = DockStyle.Right;
+            this.pnlSearch.Location = new Point(576, 4);
+            this.pnlSearch.Name = "pnlSearch";
+            this.pnlSearch.Padding = new Padding(0, 4, 0, 4);
+            this.pnlSearch.Size = new Size(396, 38);
+            this.pnlSearch.TabIndex = 1;
+
+            // lblTimKiem
+            this.lblTimKiem.AutoSize = true;
+            this.lblTimKiem.Dock = DockStyle.Left;
+            this.lblTimKiem.Font = new Font("Segoe UI", 10F);
+            this.lblTimKiem.Location = new Point(0, 4);
+            this.lblTimKiem.Name = "lblTimKiem";
+            this.lblTimKiem.Padding = new Padding(0, 5, 8, 0);
+            this.lblTimKiem.Size = new Size(116, 28);
+            this.lblTimKiem.TabIndex = 0;
+            this.lblTimKiem.Tag = "phu";
+            this.lblTimKiem.Text = "🔍 Tìm kiếm:";
+            this.lblTimKiem.TextAlign = ContentAlignment.MiddleRight;
+
+            // txtTimKiem
+            this.txtTimKiem.Dock = DockStyle.Right;
+            this.txtTimKiem.Font = new Font("Segoe UI", 10.5F);
+            this.txtTimKiem.Location = new Point(116, 4);
+            this.txtTimKiem.Name = "txtTimKiem";
+            this.txtTimKiem.PlaceholderText = "Tên, SĐT, chức vụ, mã NV...";
+            this.txtTimKiem.Size = new Size(280, 31);
+            this.txtTimKiem.TabIndex = 1;
+
+            // pnlRight
+            this.pnlRight.Controls.Add(this.grbThongTin);
+            this.pnlRight.Dock = DockStyle.Right;
+            this.pnlRight.Location = new Point(588, 62);
+            this.pnlRight.Name = "pnlRight";
+            this.pnlRight.Padding = new Padding(8, 0, 0, 0);
+            this.pnlRight.Size = new Size(400, 486);
+            this.pnlRight.TabIndex = 2;
 
             // grbThongTin
             this.grbThongTin.Controls.Add(this.tlpInput);
             this.grbThongTin.Controls.Add(this.flpButtons);
             this.grbThongTin.Dock = DockStyle.Fill;
-            this.grbThongTin.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.grbThongTin.Location = new Point(10, 10);
+            this.grbThongTin.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            this.grbThongTin.Location = new Point(8, 0);
             this.grbThongTin.Name = "grbThongTin";
-            this.grbThongTin.Padding = new Padding(10);
-            this.grbThongTin.Size = new Size(370, 540);
+            this.grbThongTin.Padding = new Padding(14, 38, 14, 12);
+            this.grbThongTin.Size = new Size(392, 486);
             this.grbThongTin.TabIndex = 0;
             this.grbThongTin.TabStop = false;
             this.grbThongTin.Text = "Thông tin nhân viên";
 
             // tlpInput
             this.tlpInput.ColumnCount = 2;
-            this.tlpInput.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 120F));
+            this.tlpInput.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 110F));
             this.tlpInput.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             this.tlpInput.Controls.Add(this.lblMaNV, 0, 0);
             this.tlpInput.Controls.Add(this.txtMaNV, 1, 0);
@@ -104,7 +164,7 @@
             this.tlpInput.Controls.Add(this.txtMatKhau, 1, 6);
             this.tlpInput.Dock = DockStyle.Top;
             this.tlpInput.Font = new Font("Segoe UI", 10F);
-            this.tlpInput.Location = new Point(10, 33);
+            this.tlpInput.Location = new Point(14, 38);
             this.tlpInput.Name = "tlpInput";
             this.tlpInput.RowCount = 7;
             this.tlpInput.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
@@ -114,7 +174,7 @@
             this.tlpInput.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             this.tlpInput.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
             this.tlpInput.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
-            this.tlpInput.Size = new Size(350, 290);
+            this.tlpInput.Size = new Size(364, 280);
             this.tlpInput.TabIndex = 0;
 
             // lblMaNV
@@ -125,8 +185,9 @@
 
             // txtMaNV
             this.txtMaNV.Dock = DockStyle.Fill;
-            this.txtMaNV.Name = "txtMaNV";
+            this.txtMaNV.Font = new Font("Segoe UI", 10.5F);
             this.txtMaNV.MaxLength = 20;
+            this.txtMaNV.Name = "txtMaNV";
 
             // lblTenNV
             this.lblTenNV.Dock = DockStyle.Fill;
@@ -136,8 +197,9 @@
 
             // txtTenNV
             this.txtTenNV.Dock = DockStyle.Fill;
-            this.txtTenNV.Name = "txtTenNV";
+            this.txtTenNV.Font = new Font("Segoe UI", 10.5F);
             this.txtTenNV.MaxLength = 100;
+            this.txtTenNV.Name = "txtTenNV";
 
             // lblChucVu
             this.lblChucVu.Dock = DockStyle.Fill;
@@ -148,6 +210,7 @@
             // cboChucVu
             this.cboChucVu.Dock = DockStyle.Fill;
             this.cboChucVu.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.cboChucVu.Font = new Font("Segoe UI", 10F);
             this.cboChucVu.Name = "cboChucVu";
 
             // lblSoDienThoai
@@ -158,8 +221,9 @@
 
             // txtSoDienThoai
             this.txtSoDienThoai.Dock = DockStyle.Fill;
-            this.txtSoDienThoai.Name = "txtSoDienThoai";
+            this.txtSoDienThoai.Font = new Font("Segoe UI", 10.5F);
             this.txtSoDienThoai.MaxLength = 15;
+            this.txtSoDienThoai.Name = "txtSoDienThoai";
 
             // lblCaLamViec
             this.lblCaLamViec.Dock = DockStyle.Fill;
@@ -169,6 +233,7 @@
 
             // cboCaLamViec
             this.cboCaLamViec.Dock = DockStyle.Fill;
+            this.cboCaLamViec.Font = new Font("Segoe UI", 10F);
             this.cboCaLamViec.Name = "cboCaLamViec";
 
             // lblQuanLy
@@ -180,6 +245,7 @@
             // cboQuanLy
             this.cboQuanLy.Dock = DockStyle.Fill;
             this.cboQuanLy.DropDownStyle = ComboBoxStyle.DropDownList;
+            this.cboQuanLy.Font = new Font("Segoe UI", 10F);
             this.cboQuanLy.Name = "cboQuanLy";
 
             // lblMatKhau
@@ -190,87 +256,106 @@
 
             // txtMatKhau
             this.txtMatKhau.Dock = DockStyle.Fill;
+            this.txtMatKhau.Font = new Font("Segoe UI", 10.5F);
+            this.txtMatKhau.MaxLength = 255;
             this.txtMatKhau.Name = "txtMatKhau";
             this.txtMatKhau.UseSystemPasswordChar = true;
-            this.txtMatKhau.MaxLength = 255;
 
             // flpButtons
-            this.flpButtons.Controls.Add(this.btnLamMoi);
-            this.flpButtons.Controls.Add(this.btnThem);
-            this.flpButtons.Controls.Add(this.btnSua);
-            this.flpButtons.Controls.Add(this.btnDatLaiMatKhau);
+            this.flpButtons.ColumnCount = 2;
+            this.flpButtons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.flpButtons.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            this.flpButtons.Controls.Add(this.btnThem, 0, 0);
+            this.flpButtons.Controls.Add(this.btnSua, 1, 0);
+            this.flpButtons.Controls.Add(this.btnDatLaiMatKhau, 0, 1);
+            this.flpButtons.Controls.Add(this.btnLamMoi, 1, 1);
             this.flpButtons.Dock = DockStyle.Bottom;
-            this.flpButtons.Font = new Font("Segoe UI", 10F);
-            this.flpButtons.Location = new Point(10, 430);
+            this.flpButtons.Location = new Point(14, 386);
             this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new Size(350, 100);
+            this.flpButtons.RowCount = 2;
+            this.flpButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            this.flpButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            this.flpButtons.Size = new Size(364, 88);
             this.flpButtons.TabIndex = 1;
 
-            // btnLamMoi
-            this.btnLamMoi.Name = "btnLamMoi";
-            this.btnLamMoi.Size = new Size(100, 38);
-            this.btnLamMoi.Text = "Làm mới";
-            this.btnLamMoi.UseVisualStyleBackColor = true;
-
             // btnThem
+            this.btnThem.Cursor = Cursors.Hand;
+            this.btnThem.Dock = DockStyle.Fill;
+            this.btnThem.FlatAppearance.BorderSize = 0;
+            this.btnThem.FlatStyle = FlatStyle.Flat;
+            this.btnThem.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnThem.ForeColor = Color.White;
+            this.btnThem.Margin = new Padding(0, 0, 5, 5);
             this.btnThem.Name = "btnThem";
-            this.btnThem.Size = new Size(100, 38);
+            this.btnThem.Size = new Size(177, 39);
+            this.btnThem.TabIndex = 0;
+            this.btnThem.Tag = "success";
             this.btnThem.Text = "Thêm";
             this.btnThem.UseVisualStyleBackColor = true;
 
             // btnSua
+            this.btnSua.Cursor = Cursors.Hand;
+            this.btnSua.Dock = DockStyle.Fill;
+            this.btnSua.FlatAppearance.BorderSize = 0;
+            this.btnSua.FlatStyle = FlatStyle.Flat;
+            this.btnSua.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnSua.ForeColor = Color.White;
+            this.btnSua.Margin = new Padding(5, 0, 0, 5);
             this.btnSua.Name = "btnSua";
-            this.btnSua.Size = new Size(100, 38);
+            this.btnSua.Size = new Size(177, 39);
+            this.btnSua.TabIndex = 1;
+            this.btnSua.Tag = "primary";
             this.btnSua.Text = "Sửa";
             this.btnSua.UseVisualStyleBackColor = true;
 
             // btnDatLaiMatKhau
+            this.btnDatLaiMatKhau.Cursor = Cursors.Hand;
+            this.btnDatLaiMatKhau.Dock = DockStyle.Fill;
+            this.btnDatLaiMatKhau.FlatAppearance.BorderSize = 0;
+            this.btnDatLaiMatKhau.FlatStyle = FlatStyle.Flat;
+            this.btnDatLaiMatKhau.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnDatLaiMatKhau.ForeColor = Color.White;
+            this.btnDatLaiMatKhau.Margin = new Padding(0, 5, 5, 0);
             this.btnDatLaiMatKhau.Name = "btnDatLaiMatKhau";
-            this.btnDatLaiMatKhau.Size = new Size(150, 38);
+            this.btnDatLaiMatKhau.Size = new Size(177, 39);
+            this.btnDatLaiMatKhau.TabIndex = 2;
+            this.btnDatLaiMatKhau.Tag = "info";
             this.btnDatLaiMatKhau.Text = "Đặt lại mật khẩu";
             this.btnDatLaiMatKhau.UseVisualStyleBackColor = true;
 
-            // pnlRight
-            this.pnlRight.Controls.Add(this.grbDanhSach);
-            this.pnlRight.Controls.Add(this.pnlSearch);
-            this.pnlRight.Dock = DockStyle.Fill;
-            this.pnlRight.Location = new Point(390, 0);
-            this.pnlRight.Name = "pnlRight";
-            this.pnlRight.Padding = new Padding(10);
-            this.pnlRight.Size = new Size(610, 560);
-            this.pnlRight.TabIndex = 1;
+            // btnLamMoi
+            this.btnLamMoi.Cursor = Cursors.Hand;
+            this.btnLamMoi.Dock = DockStyle.Fill;
+            this.btnLamMoi.FlatAppearance.BorderSize = 0;
+            this.btnLamMoi.FlatStyle = FlatStyle.Flat;
+            this.btnLamMoi.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnLamMoi.ForeColor = Color.White;
+            this.btnLamMoi.Margin = new Padding(5, 5, 0, 0);
+            this.btnLamMoi.Name = "btnLamMoi";
+            this.btnLamMoi.Size = new Size(177, 39);
+            this.btnLamMoi.TabIndex = 3;
+            this.btnLamMoi.Tag = "neutral";
+            this.btnLamMoi.Text = "Làm mới";
+            this.btnLamMoi.UseVisualStyleBackColor = true;
 
-            // pnlSearch
-            this.pnlSearch.Controls.Add(this.lblTimKiem);
-            this.pnlSearch.Controls.Add(this.txtTimKiem);
-            this.pnlSearch.Dock = DockStyle.Top;
-            this.pnlSearch.Location = new Point(10, 10);
-            this.pnlSearch.Name = "pnlSearch";
-            this.pnlSearch.Size = new Size(590, 45);
-            this.pnlSearch.TabIndex = 0;
-
-            // lblTimKiem
-            this.lblTimKiem.AutoSize = true;
-            this.lblTimKiem.Location = new Point(5, 12);
-            this.lblTimKiem.Name = "lblTimKiem";
-            this.lblTimKiem.Text = "🔍 Tìm kiếm (Tên / SĐT / Mã):";
-
-            // txtTimKiem
-            this.txtTimKiem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            this.txtTimKiem.Location = new Point(230, 8);
-            this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new Size(350, 30);
-            this.txtTimKiem.TabIndex = 0;
+            // pnlLeft
+            this.pnlLeft.Controls.Add(this.grbDanhSach);
+            this.pnlLeft.Dock = DockStyle.Fill;
+            this.pnlLeft.Location = new Point(12, 62);
+            this.pnlLeft.Name = "pnlLeft";
+            this.pnlLeft.Padding = new Padding(0, 0, 8, 0);
+            this.pnlLeft.Size = new Size(576, 486);
+            this.pnlLeft.TabIndex = 1;
 
             // grbDanhSach
             this.grbDanhSach.Controls.Add(this.dgvNhanVien);
             this.grbDanhSach.Dock = DockStyle.Fill;
-            this.grbDanhSach.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            this.grbDanhSach.Location = new Point(10, 55);
+            this.grbDanhSach.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            this.grbDanhSach.Location = new Point(0, 0);
             this.grbDanhSach.Name = "grbDanhSach";
-            this.grbDanhSach.Padding = new Padding(8);
-            this.grbDanhSach.Size = new Size(590, 495);
-            this.grbDanhSach.TabIndex = 1;
+            this.grbDanhSach.Padding = new Padding(12, 38, 12, 12);
+            this.grbDanhSach.Size = new Size(568, 486);
+            this.grbDanhSach.TabIndex = 0;
             this.grbDanhSach.TabStop = false;
             this.grbDanhSach.Text = "Danh sách nhân viên";
 
@@ -290,14 +375,14 @@
             });
             this.dgvNhanVien.Dock = DockStyle.Fill;
             this.dgvNhanVien.Font = new Font("Segoe UI", 10F);
-            this.dgvNhanVien.Location = new Point(8, 31);
+            this.dgvNhanVien.Location = new Point(12, 38);
             this.dgvNhanVien.MultiSelect = false;
             this.dgvNhanVien.Name = "dgvNhanVien";
             this.dgvNhanVien.ReadOnly = true;
             this.dgvNhanVien.RowHeadersVisible = false;
             this.dgvNhanVien.RowHeadersWidth = 51;
             this.dgvNhanVien.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dgvNhanVien.Size = new Size(574, 456);
+            this.dgvNhanVien.Size = new Size(544, 436);
             this.dgvNhanVien.TabIndex = 0;
 
             // colMaNV
@@ -345,29 +430,38 @@
             this.AutoScaleDimensions = new SizeF(8F, 20F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(1000, 560);
-            this.Controls.Add(this.pnlRight);
             this.Controls.Add(this.pnlLeft);
+            this.Controls.Add(this.pnlRight);
+            this.Controls.Add(this.pnlTop);
             this.Font = new Font("Segoe UI", 10F);
             this.Name = "FormNhanVien";
+            this.Padding = new Padding(12);
             this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "Quản lý nhân viên";
 
-            this.pnlLeft.ResumeLayout(false);
+            this.pnlTop.ResumeLayout(false);
+            this.pnlTop.PerformLayout();
+            this.pnlSearch.ResumeLayout(false);
+            this.pnlSearch.PerformLayout();
+            this.pnlRight.ResumeLayout(false);
             this.grbThongTin.ResumeLayout(false);
             this.tlpInput.ResumeLayout(false);
             this.tlpInput.PerformLayout();
             this.flpButtons.ResumeLayout(false);
-            this.pnlRight.ResumeLayout(false);
+            this.pnlLeft.ResumeLayout(false);
             this.grbDanhSach.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvNhanVien)).EndInit();
-            this.pnlSearch.ResumeLayout(false);
-            this.pnlSearch.PerformLayout();
             this.ResumeLayout(false);
         }
 
         #endregion
 
-        private Panel pnlLeft;
+        private Panel pnlTop;
+        private Label lblTieuDeTrang;
+        private Panel pnlSearch;
+        private Label lblTimKiem;
+        private TextBox txtTimKiem;
+        private Panel pnlRight;
         private GroupBox grbThongTin;
         private TableLayoutPanel tlpInput;
         private Label lblMaNV;
@@ -384,15 +478,12 @@
         private ComboBox cboQuanLy;
         private Label lblMatKhau;
         private TextBox txtMatKhau;
-        private FlowLayoutPanel flpButtons;
+        private TableLayoutPanel flpButtons;
         private Button btnLamMoi;
         private Button btnThem;
         private Button btnSua;
         private Button btnDatLaiMatKhau;
-        private Panel pnlRight;
-        private Panel pnlSearch;
-        private Label lblTimKiem;
-        private TextBox txtTimKiem;
+        private Panel pnlLeft;
         private GroupBox grbDanhSach;
         private DataGridView dgvNhanVien;
         private DataGridViewTextBoxColumn colMaNV;

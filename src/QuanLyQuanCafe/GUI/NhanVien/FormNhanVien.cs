@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using QuanLyQuanCafe.BLL;
 using QuanLyQuanCafe.DTO;
 using QuanLyQuanCafe.Utils;
@@ -20,6 +20,8 @@ namespace QuanLyQuanCafe.GUI.NhanVien
         public FormNhanVien()
         {
             InitializeComponent();
+
+            Theme.Apply(this);
 
             KhoiTaoCacDieuKhien();
             DangKySuKien();
@@ -130,6 +132,20 @@ namespace QuanLyQuanCafe.GUI.NhanVien
                     }
                     e.FormattingApplied = true;
                 }
+            }
+            else if (dgvNhanVien.Columns[e.ColumnIndex].Name == "colChucVu" && e.Value != null)
+            {
+                string cv = e.Value.ToString()?.Trim() ?? "";
+                e.CellStyle.ForeColor = cv switch
+                {
+                    "Quản lý" => Theme.NhanManh,
+                    "Thu ngân" => Theme.NhanPhu,
+                    "Phục vụ" => Theme.CurrentMode == ThemeMode.Dark ? Color.FromArgb(170, 225, 255) : Color.FromArgb(2, 132, 199),
+                    "Thủ kho" => Theme.CurrentMode == ThemeMode.Dark ? Color.FromArgb(255, 185, 120) : Color.FromArgb(217, 119, 6),
+                    "Kế toán" => Theme.CurrentMode == ThemeMode.Dark ? Color.FromArgb(200, 180, 255) : Color.FromArgb(124, 58, 237),
+                    _ => Theme.Chu
+                };
+                e.CellStyle.Font = Theme.FontNhanDam;
             }
         }
 
@@ -316,6 +332,7 @@ namespace QuanLyQuanCafe.GUI.NhanVien
             var btnXacNhan = new Button
             {
                 Text = "Xác nhận",
+                Tag = "success",
                 Left = 170,
                 Top = 85,
                 Width = 95,
@@ -327,6 +344,7 @@ namespace QuanLyQuanCafe.GUI.NhanVien
             var btnHuy = new Button
             {
                 Text = "Hủy",
+                Tag = "neutral",
                 Left = 275,
                 Top = 85,
                 Width = 85,
@@ -338,6 +356,8 @@ namespace QuanLyQuanCafe.GUI.NhanVien
             prompt.Controls.AddRange(new Control[] { lbl, txt, btnXacNhan, btnHuy });
             prompt.AcceptButton = btnXacNhan;
             prompt.CancelButton = btnHuy;
+
+            Theme.Apply(prompt);
 
             if (prompt.ShowDialog(this) == DialogResult.OK)
             {

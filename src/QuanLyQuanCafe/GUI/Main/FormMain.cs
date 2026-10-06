@@ -49,47 +49,165 @@ namespace QuanLyQuanCafe.GUI.Main
         {
             InitializeComponent();
 
-            lblTrangThai.Text = $"Xin chào: {CurrentUser.TenNV} ({CurrentUser.ChucVu})";
+            Theme.Apply(this);
+            Theme.DrawGradientHeader(pnlHeader);
+
+            pnlHeader.Resize += (s, e) => pnlHeader.Invalidate();
+
+            mnuMain.Renderer = new ModernMenuRenderer();
+            stsMain.Renderer = new ModernMenuRenderer();
+            stsMain.BackColor = Theme.NenStatusStrip;
+
+            CaiDatVungMdi();
+            CapNhatThongTinNguoiDung();
+
+            this.ControlAdded += (s, e) =>
+            {
+                if (e.Control is MdiClient mdi)
+                {
+                    mdi.BackColor = Theme.Nen;
+                }
+            };
 
             this.Load += FormMain_Load;
+            this.Resize += (s, e) => CapNhatLayoutHeader();
+            btnDangXuat.Click += (s, e) => MnuDangXuat_Click(s, e);
+            btnToggleTheme.Click += BtnToggleTheme_Click;
 
+            CapNhatNutTheme();
             KhoiTaoMenu();
             PhanQuyenMenu();
         }
 
+        private void BtnToggleTheme_Click(object? sender, EventArgs e)
+        {
+            Theme.ToggleTheme(this);
+            CapNhatGiaoDienSauKhiDoiTheme();
+        }
+
+        private void CapNhatGiaoDienSauKhiDoiTheme()
+        {
+            pnlHeader.Invalidate();
+            stsMain.BackColor = Theme.NenStatusStrip;
+            stsMain.Invalidate();
+            mnuMain.Invalidate();
+            CaiDatVungMdi();
+            CapNhatLayoutHeader();
+        }
+
+        private void CapNhatNutTheme()
+        {
+            bool isSmallScreen = this.Width < 1050;
+            if (Theme.CurrentMode == ThemeMode.Dark)
+            {
+                btnToggleTheme.Text = isSmallScreen ? "🌙" : "🌙 Tối";
+            }
+            else
+            {
+                btnToggleTheme.Text = isSmallScreen ? "☀️" : "☀️ Sáng";
+            }
+            btnToggleTheme.Size = isSmallScreen ? new Size(44, 34) : new Size(82, 34);
+            Theme.StyleButton(btnToggleTheme, Theme.ButtonKind.Info);
+        }
+
         private void FormMain_Load(object? sender, EventArgs e)
         {
-            lblTrangThai.Text = $"Xin chào: {CurrentUser.TenNV} ({CurrentUser.ChucVu})";
+            CaiDatVungMdi();
+            CapNhatLayoutHeader();
             PhanQuyenMenu();
+        }
+
+        private void CaiDatVungMdi()
+        {
+            foreach (Control c in Controls)
+            {
+                if (c is MdiClient mdiClient)
+                {
+                    mdiClient.BackColor = Theme.Nen;
+                    break;
+                }
+            }
+        }
+
+        private void CapNhatThongTinNguoiDung()
+        {
+            string ten = string.IsNullOrWhiteSpace(CurrentUser.TenNV) ? "Chưa đăng nhập" : CurrentUser.TenNV;
+            string chucVu = string.IsNullOrWhiteSpace(CurrentUser.ChucVu) ? "" : $" ({CurrentUser.ChucVu})";
+            string info = $"Xin chào: {ten}{chucVu}";
+
+            lblTrangThai.Text = info;
+            lblNguoiDung.Text = this.Width < 1050 ? ten : $"{ten}{chucVu}";
+        }
+
+        private void CapNhatLayoutHeader()
+        {
+            bool isSmallScreen = this.Width < 1050;
+
+            if (isSmallScreen)
+            {
+                lblThuongHieu.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+                lblThuongHieu.Padding = new Padding(10, 0, 6, 0);
+                lblThuongHieu.Text = "Quản lý cafe";
+            }
+            else
+            {
+                lblThuongHieu.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+                lblThuongHieu.Padding = new Padding(16, 0, 10, 0);
+                lblThuongHieu.Text = "Quản lý quán cà phê";
+            }
+
+            lblThuongHieu.ForeColor = Color.White;
+            lblNguoiDung.ForeColor = Color.White;
+
+            CapNhatThongTinNguoiDung();
+            CapNhatNutTheme();
+
+            Padding itemPadding = isSmallScreen ? new Padding(7, 6, 7, 6) : new Padding(11, 6, 11, 6);
+            Font itemFont = isSmallScreen ? new Font("Segoe UI", 9.5F, FontStyle.Bold) : Theme.FontMenu;
+
+            foreach (ToolStripItem item in mnuMain.Items)
+            {
+                item.Padding = itemPadding;
+                item.Font = itemFont;
+            }
         }
 
         public void KhoiTaoMenu()
         {
             mnuMain.Items.Clear();
 
+            bool isSmallScreen = this.Width < 1050;
+            Padding defaultPadding = isSmallScreen ? new Padding(7, 6, 7, 6) : new Padding(11, 6, 11, 6);
+            Font defaultFont = isSmallScreen ? new Font("Segoe UI", 9.5F, FontStyle.Bold) : Theme.FontMenu;
+
             foreach (string nhom in ThuTuNhom)
             {
-                var topItem = new ToolStripMenuItem(nhom);
+                var topItem = new ToolStripMenuItem(nhom)
+                {
+                    Font = defaultFont,
+                    ForeColor = Theme.Chu,
+                    Padding = defaultPadding
+                };
+
+                if (topItem.DropDown is ToolStripDropDownMenu dropDownMenu)
+                {
+                    dropDownMenu.ShowImageMargin = false;
+                }
 
                 var itemsTrongNhom = DanhSachMenu.Where(m => m.Nhom == nhom);
                 foreach (var cfg in itemsTrongNhom)
                 {
                     var subItem = new ToolStripMenuItem(cfg.TenMuc)
                     {
-                        Tag = cfg
+                        Tag = cfg,
+                        Font = Theme.FontChinh,
+                        ForeColor = Theme.Chu,
+                        Padding = new Padding(10, 6, 10, 6)
                     };
 
                     subItem.Click += (s, e) =>
                     {
-                        if (cfg.TenDayDuKieu == "QuanLyQuanCafe.GUI.Auth.FormDoiMatKhau")
-                        {
-                            using var f = new FormDoiMatKhau();
-                            f.ShowDialog(this);
-                        }
-                        else
-                        {
-                            FormLauncher.Mo(this, cfg.TenDayDuKieu, cfg.TenMuc, cfg.Modal);
-                        }
+                        FormLauncher.Mo(this, cfg.TenDayDuKieu, cfg.TenMuc, cfg.Modal);
                     };
 
                     topItem.DropDownItems.Add(subItem);
@@ -99,11 +217,21 @@ namespace QuanLyQuanCafe.GUI.Main
                 {
                     topItem.DropDownItems.Add(new ToolStripSeparator());
 
-                    var mnuDangXuat = new ToolStripMenuItem("Đăng xuất");
+                    var mnuDangXuat = new ToolStripMenuItem("Đăng xuất")
+                    {
+                        Font = Theme.FontChinh,
+                        ForeColor = Theme.Chu,
+                        Padding = new Padding(10, 6, 10, 6)
+                    };
                     mnuDangXuat.Click += MnuDangXuat_Click;
                     topItem.DropDownItems.Add(mnuDangXuat);
 
-                    var mnuThoat = new ToolStripMenuItem("Thoát");
+                    var mnuThoat = new ToolStripMenuItem("Thoát")
+                    {
+                        Font = Theme.FontChinh,
+                        ForeColor = Theme.Chu,
+                        Padding = new Padding(10, 6, 10, 6)
+                    };
                     mnuThoat.Click += MnuThoat_Click;
                     topItem.DropDownItems.Add(mnuThoat);
                 }

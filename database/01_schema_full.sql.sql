@@ -1775,3 +1775,104 @@ BEGIN
     END CATCH
 END
 GO
+
+-- 2. Truy vấn danh sách định lượng công thức pha chế theo mã thức uống (Kho & Quản lý)
+CREATE OR ALTER PROCEDURE sp_LayCongThuc
+    @MaThucUong VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM ThucUong WHERE MaThucUong = @MaThucUong)
+            THROW 50000, N'Thức uống không tồn tại.', 1;
+
+        SELECT ct.MaThucUong,
+               tu.TenThucUong,
+               ct.MaNL,
+               nl.TenNL,
+               ct.SoLuongQuyDinh,
+               lnl.DonViTinh
+        FROM CongThuc ct
+        JOIN ThucUong tu ON ct.MaThucUong = tu.MaThucUong
+        JOIN NguyenLieu nl ON ct.MaNL = nl.MaNL
+        JOIN LoaiNguyenLieu lnl ON nl.MaLoaiNL = lnl.MaLoaiNL
+        WHERE ct.MaThucUong = @MaThucUong
+        ORDER BY ct.MaNL;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
+GO
+GRANT EXECUTE ON sp_LayCongThuc TO ThuKho;
+GO
+
+-- 3. Xóa nguyên liệu khi chưa từng phát sinh giao dịch nhập kho hoặc công thức (Kho & Quản lý)
+CREATE OR ALTER PROCEDURE sp_XoaNguyenLieu
+    @MaNL VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM NguyenLieu WHERE MaNL = @MaNL)
+            THROW 50000, N'Nguyên liệu không tồn tại.', 1;
+
+        IF EXISTS (SELECT 1 FROM ChiTietPhieuNhap WHERE MaNL = @MaNL)
+            THROW 50000, N'Nguyên liệu đã có lịch sử nhập kho, không thể xóa.', 1;
+
+        IF EXISTS (SELECT 1 FROM CongThuc WHERE MaNL = @MaNL)
+            THROW 50000, N'Nguyên liệu đang được sử dụng trong công thức thức uống, không thể xóa.', 1;
+
+        DELETE FROM NguyenLieu WHERE MaNL = @MaNL;
+        SELECT N'Xóa nguyên liệu thành công' AS KetQua;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
+GO
+GRANT EXECUTE ON sp_XoaNguyenLieu TO ThuKho;
+GO
+
+-- 4. Cấp quyền cho Kế toán xem danh sách Nhà cung cấp để lập phiếu chi tiền NCC
+GRANT EXECUTE ON sp_LayDanhSachNCC TO KeToan;
+GRANT SELECT  ON NhaCungCap        TO KeToan;
+GO
+
+-- 5. Lấy danh sách loại khách hàng để nạp combobox phân loại khách (Phục vụ, Thu ngân, Kế toán, Quản lý)
+CREATE OR ALTER PROCEDURE sp_LayDanhSachLoaiKhach
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        SELECT MaLoaiKH, TenLoai, ChietKhau
+        FROM LoaiKhach
+        ORDER BY MaLoaiKH;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
+GO
+GRANT EXECUTE ON sp_LayDanhSachLoaiKhach TO NhanVienPhucVu;
+GRANT EXECUTE ON sp_LayDanhSachLoaiKhach TO KeToan;
+GRANT SELECT  ON LoaiKhach              TO KeToan;
+GO
+
+-- 6. Lấy danh sách loại nguyên liệu và đơn vị tính để nạp combobox (Kho & Quản lý)
+CREATE OR ALTER PROCEDURE sp_LayDanhSachLoaiNguyenLieu
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        SELECT MaLoaiNL, TenLoai, DonViTinh
+        FROM LoaiNguyenLieu
+        ORDER BY MaLoaiNL;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
+GO
+GRANT EXECUTE ON sp_LayDanhSachLoaiNguyenLieu TO ThuKho;
+GO

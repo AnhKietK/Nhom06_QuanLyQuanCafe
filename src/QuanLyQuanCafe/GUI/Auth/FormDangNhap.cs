@@ -9,6 +9,10 @@ namespace QuanLyQuanCafe.GUI.Auth
         {
             InitializeComponent();
 
+            Theme.Apply(this);
+            Theme.DrawGradientHeader(pnlHeader);
+            Theme.StyleCard(pnlCard, null, 12);
+
             chkHienMatKhau.CheckedChanged += ChkHienMatKhau_CheckedChanged;
             btnDangNhap.Click += BtnDangNhap_Click;
             btnThoat.Click += BtnThoat_Click;
@@ -49,3 +53,4 @@ namespace QuanLyQuanCafe.GUI.Auth
         }
     }
 }
+

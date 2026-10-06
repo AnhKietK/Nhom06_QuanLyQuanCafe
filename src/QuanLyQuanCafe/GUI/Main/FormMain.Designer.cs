@@ -17,28 +17,131 @@ namespace QuanLyQuanCafe.GUI.Main
 
         private void InitializeComponent()
         {
+            this.pnlHeader = new Panel();
+            this.lblThuongHieu = new Label();
             this.mnuMain = new MenuStrip();
+            this.tlpNguoiDung = new TableLayoutPanel();
+            this.lblNguoiDung = new Label();
+            this.btnToggleTheme = new Button();
+            this.btnDangXuat = new Button();
             this.stsMain = new StatusStrip();
             this.lblTrangThai = new ToolStripStatusLabel();
 
+            this.pnlHeader.SuspendLayout();
+            this.tlpNguoiDung.SuspendLayout();
             this.stsMain.SuspendLayout();
             this.SuspendLayout();
 
+            // pnlHeader
+            this.pnlHeader.Controls.Add(this.mnuMain);
+            this.pnlHeader.Controls.Add(this.tlpNguoiDung);
+            this.pnlHeader.Controls.Add(this.lblThuongHieu);
+            this.pnlHeader.Dock = DockStyle.Top;
+            this.pnlHeader.Height = 68;
+            this.pnlHeader.Location = new Point(0, 0);
+            this.pnlHeader.Name = "pnlHeader";
+            this.pnlHeader.Size = new Size(900, 68);
+            this.pnlHeader.TabIndex = 0;
+
+            // lblThuongHieu
+            this.lblThuongHieu.AutoSize = true;
+            this.lblThuongHieu.BackColor = Color.Transparent;
+            this.lblThuongHieu.Dock = DockStyle.Left;
+            this.lblThuongHieu.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+            this.lblThuongHieu.ForeColor = Color.White;
+            this.lblThuongHieu.Location = new Point(0, 0);
+            this.lblThuongHieu.Name = "lblThuongHieu";
+            this.lblThuongHieu.Padding = new Padding(16, 0, 10, 0);
+            this.lblThuongHieu.Size = new Size(248, 68);
+            this.lblThuongHieu.TabIndex = 2;
+            this.lblThuongHieu.Text = "Quản lý quán cà phê";
+            this.lblThuongHieu.TextAlign = ContentAlignment.MiddleLeft;
+
+            // tlpNguoiDung
+            this.tlpNguoiDung.AutoSize = true;
+            this.tlpNguoiDung.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            this.tlpNguoiDung.BackColor = Color.Transparent;
+            this.tlpNguoiDung.ColumnCount = 3;
+            this.tlpNguoiDung.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            this.tlpNguoiDung.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            this.tlpNguoiDung.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            this.tlpNguoiDung.Controls.Add(this.lblNguoiDung, 0, 0);
+            this.tlpNguoiDung.Controls.Add(this.btnToggleTheme, 1, 0);
+            this.tlpNguoiDung.Controls.Add(this.btnDangXuat, 2, 0);
+            this.tlpNguoiDung.Dock = DockStyle.Right;
+            this.tlpNguoiDung.Location = new Point(570, 0);
+            this.tlpNguoiDung.Name = "tlpNguoiDung";
+            this.tlpNguoiDung.Padding = new Padding(4, 0, 14, 0);
+            this.tlpNguoiDung.RowCount = 1;
+            this.tlpNguoiDung.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            this.tlpNguoiDung.Size = new Size(310, 68);
+            this.tlpNguoiDung.TabIndex = 1;
+
+            // lblNguoiDung
+            this.lblNguoiDung.Anchor = AnchorStyles.Right;
+            this.lblNguoiDung.AutoSize = true;
+            this.lblNguoiDung.BackColor = Color.Transparent;
+            this.lblNguoiDung.Font = new Font("Segoe UI", 9.5F, FontStyle.Italic);
+            this.lblNguoiDung.ForeColor = Color.White;
+            this.lblNguoiDung.Margin = new Padding(0, 0, 8, 0);
+            this.lblNguoiDung.Name = "lblNguoiDung";
+            this.lblNguoiDung.Size = new Size(58, 21);
+            this.lblNguoiDung.TabIndex = 0;
+            this.lblNguoiDung.Text = "Xin chào";
+            this.lblNguoiDung.TextAlign = ContentAlignment.MiddleRight;
+
+            // btnToggleTheme
+            this.btnToggleTheme.Anchor = AnchorStyles.Right;
+            this.btnToggleTheme.Cursor = Cursors.Hand;
+            this.btnToggleTheme.FlatAppearance.BorderSize = 0;
+            this.btnToggleTheme.FlatStyle = FlatStyle.Flat;
+            this.btnToggleTheme.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            this.btnToggleTheme.ForeColor = Color.White;
+            this.btnToggleTheme.Margin = new Padding(0, 0, 8, 0);
+            this.btnToggleTheme.Name = "btnToggleTheme";
+            this.btnToggleTheme.Size = new Size(82, 34);
+            this.btnToggleTheme.TabIndex = 1;
+            this.btnToggleTheme.Tag = "info";
+            this.btnToggleTheme.Text = "🌙 Tối";
+            this.btnToggleTheme.UseVisualStyleBackColor = true;
+
+            // btnDangXuat
+            this.btnDangXuat.Anchor = AnchorStyles.Right;
+            this.btnDangXuat.Cursor = Cursors.Hand;
+            this.btnDangXuat.FlatAppearance.BorderSize = 0;
+            this.btnDangXuat.FlatStyle = FlatStyle.Flat;
+            this.btnDangXuat.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            this.btnDangXuat.ForeColor = Color.White;
+            this.btnDangXuat.Margin = new Padding(0);
+            this.btnDangXuat.Name = "btnDangXuat";
+            this.btnDangXuat.Size = new Size(88, 34);
+            this.btnDangXuat.TabIndex = 2;
+            this.btnDangXuat.Tag = "primary";
+            this.btnDangXuat.Text = "Đăng xuất";
+            this.btnDangXuat.UseVisualStyleBackColor = true;
+
             // mnuMain
+            this.mnuMain.AutoSize = false;
+            this.mnuMain.BackColor = Color.Transparent;
+            this.mnuMain.CanOverflow = false;
+            this.mnuMain.Dock = DockStyle.Fill;
+            this.mnuMain.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            this.mnuMain.GripStyle = ToolStripGripStyle.Hidden;
+            this.mnuMain.Location = new Point(272, 0);
             this.mnuMain.Name = "mnuMain";
-            this.mnuMain.Font = new Font("Segoe UI", 10F);
-            this.mnuMain.Location = new Point(0, 0);
-            this.mnuMain.Size = new Size(900, 28);
+            this.mnuMain.Padding = new Padding(6, 18, 6, 0);
+            this.mnuMain.RenderMode = ToolStripRenderMode.Professional;
+            this.mnuMain.Size = new Size(388, 68);
             this.mnuMain.TabIndex = 0;
 
             // stsMain
-            this.stsMain.Name = "stsMain";
             this.stsMain.Font = new Font("Segoe UI", 10F);
             this.stsMain.Items.AddRange(new ToolStripItem[] { this.lblTrangThai });
             this.stsMain.Location = new Point(0, 524);
             this.stsMain.Name = "stsMain";
+            this.stsMain.RenderMode = ToolStripRenderMode.Professional;
             this.stsMain.Size = new Size(900, 26);
-            this.stsMain.TabIndex = 1;
+            this.stsMain.TabIndex = 2;
 
             // lblTrangThai
             this.lblTrangThai.Name = "lblTrangThai";
@@ -49,7 +152,7 @@ namespace QuanLyQuanCafe.GUI.Main
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(900, 550);
             this.Controls.Add(this.stsMain);
-            this.Controls.Add(this.mnuMain);
+            this.Controls.Add(this.pnlHeader);
             this.Font = new Font("Segoe UI", 10F);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.mnuMain;
@@ -58,6 +161,10 @@ namespace QuanLyQuanCafe.GUI.Main
             this.Text = "Quản lý quán cà phê";
             this.WindowState = FormWindowState.Maximized;
 
+            this.pnlHeader.ResumeLayout(false);
+            this.pnlHeader.PerformLayout();
+            this.tlpNguoiDung.ResumeLayout(false);
+            this.tlpNguoiDung.PerformLayout();
             this.stsMain.ResumeLayout(false);
             this.stsMain.PerformLayout();
             this.ResumeLayout(false);
@@ -66,6 +173,12 @@ namespace QuanLyQuanCafe.GUI.Main
 
         #endregion
 
+        private Panel pnlHeader;
+        private Label lblThuongHieu;
+        private TableLayoutPanel tlpNguoiDung;
+        private Label lblNguoiDung;
+        private Button btnToggleTheme;
+        private Button btnDangXuat;
         private MenuStrip mnuMain;
         private StatusStrip stsMain;
         private ToolStripStatusLabel lblTrangThai;
