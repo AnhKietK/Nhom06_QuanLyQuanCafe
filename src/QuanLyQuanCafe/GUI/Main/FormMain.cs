@@ -72,9 +72,42 @@ namespace QuanLyQuanCafe.GUI.Main
             this.Load += FormMain_Load;
             this.Resize += (s, e) => CapNhatLayoutHeader();
             btnDangXuat.Click += (s, e) => MnuDangXuat_Click(s, e);
+            btnToggleTheme.Click += BtnToggleTheme_Click;
 
+            CapNhatNutTheme();
             KhoiTaoMenu();
             PhanQuyenMenu();
+        }
+
+        private void BtnToggleTheme_Click(object? sender, EventArgs e)
+        {
+            Theme.ToggleTheme(this);
+            CapNhatGiaoDienSauKhiDoiTheme();
+        }
+
+        private void CapNhatGiaoDienSauKhiDoiTheme()
+        {
+            pnlHeader.Invalidate();
+            stsMain.BackColor = Theme.NenStatusStrip;
+            stsMain.Invalidate();
+            mnuMain.Invalidate();
+            CaiDatVungMdi();
+            CapNhatLayoutHeader();
+        }
+
+        private void CapNhatNutTheme()
+        {
+            bool isSmallScreen = this.Width < 1050;
+            if (Theme.CurrentMode == ThemeMode.Dark)
+            {
+                btnToggleTheme.Text = isSmallScreen ? "🌙" : "🌙 Tối";
+            }
+            else
+            {
+                btnToggleTheme.Text = isSmallScreen ? "☀️" : "☀️ Sáng";
+            }
+            btnToggleTheme.Size = isSmallScreen ? new Size(44, 34) : new Size(82, 34);
+            Theme.StyleButton(btnToggleTheme, Theme.ButtonKind.Info);
         }
 
         private void FormMain_Load(object? sender, EventArgs e)
@@ -123,7 +156,11 @@ namespace QuanLyQuanCafe.GUI.Main
                 lblThuongHieu.Text = "Quản lý quán cà phê";
             }
 
+            lblThuongHieu.ForeColor = Color.White;
+            lblNguoiDung.ForeColor = Color.White;
+
             CapNhatThongTinNguoiDung();
+            CapNhatNutTheme();
 
             Padding itemPadding = isSmallScreen ? new Padding(7, 6, 7, 6) : new Padding(11, 6, 11, 6);
             Font itemFont = isSmallScreen ? new Font("Segoe UI", 9.5F, FontStyle.Bold) : Theme.FontMenu;

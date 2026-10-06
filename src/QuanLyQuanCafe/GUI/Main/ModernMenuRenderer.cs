@@ -105,9 +105,17 @@ namespace QuanLyQuanCafe.GUI.Main
             {
                 e.TextColor = Theme.ChuPhu;
             }
+            else if (e.Item.IsOnDropDown)
+            {
+                // Trong menu thả xuống: Dark mode dùng chữ trắng, Light mode dùng chữ xám đen
+                e.TextColor = (Theme.CurrentMode == ThemeMode.Light && e.Item.Selected)
+                    ? ColorTranslator.FromHtml("#0F172A")
+                    : Theme.Chu;
+            }
             else
             {
-                e.TextColor = Theme.Chu;
+                // Trên thanh MenuStrip chính (nền gradient xanh-tím): luôn là màu trắng nổi bật
+                e.TextColor = Color.White;
             }
 
             base.OnRenderItemText(e);
@@ -122,7 +130,7 @@ namespace QuanLyQuanCafe.GUI.Main
 
         protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
         {
-            e.ArrowColor = Theme.Chu;
+            e.ArrowColor = (e.Item?.IsOnDropDown == true) ? Theme.Chu : Color.White;
             base.OnRenderArrow(e);
         }
 

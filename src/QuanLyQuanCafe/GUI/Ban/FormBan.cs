@@ -87,10 +87,14 @@ namespace QuanLyQuanCafe.GUI.Ban
                     _ => Theme.The
                 };
 
+                bool isBadge = tt.Equals("TRONG", StringComparison.OrdinalIgnoreCase) ||
+                               tt.Equals("COKHACH", StringComparison.OrdinalIgnoreCase) ||
+                               tt.Equals("DATTRUOC", StringComparison.OrdinalIgnoreCase);
+
                 e.CellStyle.BackColor = bg;
-                e.CellStyle.ForeColor = Theme.Chu;
+                e.CellStyle.ForeColor = isBadge ? Color.White : Theme.Chu;
                 e.CellStyle.SelectionBackColor = bg;
-                e.CellStyle.SelectionForeColor = Theme.Chu;
+                e.CellStyle.SelectionForeColor = isBadge ? Color.White : Theme.Chu;
                 e.CellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 e.CellStyle.Font = Theme.FontNhanDam;
             }

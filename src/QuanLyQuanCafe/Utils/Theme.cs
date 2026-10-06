@@ -5,46 +5,119 @@ using System.Runtime.InteropServices;
 
 namespace QuanLyQuanCafe.Utils
 {
+    public enum ThemeMode
+    {
+        Dark,
+        Light
+    }
+
     public static class Theme
     {
-        #region 1. Bảng màu chuẩn theo thiết kế Dark Dashboard
+        public static ThemeMode CurrentMode { get; set; } = ThemeMode.Dark;
 
-        public static readonly Color Nen = ColorTranslator.FromHtml("#2B3045");
-        public static readonly Color NenTrongHon = ColorTranslator.FromHtml("#1B2133");
-        public static readonly Color The = ColorTranslator.FromHtml("#343B55");
-        public static readonly Color VienThe = ColorTranslator.FromHtml("#424A69");
-        public static readonly Color HeaderTrai = ColorTranslator.FromHtml("#4A8AE6");
-        public static readonly Color HeaderPhai = ColorTranslator.FromHtml("#7062E8");
-        public static readonly Color TieuDeBang = ColorTranslator.FromHtml("#6B5CE6");
-        public static readonly Color DongLe = ColorTranslator.FromHtml("#232A40");
-        public static readonly Color DongChon = ColorTranslator.FromHtml("#4B5AA8");
-        public static readonly Color Chu = ColorTranslator.FromHtml("#FFFFFF");
-        public static readonly Color ChuPhu = ColorTranslator.FromHtml("#AEB4C8");
-        public static readonly Color NhanManh = ColorTranslator.FromHtml("#FFD24D");
-        public static readonly Color NhanPhu = ColorTranslator.FromHtml("#5BC8F5");
+        #region 1. Bảng màu Dark Mode & Light Mode
 
-        public static readonly Color PrimaryTop = ColorTranslator.FromHtml("#4F8DEB");
-        public static readonly Color PrimaryBottom = ColorTranslator.FromHtml("#3B6FD9");
+        // --- Dark Mode ---
+        private static readonly Color NenDark = ColorTranslator.FromHtml("#2B3045");
+        private static readonly Color NenTrongHonDark = ColorTranslator.FromHtml("#1B2133");
+        private static readonly Color TheDark = ColorTranslator.FromHtml("#343B55");
+        private static readonly Color VienTheDark = ColorTranslator.FromHtml("#424A69");
+        private static readonly Color HeaderTraiDark = ColorTranslator.FromHtml("#4A8AE6");
+        private static readonly Color HeaderPhaiDark = ColorTranslator.FromHtml("#7062E8");
+        private static readonly Color TieuDeBangDark = ColorTranslator.FromHtml("#6B5CE6");
+        private static readonly Color DongLeDark = ColorTranslator.FromHtml("#232A40");
+        private static readonly Color DongChonDark = ColorTranslator.FromHtml("#4B5AA8");
+        private static readonly Color ChuDark = ColorTranslator.FromHtml("#FFFFFF");
+        private static readonly Color ChuPhuDark = ColorTranslator.FromHtml("#AEB4C8");
+        private static readonly Color NhanManhDark = ColorTranslator.FromHtml("#FFD24D");
+        private static readonly Color NhanPhuDark = ColorTranslator.FromHtml("#5BC8F5");
 
-        public static readonly Color SuccessTop = ColorTranslator.FromHtml("#27AE60");
-        public static readonly Color SuccessBottom = ColorTranslator.FromHtml("#00C65A");
+        private static readonly Color PrimaryTopDark = ColorTranslator.FromHtml("#4F8DEB");
+        private static readonly Color PrimaryBottomDark = ColorTranslator.FromHtml("#3B6FD9");
+        private static readonly Color SuccessTopDark = ColorTranslator.FromHtml("#27AE60");
+        private static readonly Color SuccessBottomDark = ColorTranslator.FromHtml("#00C65A");
+        private static readonly Color DangerTopDark = ColorTranslator.FromHtml("#E03A47");
+        private static readonly Color DangerBottomDark = ColorTranslator.FromHtml("#C62835");
+        private static readonly Color InfoTopDark = ColorTranslator.FromHtml("#1AA3B8");
+        private static readonly Color InfoBottomDark = ColorTranslator.FromHtml("#12879B");
+        private static readonly Color NeutralTopDark = ColorTranslator.FromHtml("#5E6272");
+        private static readonly Color NeutralBottomDark = ColorTranslator.FromHtml("#4A4E5C");
 
-        public static readonly Color DangerTop = ColorTranslator.FromHtml("#E03A47");
-        public static readonly Color DangerBottom = ColorTranslator.FromHtml("#C62835");
+        private static readonly Color BanTrongDark = ColorTranslator.FromHtml("#00C65A");
+        private static readonly Color BanCoKhachDark = ColorTranslator.FromHtml("#E03A47");
+        private static readonly Color BanDatTruocDark = ColorTranslator.FromHtml("#F5B041");
 
-        public static readonly Color InfoTop = ColorTranslator.FromHtml("#1AA3B8");
-        public static readonly Color InfoBottom = ColorTranslator.FromHtml("#12879B");
+        private static readonly Color NenMenuDropDownDark = ColorTranslator.FromHtml("#252A3D");
+        private static readonly Color NenStatusStripDark = ColorTranslator.FromHtml("#252A3D");
+        private static readonly Color LuoiGridColorDark = ColorTranslator.FromHtml("#2F3652");
 
-        public static readonly Color NeutralTop = ColorTranslator.FromHtml("#5E6272");
-        public static readonly Color NeutralBottom = ColorTranslator.FromHtml("#4A4E5C");
+        // --- Light Mode ---
+        private static readonly Color NenLight = ColorTranslator.FromHtml("#F4F6F9");
+        private static readonly Color NenTrongHonLight = ColorTranslator.FromHtml("#F8FAFC");
+        private static readonly Color TheLight = ColorTranslator.FromHtml("#FFFFFF");
+        private static readonly Color VienTheLight = ColorTranslator.FromHtml("#E2E8F0");
+        private static readonly Color HeaderTraiLight = ColorTranslator.FromHtml("#3B82F6");
+        private static readonly Color HeaderPhaiLight = ColorTranslator.FromHtml("#6366F1");
+        private static readonly Color TieuDeBangLight = ColorTranslator.FromHtml("#4F46E5");
+        private static readonly Color DongLeLight = ColorTranslator.FromHtml("#F1F5F9");
+        private static readonly Color DongChonLight = ColorTranslator.FromHtml("#CBD5E1");
+        private static readonly Color ChuLight = ColorTranslator.FromHtml("#1E293B");
+        private static readonly Color ChuPhuLight = ColorTranslator.FromHtml("#64748B");
+        private static readonly Color NhanManhLight = ColorTranslator.FromHtml("#D97706");
+        private static readonly Color NhanPhuLight = ColorTranslator.FromHtml("#0284C7");
 
-        public static readonly Color BanTrong = ColorTranslator.FromHtml("#00C65A");
-        public static readonly Color BanCoKhach = ColorTranslator.FromHtml("#E03A47");
-        public static readonly Color BanDatTruoc = ColorTranslator.FromHtml("#F5B041");
+        private static readonly Color PrimaryTopLight = ColorTranslator.FromHtml("#3B82F6");
+        private static readonly Color PrimaryBottomLight = ColorTranslator.FromHtml("#2563EB");
+        private static readonly Color SuccessTopLight = ColorTranslator.FromHtml("#10B981");
+        private static readonly Color SuccessBottomLight = ColorTranslator.FromHtml("#059669");
+        private static readonly Color DangerTopLight = ColorTranslator.FromHtml("#EF4444");
+        private static readonly Color DangerBottomLight = ColorTranslator.FromHtml("#DC2626");
+        private static readonly Color InfoTopLight = ColorTranslator.FromHtml("#06B6D4");
+        private static readonly Color InfoBottomLight = ColorTranslator.FromHtml("#0891B2");
+        private static readonly Color NeutralTopLight = ColorTranslator.FromHtml("#64748B");
+        private static readonly Color NeutralBottomLight = ColorTranslator.FromHtml("#475569");
 
-        public static readonly Color NenMenuDropDown = ColorTranslator.FromHtml("#252A3D");
-        public static readonly Color NenStatusStrip = ColorTranslator.FromHtml("#252A3D");
-        public static readonly Color LuoiGridColor = ColorTranslator.FromHtml("#2F3652");
+        private static readonly Color BanTrongLight = ColorTranslator.FromHtml("#10B981");
+        private static readonly Color BanCoKhachLight = ColorTranslator.FromHtml("#EF4444");
+        private static readonly Color BanDatTruocLight = ColorTranslator.FromHtml("#F59E0B");
+
+        private static readonly Color NenMenuDropDownLight = ColorTranslator.FromHtml("#FFFFFF");
+        private static readonly Color NenStatusStripLight = ColorTranslator.FromHtml("#F1F5F9");
+        private static readonly Color LuoiGridColorLight = ColorTranslator.FromHtml("#E2E8F0");
+
+        // --- Thuộc tính động theo Theme.CurrentMode ---
+        public static Color Nen => CurrentMode == ThemeMode.Dark ? NenDark : NenLight;
+        public static Color NenTrongHon => CurrentMode == ThemeMode.Dark ? NenTrongHonDark : NenTrongHonLight;
+        public static Color The => CurrentMode == ThemeMode.Dark ? TheDark : TheLight;
+        public static Color VienThe => CurrentMode == ThemeMode.Dark ? VienTheDark : VienTheLight;
+        public static Color HeaderTrai => CurrentMode == ThemeMode.Dark ? HeaderTraiDark : HeaderTraiLight;
+        public static Color HeaderPhai => CurrentMode == ThemeMode.Dark ? HeaderPhaiDark : HeaderPhaiLight;
+        public static Color TieuDeBang => CurrentMode == ThemeMode.Dark ? TieuDeBangDark : TieuDeBangLight;
+        public static Color DongLe => CurrentMode == ThemeMode.Dark ? DongLeDark : DongLeLight;
+        public static Color DongChon => CurrentMode == ThemeMode.Dark ? DongChonDark : DongChonLight;
+        public static Color Chu => CurrentMode == ThemeMode.Dark ? ChuDark : ChuLight;
+        public static Color ChuPhu => CurrentMode == ThemeMode.Dark ? ChuPhuDark : ChuPhuLight;
+        public static Color NhanManh => CurrentMode == ThemeMode.Dark ? NhanManhDark : NhanManhLight;
+        public static Color NhanPhu => CurrentMode == ThemeMode.Dark ? NhanPhuDark : NhanPhuLight;
+
+        public static Color PrimaryTop => CurrentMode == ThemeMode.Dark ? PrimaryTopDark : PrimaryTopLight;
+        public static Color PrimaryBottom => CurrentMode == ThemeMode.Dark ? PrimaryBottomDark : PrimaryBottomLight;
+        public static Color SuccessTop => CurrentMode == ThemeMode.Dark ? SuccessTopDark : SuccessTopLight;
+        public static Color SuccessBottom => CurrentMode == ThemeMode.Dark ? SuccessBottomDark : SuccessBottomLight;
+        public static Color DangerTop => CurrentMode == ThemeMode.Dark ? DangerTopDark : DangerTopLight;
+        public static Color DangerBottom => CurrentMode == ThemeMode.Dark ? DangerBottomDark : DangerBottomLight;
+        public static Color InfoTop => CurrentMode == ThemeMode.Dark ? InfoTopDark : InfoTopLight;
+        public static Color InfoBottom => CurrentMode == ThemeMode.Dark ? InfoBottomDark : InfoBottomLight;
+        public static Color NeutralTop => CurrentMode == ThemeMode.Dark ? NeutralTopDark : NeutralTopLight;
+        public static Color NeutralBottom => CurrentMode == ThemeMode.Dark ? NeutralBottomDark : NeutralBottomLight;
+
+        public static Color BanTrong => CurrentMode == ThemeMode.Dark ? BanTrongDark : BanTrongLight;
+        public static Color BanCoKhach => CurrentMode == ThemeMode.Dark ? BanCoKhachDark : BanCoKhachLight;
+        public static Color BanDatTruoc => CurrentMode == ThemeMode.Dark ? BanDatTruocDark : BanDatTruocLight;
+
+        public static Color NenMenuDropDown => CurrentMode == ThemeMode.Dark ? NenMenuDropDownDark : NenMenuDropDownLight;
+        public static Color NenStatusStrip => CurrentMode == ThemeMode.Dark ? NenStatusStripDark : NenStatusStripLight;
+        public static Color LuoiGridColor => CurrentMode == ThemeMode.Dark ? LuoiGridColorDark : LuoiGridColorLight;
 
         #endregion
 
@@ -114,7 +187,7 @@ namespace QuanLyQuanCafe.Utils
 
         #endregion
 
-        #region 5. Định kiểu cho từng loại Control
+        #region 5. Các phương thức áp dụng kiểu từng phần tử
 
         public static void StyleButton(Button b, ButtonKind kind = ButtonKind.Primary)
         {
@@ -164,7 +237,9 @@ namespace QuanLyQuanCafe.Utils
                 using var brush = new LinearGradientBrush(drawRect, top, bottom, LinearGradientMode.Vertical);
                 g.FillPath(brush, path);
 
-                Color textColor = b.Enabled ? Chu : Color.FromArgb(140, 147, 170);
+                Color textColor = b.Enabled
+                    ? Color.White
+                    : (CurrentMode == ThemeMode.Dark ? Color.FromArgb(140, 147, 170) : Color.FromArgb(148, 163, 184));
                 TextRenderer.DrawText(g, b.Text, FontNut, clientRect, textColor,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.WordBreak);
             };
@@ -174,7 +249,9 @@ namespace QuanLyQuanCafe.Utils
         {
             if (!enabled)
             {
-                return (Color.FromArgb(70, 76, 98), Color.FromArgb(55, 60, 80));
+                return CurrentMode == ThemeMode.Dark
+                    ? (Color.FromArgb(70, 76, 98), Color.FromArgb(55, 60, 80))
+                    : (Color.FromArgb(226, 232, 240), Color.FromArgb(203, 213, 225));
             }
 
             (Color top, Color bottom) = kind switch
@@ -230,7 +307,11 @@ namespace QuanLyQuanCafe.Utils
             c.Font = FontTieuDeKhoi;
             c.ForeColor = Chu;
 
-            if (_styledControls.Contains(c)) return;
+            if (_styledControls.Contains(c))
+            {
+                c.Invalidate();
+                return;
+            }
             _styledControls.Add(c);
             c.Disposed += (s, e) => _styledControls.Remove(c);
 
@@ -279,20 +360,22 @@ namespace QuanLyQuanCafe.Utils
             g.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
 
             g.ColumnHeadersDefaultCellStyle.BackColor = TieuDeBang;
-            g.ColumnHeadersDefaultCellStyle.ForeColor = Chu;
+            g.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             g.ColumnHeadersDefaultCellStyle.Font = FontTieuDeBang;
             g.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            Color selectionText = CurrentMode == ThemeMode.Dark ? Chu : ColorTranslator.FromHtml("#0F172A");
 
             g.DefaultCellStyle.BackColor = NenTrongHon;
             g.DefaultCellStyle.ForeColor = Chu;
             g.DefaultCellStyle.Font = FontBang;
             g.DefaultCellStyle.SelectionBackColor = DongChon;
-            g.DefaultCellStyle.SelectionForeColor = Chu;
+            g.DefaultCellStyle.SelectionForeColor = selectionText;
 
             g.AlternatingRowsDefaultCellStyle.BackColor = DongLe;
             g.AlternatingRowsDefaultCellStyle.ForeColor = Chu;
             g.AlternatingRowsDefaultCellStyle.SelectionBackColor = DongChon;
-            g.AlternatingRowsDefaultCellStyle.SelectionForeColor = Chu;
+            g.AlternatingRowsDefaultCellStyle.SelectionForeColor = selectionText;
 
             // Bật DoubleBuffered qua reflection chống giật lag
             try
@@ -306,8 +389,9 @@ namespace QuanLyQuanCafe.Utils
                 // Bỏ qua nếu môi trường hạn chế reflection
             }
 
-            // Kích hoạt thanh cuộn tối cho DataGridView (Windows 10/11)
+            // Cập nhật thanh cuộn tối/sáng theo theme
             EnableDarkModeScrollBars(g);
+            g.Invalidate();
         }
 
         public static void StyleInput(Control c)
@@ -342,6 +426,8 @@ namespace QuanLyQuanCafe.Utils
                 dtp.CalendarTitleForeColor = Chu;
                 dtp.CalendarForeColor = Chu;
             }
+
+            c.Invalidate();
         }
 
         public static void StyleLabel(Label l, bool phu = false)
@@ -349,11 +435,7 @@ namespace QuanLyQuanCafe.Utils
             if (l == null) return;
 
             l.BackColor = Color.Transparent;
-            if (l.ForeColor == SystemColors.ControlText || l.ForeColor == Color.Black ||
-                l.ForeColor == Chu || l.ForeColor == ChuPhu)
-            {
-                l.ForeColor = phu ? ChuPhu : Chu;
-            }
+            l.ForeColor = phu ? ChuPhu : Chu;
         }
 
         public static void StyleTab(TabControl t)
@@ -364,7 +446,16 @@ namespace QuanLyQuanCafe.Utils
             t.SizeMode = TabSizeMode.Fixed;
             t.ItemSize = new Size(130, 36);
 
-            if (_styledControls.Contains(t)) return;
+            if (_styledControls.Contains(t))
+            {
+                foreach (TabPage tp in t.TabPages)
+                {
+                    tp.BackColor = Nen;
+                    tp.ForeColor = Chu;
+                }
+                t.Invalidate();
+                return;
+            }
             _styledControls.Add(t);
             t.Disposed += (s, e) => _styledControls.Remove(t);
 
@@ -393,7 +484,7 @@ namespace QuanLyQuanCafe.Utils
                 }
 
                 TextRenderer.DrawText(g, page.Text, isSelected ? FontNut : FontNhan,
-                    rect, isSelected ? Chu : ChuPhu,
+                    rect, isSelected ? Color.White : ChuPhu,
                     TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
             };
 
@@ -408,7 +499,11 @@ namespace QuanLyQuanCafe.Utils
         {
             if (c == null) return;
 
-            if (_styledControls.Contains(c)) return;
+            if (_styledControls.Contains(c))
+            {
+                c.Invalidate();
+                return;
+            }
             _styledControls.Add(c);
             c.Disposed += (s, e) => _styledControls.Remove(c);
 
@@ -424,7 +519,36 @@ namespace QuanLyQuanCafe.Utils
 
         #endregion
 
-        #region 6. Duyệt và áp dụng toàn diện (Apply)
+        #region 6. Duyệt và áp dụng toàn diện (Apply) & ToggleTheme
+
+        public static void ToggleTheme(Form formMain)
+        {
+            CurrentMode = CurrentMode == ThemeMode.Dark ? ThemeMode.Light : ThemeMode.Dark;
+
+            if (formMain == null) return;
+
+            Apply(formMain);
+
+            // Cập nhật màu nền vùng MDI Client
+            foreach (Control c in formMain.Controls)
+            {
+                if (c is MdiClient mdiClient)
+                {
+                    mdiClient.BackColor = Nen;
+                    mdiClient.Invalidate();
+                    break;
+                }
+            }
+
+            // Làm mới các form con MDI đang mở
+            foreach (Form child in formMain.MdiChildren)
+            {
+                Apply(child);
+                child.Invalidate(true);
+            }
+
+            formMain.Invalidate(true);
+        }
 
         public static void Apply(Form f)
         {
@@ -439,6 +563,7 @@ namespace QuanLyQuanCafe.Utils
                 EnableDarkModeTitleBar(f);
                 EnableDarkModeScrollBars(f);
                 ApplyToControls(f.Controls);
+                f.Invalidate(true);
             }
             catch
             {
@@ -524,7 +649,8 @@ namespace QuanLyQuanCafe.Utils
                     break;
 
                 case Panel pnl:
-                    if (pnl.BackColor == SystemColors.Control || pnl.BackColor == Color.White ||
+                    if (pnl.BackColor == NenDark || pnl.BackColor == NenLight ||
+                        pnl.BackColor == SystemColors.Control || pnl.BackColor == Color.White ||
                         pnl.BackColor == SystemColors.Window)
                     {
                         pnl.BackColor = Color.Transparent;
@@ -539,6 +665,14 @@ namespace QuanLyQuanCafe.Utils
 
         private static void ApplyToLabel(Label lbl)
         {
+            // Nếu nhãn nằm trên thanh header gradient, luôn giữ chữ trắng
+            if (lbl.Parent != null && (lbl.Parent.Name == "pnlHeader" || lbl.Parent.Parent?.Name == "pnlHeader"))
+            {
+                lbl.BackColor = Color.Transparent;
+                lbl.ForeColor = Color.White;
+                return;
+            }
+
             string? tag = lbl.Tag?.ToString()?.ToLowerInvariant();
             if (tag == "nhanmanh")
             {
@@ -594,7 +728,7 @@ namespace QuanLyQuanCafe.Utils
                 return ButtonKind.Success;
             if (name.Contains("lam") || name.Contains("thoat") || name.Contains("dong"))
                 return ButtonKind.Neutral;
-            if (name.Contains("reset") || name.Contains("datlai") || name.Contains("in"))
+            if (name.Contains("reset") || name.Contains("datlai") || name.Contains("in") || name.Contains("theme"))
                 return ButtonKind.Info;
 
             return ButtonKind.Primary;
@@ -602,7 +736,7 @@ namespace QuanLyQuanCafe.Utils
 
         #endregion
 
-        #region 7. Hỗ trợ Dark Mode hệ thống (DWM, UxTheme) & ComboBox
+        #region 7. Hỗ trợ Dark Mode / Light Mode hệ thống (DWM, UxTheme) & ComboBox
 
         public static void StyleComboBox(ComboBox cbo)
         {
@@ -611,11 +745,15 @@ namespace QuanLyQuanCafe.Utils
             cbo.DrawMode = DrawMode.OwnerDrawFixed;
             cbo.ItemHeight = 26;
 
-            if (_styledControls.Contains(cbo)) return;
+            EnableDarkModeScrollBars(cbo);
+
+            if (_styledControls.Contains(cbo))
+            {
+                cbo.Invalidate();
+                return;
+            }
             _styledControls.Add(cbo);
             cbo.Disposed += (s, e) => _styledControls.Remove(cbo);
-
-            EnableDarkModeScrollBars(cbo);
 
             cbo.DropDown += (s, e) =>
             {
@@ -656,7 +794,8 @@ namespace QuanLyQuanCafe.Utils
 
                 string text = cbo.GetItemText(cbo.Items[e.Index]) ?? string.Empty;
                 Rectangle textRect = new(e.Bounds.X + 6, e.Bounds.Y, Math.Max(0, e.Bounds.Width - 10), e.Bounds.Height);
-                TextRenderer.DrawText(g, text, cbo.Font ?? FontChinh, textRect, Chu,
+                Color textColor = (CurrentMode == ThemeMode.Light && isSelected) ? ColorTranslator.FromHtml("#0F172A") : Chu;
+                TextRenderer.DrawText(g, text, cbo.Font ?? FontChinh, textRect, textColor,
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
             };
         }
@@ -736,20 +875,32 @@ namespace QuanLyQuanCafe.Utils
 
         public static void ApplyDarkModeToHandle(IntPtr handle)
         {
+            ApplyDarkModeToHandle(handle, CurrentMode == ThemeMode.Dark);
+        }
+
+        public static void ApplyDarkModeToHandle(IntPtr handle, bool isDark)
+        {
             if (handle == IntPtr.Zero) return;
 
             try
             {
-                // Bật tiêu đề tối qua DWM (Windows 10/11)
-                int darkMode = 1;
+                // Bật/tắt tiêu đề tối qua DWM (Windows 10/11)
+                int darkMode = isDark ? 1 : 0;
                 int hr = DwmSetWindowAttribute(handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref darkMode, sizeof(int));
                 if (hr != 0)
                 {
                     DwmSetWindowAttribute(handle, DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1, ref darkMode, sizeof(int));
                 }
 
-                // Chuyển thanh cuộn Win32 sang giao diện tối Explorer
-                SetWindowTheme(handle, "DarkMode_Explorer", null);
+                // Chuyển thanh cuộn Win32 sang Explorer / DarkMode_Explorer
+                if (isDark)
+                {
+                    SetWindowTheme(handle, "DarkMode_Explorer", null);
+                }
+                else
+                {
+                    SetWindowTheme(handle, "Explorer", null);
+                }
             }
             catch
             {
@@ -760,3 +911,4 @@ namespace QuanLyQuanCafe.Utils
         #endregion
     }
 }
+

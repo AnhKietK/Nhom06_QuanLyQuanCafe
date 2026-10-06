@@ -138,11 +138,11 @@ namespace QuanLyQuanCafe.GUI.NhanVien
                 string cv = e.Value.ToString()?.Trim() ?? "";
                 e.CellStyle.ForeColor = cv switch
                 {
-                    "Quản lý" => Theme.NhanManh,                  // Vàng nổi bật
-                    "Thu ngân" => Theme.NhanPhu,                 // Xanh nhạt
-                    "Phục vụ" => Color.FromArgb(170, 225, 255),  // Xanh lơ nhạt
-                    "Thủ kho" => Color.FromArgb(255, 185, 120),  // Cam nhạt
-                    "Kế toán" => Color.FromArgb(200, 180, 255),  // Tím nhạt
+                    "Quản lý" => Theme.NhanManh,
+                    "Thu ngân" => Theme.NhanPhu,
+                    "Phục vụ" => Theme.CurrentMode == ThemeMode.Dark ? Color.FromArgb(170, 225, 255) : Color.FromArgb(2, 132, 199),
+                    "Thủ kho" => Theme.CurrentMode == ThemeMode.Dark ? Color.FromArgb(255, 185, 120) : Color.FromArgb(217, 119, 6),
+                    "Kế toán" => Theme.CurrentMode == ThemeMode.Dark ? Color.FromArgb(200, 180, 255) : Color.FromArgb(124, 58, 237),
                     _ => Theme.Chu
                 };
                 e.CellStyle.Font = Theme.FontNhanDam;

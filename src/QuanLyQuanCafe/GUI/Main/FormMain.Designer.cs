@@ -22,6 +22,7 @@ namespace QuanLyQuanCafe.GUI.Main
             this.mnuMain = new MenuStrip();
             this.tlpNguoiDung = new TableLayoutPanel();
             this.lblNguoiDung = new Label();
+            this.btnToggleTheme = new Button();
             this.btnDangXuat = new Button();
             this.stsMain = new StatusStrip();
             this.lblTrangThai = new ToolStripStatusLabel();
@@ -60,18 +61,20 @@ namespace QuanLyQuanCafe.GUI.Main
             this.tlpNguoiDung.AutoSize = true;
             this.tlpNguoiDung.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             this.tlpNguoiDung.BackColor = Color.Transparent;
-            this.tlpNguoiDung.ColumnCount = 2;
+            this.tlpNguoiDung.ColumnCount = 3;
+            this.tlpNguoiDung.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             this.tlpNguoiDung.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             this.tlpNguoiDung.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
             this.tlpNguoiDung.Controls.Add(this.lblNguoiDung, 0, 0);
-            this.tlpNguoiDung.Controls.Add(this.btnDangXuat, 1, 0);
+            this.tlpNguoiDung.Controls.Add(this.btnToggleTheme, 1, 0);
+            this.tlpNguoiDung.Controls.Add(this.btnDangXuat, 2, 0);
             this.tlpNguoiDung.Dock = DockStyle.Right;
-            this.tlpNguoiDung.Location = new Point(660, 0);
+            this.tlpNguoiDung.Location = new Point(570, 0);
             this.tlpNguoiDung.Name = "tlpNguoiDung";
             this.tlpNguoiDung.Padding = new Padding(4, 0, 14, 0);
             this.tlpNguoiDung.RowCount = 1;
             this.tlpNguoiDung.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            this.tlpNguoiDung.Size = new Size(220, 68);
+            this.tlpNguoiDung.Size = new Size(310, 68);
             this.tlpNguoiDung.TabIndex = 1;
 
             // lblNguoiDung
@@ -87,6 +90,21 @@ namespace QuanLyQuanCafe.GUI.Main
             this.lblNguoiDung.Text = "Xin chào";
             this.lblNguoiDung.TextAlign = ContentAlignment.MiddleRight;
 
+            // btnToggleTheme
+            this.btnToggleTheme.Anchor = AnchorStyles.Right;
+            this.btnToggleTheme.Cursor = Cursors.Hand;
+            this.btnToggleTheme.FlatAppearance.BorderSize = 0;
+            this.btnToggleTheme.FlatStyle = FlatStyle.Flat;
+            this.btnToggleTheme.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+            this.btnToggleTheme.ForeColor = Color.White;
+            this.btnToggleTheme.Margin = new Padding(0, 0, 8, 0);
+            this.btnToggleTheme.Name = "btnToggleTheme";
+            this.btnToggleTheme.Size = new Size(82, 34);
+            this.btnToggleTheme.TabIndex = 1;
+            this.btnToggleTheme.Tag = "info";
+            this.btnToggleTheme.Text = "🌙 Tối";
+            this.btnToggleTheme.UseVisualStyleBackColor = true;
+
             // btnDangXuat
             this.btnDangXuat.Anchor = AnchorStyles.Right;
             this.btnDangXuat.Cursor = Cursors.Hand;
@@ -97,7 +115,7 @@ namespace QuanLyQuanCafe.GUI.Main
             this.btnDangXuat.Margin = new Padding(0);
             this.btnDangXuat.Name = "btnDangXuat";
             this.btnDangXuat.Size = new Size(88, 34);
-            this.btnDangXuat.TabIndex = 1;
+            this.btnDangXuat.TabIndex = 2;
             this.btnDangXuat.Tag = "primary";
             this.btnDangXuat.Text = "Đăng xuất";
             this.btnDangXuat.UseVisualStyleBackColor = true;
@@ -159,6 +177,7 @@ namespace QuanLyQuanCafe.GUI.Main
         private Label lblThuongHieu;
         private TableLayoutPanel tlpNguoiDung;
         private Label lblNguoiDung;
+        private Button btnToggleTheme;
         private Button btnDangXuat;
         private MenuStrip mnuMain;
         private StatusStrip stsMain;
