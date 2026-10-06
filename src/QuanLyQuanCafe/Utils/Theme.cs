@@ -1,6 +1,7 @@
 using System.Drawing.Drawing2D;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace QuanLyQuanCafe.Utils
 {
@@ -304,6 +305,9 @@ namespace QuanLyQuanCafe.Utils
             {
                 // Bỏ qua nếu môi trường hạn chế reflection
             }
+
+            // Kích hoạt thanh cuộn tối cho DataGridView (Windows 10/11)
+            EnableDarkModeScrollBars(g);
         }
 
         public static void StyleInput(Control c)
@@ -317,10 +321,15 @@ namespace QuanLyQuanCafe.Utils
             if (c is TextBox txt)
             {
                 txt.BorderStyle = BorderStyle.FixedSingle;
+                if (txt.Multiline)
+                {
+                    EnableDarkModeScrollBars(txt);
+                }
             }
             else if (c is ComboBox cbo)
             {
                 cbo.FlatStyle = FlatStyle.Flat;
+                StyleComboBox(cbo);
             }
             else if (c is NumericUpDown num)
             {
@@ -427,6 +436,8 @@ namespace QuanLyQuanCafe.Utils
                 f.ForeColor = Chu;
                 f.Font = FontChinh;
 
+                EnableDarkModeTitleBar(f);
+                EnableDarkModeScrollBars(f);
                 ApplyToControls(f.Controls);
             }
             catch
@@ -500,11 +511,27 @@ namespace QuanLyQuanCafe.Utils
                     rad.ForeColor = Chu;
                     break;
 
+                case ListBox lb:
+                    EnableDarkModeScrollBars(lb);
+                    break;
+
+                case ListView lv:
+                    EnableDarkModeScrollBars(lv);
+                    break;
+
+                case TreeView tv:
+                    EnableDarkModeScrollBars(tv);
+                    break;
+
                 case Panel pnl:
                     if (pnl.BackColor == SystemColors.Control || pnl.BackColor == Color.White ||
                         pnl.BackColor == SystemColors.Window)
                     {
                         pnl.BackColor = Color.Transparent;
+                    }
+                    if (pnl.AutoScroll)
+                    {
+                        EnableDarkModeScrollBars(pnl);
                     }
                     break;
             }
@@ -571,6 +598,163 @@ namespace QuanLyQuanCafe.Utils
                 return ButtonKind.Info;
 
             return ButtonKind.Primary;
+        }
+
+        #endregion
+
+        #region 7. Hỗ trợ Dark Mode hệ thống (DWM, UxTheme) & ComboBox
+
+        public static void StyleComboBox(ComboBox cbo)
+        {
+            if (cbo == null) return;
+
+            cbo.DrawMode = DrawMode.OwnerDrawFixed;
+            cbo.ItemHeight = 26;
+
+            if (_styledControls.Contains(cbo)) return;
+            _styledControls.Add(cbo);
+            cbo.Disposed += (s, e) => _styledControls.Remove(cbo);
+
+            EnableDarkModeScrollBars(cbo);
+
+            cbo.DropDown += (s, e) =>
+            {
+                try
+                {
+                    var info = new COMBOBOXINFO { cbSize = Marshal.SizeOf<COMBOBOXINFO>() };
+                    if (GetComboBoxInfo(cbo.Handle, ref info) && info.hwndList != IntPtr.Zero)
+                    {
+                        ApplyDarkModeToHandle(info.hwndList);
+                    }
+                }
+                catch
+                {
+                    // Bỏ qua nếu lỗi Win32
+                }
+            };
+
+            cbo.DrawItem += (s, e) =>
+            {
+                Graphics g = e.Graphics;
+                if (e.Index < 0)
+                {
+                    using var emptyBrush = new SolidBrush(NenTrongHon);
+                    g.FillRectangle(emptyBrush, e.Bounds);
+                    return;
+                }
+
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+
+                bool isEditPortion = (e.State & DrawItemState.ComboBoxEdit) == DrawItemState.ComboBoxEdit;
+                bool isSelected = !isEditPortion && ((e.State & DrawItemState.Selected) == DrawItemState.Selected);
+                Color bg = isSelected ? DongChon : NenTrongHon;
+
+                using (var bgBrush = new SolidBrush(bg))
+                {
+                    g.FillRectangle(bgBrush, e.Bounds);
+                }
+
+                string text = cbo.GetItemText(cbo.Items[e.Index]) ?? string.Empty;
+                Rectangle textRect = new(e.Bounds.X + 6, e.Bounds.Y, Math.Max(0, e.Bounds.Width - 10), e.Bounds.Height);
+                TextRenderer.DrawText(g, text, cbo.Font ?? FontChinh, textRect, Chu,
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+            };
+        }
+
+        public static void EnableDarkModeScrollBars(Control control)
+        {
+            if (control == null) return;
+
+            if (control.IsHandleCreated)
+            {
+                ApplyDarkModeToHandle(control.Handle);
+            }
+            control.HandleCreated -= Control_HandleCreated;
+            control.HandleCreated += Control_HandleCreated;
+        }
+
+        private static void Control_HandleCreated(object? sender, EventArgs e)
+        {
+            if (sender is Control c && c.IsHandleCreated)
+            {
+                ApplyDarkModeToHandle(c.Handle);
+            }
+        }
+
+        public static void EnableDarkModeTitleBar(Form form)
+        {
+            if (form == null) return;
+
+            if (form.IsHandleCreated)
+            {
+                ApplyDarkModeToHandle(form.Handle);
+            }
+            form.HandleCreated -= Form_HandleCreated;
+            form.HandleCreated += Form_HandleCreated;
+        }
+
+        private static void Form_HandleCreated(object? sender, EventArgs e)
+        {
+            if (sender is Form f && f.IsHandleCreated)
+            {
+                ApplyDarkModeToHandle(f.Handle);
+            }
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct RECT
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct COMBOBOXINFO
+        {
+            public int cbSize;
+            public RECT rcItem;
+            public RECT rcButton;
+            public int stateButton;
+            public IntPtr hwndCombo;
+            public IntPtr hwndItem;
+            public IntPtr hwndList;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool GetComboBoxInfo(IntPtr hWnd, ref COMBOBOXINFO pcbi);
+
+        [DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
+        private static extern int SetWindowTheme(IntPtr hWnd, string pszSubAppName, string? pszSubIdList);
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
+
+        public static void ApplyDarkModeToHandle(IntPtr handle)
+        {
+            if (handle == IntPtr.Zero) return;
+
+            try
+            {
+                // Bật tiêu đề tối qua DWM (Windows 10/11)
+                int darkMode = 1;
+                int hr = DwmSetWindowAttribute(handle, DWMWA_USE_IMMERSIVE_DARK_MODE, ref darkMode, sizeof(int));
+                if (hr != 0)
+                {
+                    DwmSetWindowAttribute(handle, DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1, ref darkMode, sizeof(int));
+                }
+
+                // Chuyển thanh cuộn Win32 sang giao diện tối Explorer
+                SetWindowTheme(handle, "DarkMode_Explorer", null);
+            }
+            catch
+            {
+                // Bỏ qua nếu chạy trên nền tảng/phiên bản Windows không hỗ trợ
+            }
         }
 
         #endregion

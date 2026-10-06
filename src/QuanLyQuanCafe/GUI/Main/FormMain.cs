@@ -70,6 +70,7 @@ namespace QuanLyQuanCafe.GUI.Main
             };
 
             this.Load += FormMain_Load;
+            this.Resize += (s, e) => CapNhatLayoutHeader();
             btnDangXuat.Click += (s, e) => MnuDangXuat_Click(s, e);
 
             KhoiTaoMenu();
@@ -79,7 +80,7 @@ namespace QuanLyQuanCafe.GUI.Main
         private void FormMain_Load(object? sender, EventArgs e)
         {
             CaiDatVungMdi();
-            CapNhatThongTinNguoiDung();
+            CapNhatLayoutHeader();
             PhanQuyenMenu();
         }
 
@@ -102,20 +103,53 @@ namespace QuanLyQuanCafe.GUI.Main
             string info = $"Xin chào: {ten}{chucVu}";
 
             lblTrangThai.Text = info;
-            lblNguoiDung.Text = $"{ten}{chucVu}";
+            lblNguoiDung.Text = this.Width < 1050 ? ten : $"{ten}{chucVu}";
+        }
+
+        private void CapNhatLayoutHeader()
+        {
+            bool isSmallScreen = this.Width < 1050;
+
+            if (isSmallScreen)
+            {
+                lblThuongHieu.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+                lblThuongHieu.Padding = new Padding(10, 0, 6, 0);
+                lblThuongHieu.Text = "Quản lý cafe";
+            }
+            else
+            {
+                lblThuongHieu.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
+                lblThuongHieu.Padding = new Padding(16, 0, 10, 0);
+                lblThuongHieu.Text = "Quản lý quán cà phê";
+            }
+
+            CapNhatThongTinNguoiDung();
+
+            Padding itemPadding = isSmallScreen ? new Padding(7, 6, 7, 6) : new Padding(11, 6, 11, 6);
+            Font itemFont = isSmallScreen ? new Font("Segoe UI", 9.5F, FontStyle.Bold) : Theme.FontMenu;
+
+            foreach (ToolStripItem item in mnuMain.Items)
+            {
+                item.Padding = itemPadding;
+                item.Font = itemFont;
+            }
         }
 
         public void KhoiTaoMenu()
         {
             mnuMain.Items.Clear();
 
+            bool isSmallScreen = this.Width < 1050;
+            Padding defaultPadding = isSmallScreen ? new Padding(7, 6, 7, 6) : new Padding(11, 6, 11, 6);
+            Font defaultFont = isSmallScreen ? new Font("Segoe UI", 9.5F, FontStyle.Bold) : Theme.FontMenu;
+
             foreach (string nhom in ThuTuNhom)
             {
                 var topItem = new ToolStripMenuItem(nhom)
                 {
-                    Font = Theme.FontMenu,
+                    Font = defaultFont,
                     ForeColor = Theme.Chu,
-                    Padding = new Padding(14, 8, 14, 8)
+                    Padding = defaultPadding
                 };
 
                 if (topItem.DropDown is ToolStripDropDownMenu dropDownMenu)

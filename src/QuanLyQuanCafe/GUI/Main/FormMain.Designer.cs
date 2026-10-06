@@ -46,12 +46,12 @@ namespace QuanLyQuanCafe.GUI.Main
             this.lblThuongHieu.AutoSize = true;
             this.lblThuongHieu.BackColor = Color.Transparent;
             this.lblThuongHieu.Dock = DockStyle.Left;
-            this.lblThuongHieu.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            this.lblThuongHieu.Font = new Font("Segoe UI", 15F, FontStyle.Bold);
             this.lblThuongHieu.ForeColor = Color.White;
             this.lblThuongHieu.Location = new Point(0, 0);
             this.lblThuongHieu.Name = "lblThuongHieu";
-            this.lblThuongHieu.Padding = new Padding(20, 0, 16, 0);
-            this.lblThuongHieu.Size = new Size(272, 68);
+            this.lblThuongHieu.Padding = new Padding(16, 0, 10, 0);
+            this.lblThuongHieu.Size = new Size(248, 68);
             this.lblThuongHieu.TabIndex = 2;
             this.lblThuongHieu.Text = "Quản lý quán cà phê";
             this.lblThuongHieu.TextAlign = ContentAlignment.MiddleLeft;
@@ -68,21 +68,21 @@ namespace QuanLyQuanCafe.GUI.Main
             this.tlpNguoiDung.Dock = DockStyle.Right;
             this.tlpNguoiDung.Location = new Point(660, 0);
             this.tlpNguoiDung.Name = "tlpNguoiDung";
-            this.tlpNguoiDung.Padding = new Padding(10, 0, 16, 0);
+            this.tlpNguoiDung.Padding = new Padding(4, 0, 14, 0);
             this.tlpNguoiDung.RowCount = 1;
             this.tlpNguoiDung.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            this.tlpNguoiDung.Size = new Size(240, 68);
+            this.tlpNguoiDung.Size = new Size(220, 68);
             this.tlpNguoiDung.TabIndex = 1;
 
             // lblNguoiDung
             this.lblNguoiDung.Anchor = AnchorStyles.Right;
             this.lblNguoiDung.AutoSize = true;
             this.lblNguoiDung.BackColor = Color.Transparent;
-            this.lblNguoiDung.Font = new Font("Segoe UI", 10F, FontStyle.Italic);
+            this.lblNguoiDung.Font = new Font("Segoe UI", 9.5F, FontStyle.Italic);
             this.lblNguoiDung.ForeColor = Color.White;
-            this.lblNguoiDung.Margin = new Padding(0, 0, 12, 0);
+            this.lblNguoiDung.Margin = new Padding(0, 0, 8, 0);
             this.lblNguoiDung.Name = "lblNguoiDung";
-            this.lblNguoiDung.Size = new Size(62, 23);
+            this.lblNguoiDung.Size = new Size(58, 21);
             this.lblNguoiDung.TabIndex = 0;
             this.lblNguoiDung.Text = "Xin chào";
             this.lblNguoiDung.TextAlign = ContentAlignment.MiddleRight;
@@ -92,11 +92,11 @@ namespace QuanLyQuanCafe.GUI.Main
             this.btnDangXuat.Cursor = Cursors.Hand;
             this.btnDangXuat.FlatAppearance.BorderSize = 0;
             this.btnDangXuat.FlatStyle = FlatStyle.Flat;
-            this.btnDangXuat.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.btnDangXuat.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             this.btnDangXuat.ForeColor = Color.White;
             this.btnDangXuat.Margin = new Padding(0);
             this.btnDangXuat.Name = "btnDangXuat";
-            this.btnDangXuat.Size = new Size(100, 36);
+            this.btnDangXuat.Size = new Size(88, 34);
             this.btnDangXuat.TabIndex = 1;
             this.btnDangXuat.Tag = "primary";
             this.btnDangXuat.Text = "Đăng xuất";
@@ -105,12 +105,13 @@ namespace QuanLyQuanCafe.GUI.Main
             // mnuMain
             this.mnuMain.AutoSize = false;
             this.mnuMain.BackColor = Color.Transparent;
+            this.mnuMain.CanOverflow = false;
             this.mnuMain.Dock = DockStyle.Fill;
             this.mnuMain.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             this.mnuMain.GripStyle = ToolStripGripStyle.Hidden;
             this.mnuMain.Location = new Point(272, 0);
             this.mnuMain.Name = "mnuMain";
-            this.mnuMain.Padding = new Padding(10, 18, 10, 0);
+            this.mnuMain.Padding = new Padding(6, 18, 6, 0);
             this.mnuMain.RenderMode = ToolStripRenderMode.Professional;
             this.mnuMain.Size = new Size(388, 68);
             this.mnuMain.TabIndex = 0;
