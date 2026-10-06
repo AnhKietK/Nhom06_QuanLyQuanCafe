@@ -9,6 +9,9 @@ namespace QuanLyQuanCafe.GUI.Auth
         {
             InitializeComponent();
 
+            Theme.Apply(this);
+            Theme.StyleCard(pnlCard, null, 12);
+
             btnLuu.Click += BtnLuu_Click;
             btnHuy.Click += BtnHuy_Click;
         }
@@ -39,3 +42,4 @@ namespace QuanLyQuanCafe.GUI.Auth
         }
     }
 }
+
