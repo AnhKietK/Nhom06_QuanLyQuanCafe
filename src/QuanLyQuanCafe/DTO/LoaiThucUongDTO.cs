@@ -5,8 +5,5 @@ namespace QuanLyQuanCafe.DTO
         public string MaLoaiTU { get; set; } = "";
         public string TenLoai { get; set; } = "";
         public string? MoTa { get; set; }
-
-        public override string ToString() => TenLoai;
     }
 }
-
