@@ -38,6 +38,9 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             btnSua.Click += BtnSua_Click;
             btnXoa.Click += BtnXoa_Click;
 
+            btnChonAnh.Click += BtnChonAnh_Click;
+            btnXoaAnh.Click += BtnXoaAnh_Click;
+
             cboLocLoai.SelectedIndexChanged += (s, e) => ApDungBoLoc();
             txtTimKiem.TextChanged += (s, e) => ApDungBoLoc();
             dgvThucUong.SelectionChanged += DgvThucUong_SelectionChanged;
@@ -141,6 +144,7 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             numDonGiaBan.Value = giaBan;
 
             _currentHinhAnh = tu.HinhAnh;
+            HienThiHinhAnh(_currentHinhAnh);
 
             btnThem.Enabled = false;
             btnSua.Enabled = true;
@@ -157,13 +161,99 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
                 cboLoaiThucUong.SelectedIndex = 0;
 
             numDonGiaBan.Value = 25000;
+
             _currentHinhAnh = null;
+            HienThiHinhAnh(null);
 
             btnThem.Enabled = true;
             btnSua.Enabled = false;
             btnXoa.Enabled = false;
 
             txtTenThucUong.Focus();
+        }
+
+        private void HienThiHinhAnh(string? tenFile)
+        {
+            // Giải phóng ảnh cũ nếu có để tránh giữ bộ nhớ / khóa file
+            if (picHinhAnh.Image != null)
+            {
+                var oldImg = picHinhAnh.Image;
+                picHinhAnh.Image = null;
+                oldImg.Dispose();
+            }
+
+            txtHinhAnh.Text = tenFile ?? "";
+
+            if (string.IsNullOrWhiteSpace(tenFile))
+            {
+                return;
+            }
+
+            try
+            {
+                string folder = Path.Combine(AppContext.BaseDirectory, "Images");
+                string fullPath = Path.Combine(folder, tenFile);
+                if (File.Exists(fullPath))
+                {
+                    // Đọc file bằng FileStream rồi sao chép sang Bitmap để không khóa file
+                    using var fs = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    using var temp = Image.FromStream(fs);
+                    picHinhAnh.Image = new Bitmap(temp);
+                }
+                else
+                {
+                    picHinhAnh.Image = null;
+                }
+            }
+            catch
+            {
+                // File hỏng hoặc không đọc được: hiển thị khung trống, không crash
+                picHinhAnh.Image = null;
+            }
+        }
+
+        private void BtnChonAnh_Click(object? sender, EventArgs e)
+        {
+            try
+            {
+                using var ofd = new OpenFileDialog
+                {
+                    Filter = "Hình ảnh (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg|Tất cả tập tin (*.*)|*.*",
+                    Title = "Chọn hình ảnh thức uống"
+                };
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    string sourceFile = ofd.FileName;
+                    string folder = Path.Combine(AppContext.BaseDirectory, "Images");
+                    if (!Directory.Exists(folder))
+                    {
+                        Directory.CreateDirectory(folder);
+                    }
+
+                    string fileName = Path.GetFileName(sourceFile);
+                    string destPath = Path.Combine(folder, fileName);
+
+                    // Sao chép file vào thư mục Images nếu nguồn khác đích
+                    if (!string.Equals(sourceFile, destPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        File.Copy(sourceFile, destPath, true);
+                    }
+
+                    _currentHinhAnh = fileName;
+                    HienThiHinhAnh(_currentHinhAnh);
+                }
+            }
+            catch (Exception ex)
+            {
+                UiHelper.HienLoi(ex);
+            }
+        }
+
+        private void BtnXoaAnh_Click(object? sender, EventArgs e)
+        {
+            _currentHinhAnh = null;
+            HienThiHinhAnh(null);
         }
 
         private void BtnThem_Click(object? sender, EventArgs e)
@@ -177,7 +267,7 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
                     TenThucUong = txtTenThucUong.Text.Trim(),
                     MaLoaiTU = loai?.MaLoaiTU ?? "",
                     DonGiaBan = numDonGiaBan.Value,
-                    HinhAnh = null
+                    HinhAnh = _currentHinhAnh
                 };
 
                 _bll.Them(tu);
@@ -209,7 +299,7 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
                     TenThucUong = txtTenThucUong.Text.Trim(),
                     MaLoaiTU = loai?.MaLoaiTU ?? "",
                     DonGiaBan = numDonGiaBan.Value,
-                    HinhAnh = _currentHinhAnh // Luôn bảo toàn hình ảnh hiện có khi sửa
+                    HinhAnh = _currentHinhAnh
                 };
 
                 _bll.Sua(tu);

@@ -6,9 +6,17 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                if (picHinhAnh?.Image != null)
+                {
+                    picHinhAnh.Image.Dispose();
+                    picHinhAnh.Image = null;
+                }
+                if (components != null)
+                {
+                    components.Dispose();
+                }
             }
             base.Dispose(disposing);
         }
@@ -35,6 +43,14 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             this.cboLoaiThucUong = new System.Windows.Forms.ComboBox();
             this.lblDonGiaBan = new System.Windows.Forms.Label();
             this.numDonGiaBan = new System.Windows.Forms.NumericUpDown();
+            this.lblHinhAnh = new System.Windows.Forms.Label();
+            this.pnlAnhChucNang = new System.Windows.Forms.Panel();
+            this.txtHinhAnh = new System.Windows.Forms.TextBox();
+            this.pnlAnhButtons = new System.Windows.Forms.Panel();
+            this.btnChonAnh = new System.Windows.Forms.Button();
+            this.btnXoaAnh = new System.Windows.Forms.Button();
+            this.lblXemTruoc = new System.Windows.Forms.Label();
+            this.picHinhAnh = new System.Windows.Forms.PictureBox();
             this.lblGhiChu = new System.Windows.Forms.Label();
             this.flpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnThem = new System.Windows.Forms.Button();
@@ -55,6 +71,9 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             this.grbThongTin.SuspendLayout();
             this.tlpInput.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numDonGiaBan)).BeginInit();
+            this.pnlAnhChucNang.SuspendLayout();
+            this.pnlAnhButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picHinhAnh)).BeginInit();
             this.flpButtons.SuspendLayout();
             this.pnlLeft.SuspendLayout();
             this.grbDanhSach.SuspendLayout();
@@ -158,7 +177,7 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             this.grbThongTin.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Bold);
             this.grbThongTin.Location = new System.Drawing.Point(8, 0);
             this.grbThongTin.Name = "grbThongTin";
-            this.grbThongTin.Padding = new System.Windows.Forms.Padding(14, 38, 14, 14);
+            this.grbThongTin.Padding = new System.Windows.Forms.Padding(14, 34, 14, 14);
             this.grbThongTin.Size = new System.Drawing.Size(392, 574);
             this.grbThongTin.TabIndex = 0;
             this.grbThongTin.TabStop = false;
@@ -176,18 +195,24 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             this.tlpInput.Controls.Add(this.cboLoaiThucUong, 1, 2);
             this.tlpInput.Controls.Add(this.lblDonGiaBan, 0, 3);
             this.tlpInput.Controls.Add(this.numDonGiaBan, 1, 3);
-            this.tlpInput.Controls.Add(this.lblGhiChu, 0, 4);
+            this.tlpInput.Controls.Add(this.lblHinhAnh, 0, 4);
+            this.tlpInput.Controls.Add(this.pnlAnhChucNang, 1, 4);
+            this.tlpInput.Controls.Add(this.lblXemTruoc, 0, 5);
+            this.tlpInput.Controls.Add(this.picHinhAnh, 1, 5);
+            this.tlpInput.Controls.Add(this.lblGhiChu, 0, 6);
             this.tlpInput.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpInput.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.tlpInput.Location = new System.Drawing.Point(14, 38);
+            this.tlpInput.Location = new System.Drawing.Point(14, 34);
             this.tlpInput.Name = "tlpInput";
-            this.tlpInput.RowCount = 5;
-            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
-            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
-            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
-            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
-            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tlpInput.Size = new System.Drawing.Size(364, 228);
+            this.tlpInput.RowCount = 7;
+            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
+            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 68F));
+            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 115F));
+            this.tlpInput.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tlpInput.Size = new System.Drawing.Size(364, 385);
             this.tlpInput.TabIndex = 0;
 
             // lblMaThucUong
@@ -242,6 +267,86 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             this.numDonGiaBan.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.numDonGiaBan.ThousandsSeparator = true;
             this.numDonGiaBan.Value = new decimal(new int[] { 25000, 0, 0, 0 });
+
+            // lblHinhAnh
+            this.lblHinhAnh.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblHinhAnh.Name = "lblHinhAnh";
+            this.lblHinhAnh.Text = "Hình ảnh:";
+            this.lblHinhAnh.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+
+            // pnlAnhChucNang
+            this.pnlAnhChucNang.Controls.Add(this.pnlAnhButtons);
+            this.pnlAnhChucNang.Controls.Add(this.txtHinhAnh);
+            this.pnlAnhChucNang.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlAnhChucNang.Location = new System.Drawing.Point(118, 155);
+            this.pnlAnhChucNang.Name = "pnlAnhChucNang";
+            this.pnlAnhChucNang.Size = new System.Drawing.Size(243, 62);
+            this.pnlAnhChucNang.TabIndex = 4;
+
+            // txtHinhAnh
+            this.txtHinhAnh.Dock = System.Windows.Forms.DockStyle.Top;
+            this.txtHinhAnh.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtHinhAnh.Location = new System.Drawing.Point(0, 0);
+            this.txtHinhAnh.Name = "txtHinhAnh";
+            this.txtHinhAnh.PlaceholderText = "(Chưa chọn ảnh)";
+            this.txtHinhAnh.ReadOnly = true;
+            this.txtHinhAnh.Size = new System.Drawing.Size(243, 27);
+            this.txtHinhAnh.TabIndex = 0;
+
+            // pnlAnhButtons
+            this.pnlAnhButtons.Controls.Add(this.btnXoaAnh);
+            this.pnlAnhButtons.Controls.Add(this.btnChonAnh);
+            this.pnlAnhButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlAnhButtons.Location = new System.Drawing.Point(0, 32);
+            this.pnlAnhButtons.Name = "pnlAnhButtons";
+            this.pnlAnhButtons.Size = new System.Drawing.Size(243, 30);
+            this.pnlAnhButtons.TabIndex = 1;
+
+            // btnChonAnh
+            this.btnChonAnh.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnChonAnh.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnChonAnh.FlatAppearance.BorderSize = 0;
+            this.btnChonAnh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnChonAnh.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnChonAnh.ForeColor = System.Drawing.Color.White;
+            this.btnChonAnh.Location = new System.Drawing.Point(0, 0);
+            this.btnChonAnh.Name = "btnChonAnh";
+            this.btnChonAnh.Size = new System.Drawing.Size(115, 30);
+            this.btnChonAnh.TabIndex = 0;
+            this.btnChonAnh.Tag = "neutral";
+            this.btnChonAnh.Text = "📁 Chọn ảnh...";
+            this.btnChonAnh.UseVisualStyleBackColor = true;
+
+            // btnXoaAnh
+            this.btnXoaAnh.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnXoaAnh.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnXoaAnh.FlatAppearance.BorderSize = 0;
+            this.btnXoaAnh.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnXoaAnh.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnXoaAnh.ForeColor = System.Drawing.Color.White;
+            this.btnXoaAnh.Location = new System.Drawing.Point(125, 0);
+            this.btnXoaAnh.Name = "btnXoaAnh";
+            this.btnXoaAnh.Size = new System.Drawing.Size(118, 30);
+            this.btnXoaAnh.TabIndex = 1;
+            this.btnXoaAnh.Tag = "danger";
+            this.btnXoaAnh.Text = "✖ Xóa ảnh";
+            this.btnXoaAnh.UseVisualStyleBackColor = true;
+
+            // lblXemTruoc
+            this.lblXemTruoc.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblXemTruoc.Name = "lblXemTruoc";
+            this.lblXemTruoc.Text = "Xem trước:";
+            this.lblXemTruoc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+
+            // picHinhAnh
+            this.picHinhAnh.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picHinhAnh.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picHinhAnh.Location = new System.Drawing.Point(118, 223);
+            this.picHinhAnh.Name = "picHinhAnh";
+            this.picHinhAnh.Size = new System.Drawing.Size(243, 109);
+            this.picHinhAnh.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picHinhAnh.TabIndex = 5;
+            this.picHinhAnh.TabStop = false;
 
             // lblGhiChu
             this.tlpInput.SetColumnSpan(this.lblGhiChu, 2);
@@ -424,6 +529,10 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             this.tlpInput.ResumeLayout(false);
             this.tlpInput.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numDonGiaBan)).EndInit();
+            this.pnlAnhChucNang.ResumeLayout(false);
+            this.pnlAnhChucNang.PerformLayout();
+            this.pnlAnhButtons.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picHinhAnh)).EndInit();
             this.flpButtons.ResumeLayout(false);
             this.pnlLeft.ResumeLayout(false);
             this.grbDanhSach.ResumeLayout(false);
@@ -451,6 +560,14 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
         private System.Windows.Forms.ComboBox cboLoaiThucUong;
         private System.Windows.Forms.Label lblDonGiaBan;
         private System.Windows.Forms.NumericUpDown numDonGiaBan;
+        private System.Windows.Forms.Label lblHinhAnh;
+        private System.Windows.Forms.Panel pnlAnhChucNang;
+        private System.Windows.Forms.TextBox txtHinhAnh;
+        private System.Windows.Forms.Panel pnlAnhButtons;
+        private System.Windows.Forms.Button btnChonAnh;
+        private System.Windows.Forms.Button btnXoaAnh;
+        private System.Windows.Forms.Label lblXemTruoc;
+        private System.Windows.Forms.PictureBox picHinhAnh;
         private System.Windows.Forms.Label lblGhiChu;
         private System.Windows.Forms.TableLayoutPanel flpButtons;
         private System.Windows.Forms.Button btnThem;
