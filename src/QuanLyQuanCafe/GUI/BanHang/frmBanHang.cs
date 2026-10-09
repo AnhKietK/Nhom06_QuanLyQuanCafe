@@ -1,8 +1,10 @@
 using System.Data;
+using System.Text;
 using Microsoft.Data.SqlClient;
 using QuanLyQuanCafe.BLL;
 using QuanLyQuanCafe.DAL;
 using QuanLyQuanCafe.DTO;
+using QuanLyQuanCafe.Session;
 using QuanLyQuanCafe.Utils;
 
 namespace QuanLyQuanCafe.GUI.BanHang
@@ -25,17 +27,67 @@ namespace QuanLyQuanCafe.GUI.BanHang
         public frmBanHang()
         {
             InitializeComponent();
+
+            this.KeyPreview = true;
+            this.KeyDown += FrmBanHang_KeyDown;
+
             KhoiTaoSuKien();
+        }
+
+        private void FrmBanHang_KeyDown(object? sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F1)
+            {
+                e.Handled = true;
+                HienThiHuongDanPhimTat();
+            }
+            else if (e.KeyCode == Keys.F4)
+            {
+                e.Handled = true;
+                BtnChuyenBan_Click(sender, e);
+            }
+            else if (e.KeyCode == Keys.F5)
+            {
+                e.Handled = true;
+                RefreshDuLieu();
+            }
+            else if (e.KeyCode == Keys.F8)
+            {
+                e.Handled = true;
+                BtnInTamTinh_Click(sender, e);
+            }
+            else if (e.KeyCode == Keys.F9)
+            {
+                e.Handled = true;
+                BtnThanhToan_Click(sender, e);
+            }
+            else if (e.KeyCode == Keys.Delete && dgvChiTietHD.Focused)
+            {
+                e.Handled = true;
+                BtnXoaMon_Click(sender, e);
+            }
         }
 
         private void KhoiTaoSuKien()
         {
             this.Load += FrmBanHang_Load;
 
+            // Đồng hồ thời gian thực
+            timerDongHo.Tick += (s, e) =>
+            {
+                lblClock.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
+            };
+
+            // Nút hỗ trợ & Làm mới
+            btnHuongDan.Click += (s, e) => HienThiHuongDanPhimTat();
+            btnLamMoiToanBo.Click += (s, e) => RefreshDuLieu();
+
             // Bộ lọc sơ đồ bàn
             cboKhuVuc.SelectedIndexChanged += (s, e) => ApDungBoLocBan();
             cboTrangThaiBan.SelectedIndexChanged += (s, e) => ApDungBoLocBan();
-            btnLamMoiToanBo.Click += (s, e) => RefreshDuLieu();
+            txtTimKiemBan.TextChanged += (s, e) => ApDungBoLocBan();
+            btnMoBanNhanh.Click += BtnMoBan_Click;
+            btnChuyenBanNhanh.Click += BtnChuyenBan_Click;
 
             // Thực đơn thức uống
             txtTimKiemMon.TextChanged += (s, e) => TimKiemMonNuoc();
@@ -43,6 +95,11 @@ namespace QuanLyQuanCafe.GUI.BanHang
             btnThemMon.Click += BtnThemMon_Click;
             btnKiemTraKho.Click += BtnKiemTraKho_Click;
             dgvThucUong.CellDoubleClick += (s, e) => BtnThemMon_Click(s, e);
+
+            // Nút số lượng nhanh
+            btnSL1.Click += (s, e) => numSoLuongMon.Value = 1;
+            btnSL2.Click += (s, e) => numSoLuongMon.Value = 2;
+            btnSL5.Click += (s, e) => numSoLuongMon.Value = 5;
 
             // Điều chỉnh chi tiết hóa đơn
             btnTangSL.Click += BtnTangSL_Click;
@@ -60,6 +117,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 }
             };
             btnThemKhachNhanh.Click += BtnThemKhachNhanh_Click;
+            btnBoChonKhach.Click += BtnBoChonKhach_Click;
 
             // Tính tiền & Phương thức thanh toán
             numGiamGia.ValueChanged += (s, e) => CapNhatTongCongVaTienThoi();
@@ -67,6 +125,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             cboPhuongThuc.SelectedIndexChanged += CboPhuongThuc_SelectedIndexChanged;
 
             btnTienVuaDu.Click += (s, e) => numTienKhachDua.Value = _tongThanhToan;
+            btnTien20k.Click += (s, e) => DatTienNhanh(20000);
             btnTien50k.Click += (s, e) => DatTienNhanh(50000);
             btnTien100k.Click += (s, e) => DatTienNhanh(100000);
             btnTien200k.Click += (s, e) => DatTienNhanh(200000);
@@ -82,11 +141,35 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private void FrmBanHang_Load(object? sender, EventArgs e)
         {
+            // Nếu form được khởi chạy độc lập (chưa qua màn hình đăng nhập), thiết lập phiên làm việc mẫu cho Phục vụ
+            if (!CurrentUser.IsLoggedIn)
+            {
+                CurrentUser.Set("NV002", "Trần Thị Bình", "Phục vụ", AppConfig.Get("PhucVuConn"));
+            }
+
+            lblSubtitle.Text = $"Nhân viên: {CurrentUser.TenNV} ({CurrentUser.ChucVu}) | Quán Cafe Nhóm 06";
+            lblClock.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
+            timerDongHo.Start();
+
             NapPhuongThucThanhToan();
-            NapDanhSachKhuVuc();
             NapDanhSachTrangThai();
-            NapDanhSachLoaiMon();
             RefreshDuLieu();
+        }
+
+        private void HienThiHuongDanPhimTat()
+        {
+            string huongDan = "=== BẢNG PHÍM TẮT HỆ THỐNG POS BÁN HÀNG ===\n\n" +
+                              "• [F1]      : Mở bảng hướng dẫn phím tắt này\n" +
+                              "• [F4]      : Chuyển bàn / Chuyển hóa đơn sang bàn trống\n" +
+                              "• [F5]      : Làm mới toàn bộ sơ đồ bàn & thực đơn thức uống\n" +
+                              "• [F8]      : In / Xem trước phiếu tạm tính (Hóa đơn kiểm đồ)\n" +
+                              "• [F9]      : Mở màn hình Xác nhận thanh toán & In hóa đơn\n" +
+                              "• [Enter]   : Thêm món thức uống đang chọn vào hóa đơn bàn\n" +
+                              "• [Delete]  : Xóa món đang chọn khỏi hóa đơn\n" +
+                              "• [Esc]     : Đóng / Hủy bỏ thao tác hiện tại\n\n" +
+                              "Mẹo: Nhấp đúp chuột vào món trong Thực đơn để thêm nhanh 1 ly!";
+
+            UiHelper.ShowInfo(huongDan, "Hướng dẫn phím tắt POS");
         }
 
         #region 1. Nạp và Làm mới Dữ liệu (Refresh)
@@ -99,6 +182,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             try
             {
                 NapDanhSachBan();
+                NapDanhSachLoaiMon();
                 NapDanhSachThucUong();
 
                 if (_banDangChon != null)
@@ -132,24 +216,26 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private void NapDanhSachKhuVuc()
         {
-            try
+            string luaChonCu = cboKhuVuc.SelectedItem?.ToString() ?? "Tất cả khu vực";
+            cboKhuVuc.Items.Clear();
+            cboKhuVuc.Items.Add("Tất cả khu vực");
+
+            var khuVucList = _dsBan
+                .Select(b => b.TenViTri)
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            foreach (var kv in khuVucList)
             {
-                cboKhuVuc.Items.Clear();
-                cboKhuVuc.Items.Add("Tất cả khu vực");
+                cboKhuVuc.Items.Add(kv);
+            }
 
-                var dsBan = _bll.LayDanhSachBan();
-                var khuVucList = dsBan.Select(b => b.TenViTri).Distinct().OrderBy(x => x).ToList();
-                foreach (var kv in khuVucList)
-                {
-                    cboKhuVuc.Items.Add(kv);
-                }
-
+            if (cboKhuVuc.Items.Contains(luaChonCu))
+                cboKhuVuc.SelectedItem = luaChonCu;
+            else if (cboKhuVuc.Items.Count > 0)
                 cboKhuVuc.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                XuLyLoi(ex);
-            }
         }
 
         private void NapDanhSachTrangThai()
@@ -164,21 +250,16 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private void NapDanhSachBan()
         {
-            try
-            {
-                _dsBan = _bll.LayDanhSachBan();
-                ApDungBoLocBan();
-            }
-            catch (Exception ex)
-            {
-                XuLyLoi(ex);
-            }
+            _dsBan = _bll.LayDanhSachBan();
+            NapDanhSachKhuVuc();
+            ApDungBoLocBan();
         }
 
         private void ApDungBoLocBan()
         {
             string khuVuc = cboKhuVuc.SelectedItem?.ToString() ?? "Tất cả khu vực";
             string trangThai = cboTrangThaiBan.SelectedItem?.ToString() ?? "Tất cả trạng thái";
+            string tuKhoa = txtTimKiemBan.Text.Trim();
 
             var danhSachLoc = _dsBan.AsEnumerable();
 
@@ -200,6 +281,14 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 danhSachLoc = danhSachLoc.Where(b => b.TrangThai.Equals("DATTRUOC", StringComparison.OrdinalIgnoreCase));
             }
 
+            if (!string.IsNullOrEmpty(tuKhoa))
+            {
+                danhSachLoc = danhSachLoc.Where(b =>
+                    b.SoBan.ToString().Contains(tuKhoa, StringComparison.OrdinalIgnoreCase) ||
+                    b.MaBan.Contains(tuKhoa, StringComparison.OrdinalIgnoreCase) ||
+                    b.TenViTri.Contains(tuKhoa, StringComparison.OrdinalIgnoreCase));
+            }
+
             HienThiBanLenGiaoDien(danhSachLoc.ToList());
         }
 
@@ -219,8 +308,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
             {
                 var btnBan = new Button
                 {
-                    Width = 130,
-                    Height = 84,
+                    Width = 135,
+                    Height = 90,
                     Margin = new Padding(6),
                     FlatStyle = FlatStyle.Flat,
                     Cursor = Cursors.Hand,
@@ -299,19 +388,25 @@ namespace QuanLyQuanCafe.GUI.BanHang
             {
                 NapHoaDonCuaBanHienTai();
                 btnMoBan.Enabled = false;
+                btnMoBanNhanh.Enabled = false;
                 btnChuyenBan.Enabled = true;
+                btnChuyenBanNhanh.Enabled = true;
                 btnThanhToan.Enabled = true;
                 btnHuyDon.Enabled = true;
                 btnThemMon.Enabled = true;
+                btnInTamTinh.Enabled = true;
             }
             else
             {
                 LamMoiHoaDonGiaoDien();
                 btnMoBan.Enabled = true;
+                btnMoBanNhanh.Enabled = true;
                 btnChuyenBan.Enabled = false;
+                btnChuyenBanNhanh.Enabled = false;
                 btnThanhToan.Enabled = false;
                 btnHuyDon.Enabled = false;
                 btnThemMon.Enabled = true; // Cho phép bấm thêm món, hệ thống tự mở đơn
+                btnInTamTinh.Enabled = false;
             }
         }
 
@@ -321,35 +416,26 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private void NapDanhSachLoaiMon()
         {
-            try
+            _dsLoaiTU = _bll.LayDanhSachLoaiThucUong();
+            string luaChonCu = cboLoaiMon.SelectedItem?.ToString() ?? "Tất cả loại món";
+            cboLoaiMon.Items.Clear();
+            cboLoaiMon.Items.Add("Tất cả loại món");
+            foreach (var loai in _dsLoaiTU)
             {
-                _dsLoaiTU = _bll.LayDanhSachLoaiThucUong();
-                cboLoaiMon.Items.Clear();
-                cboLoaiMon.Items.Add("Tất cả loại món");
-                foreach (var loai in _dsLoaiTU)
-                {
-                    cboLoaiMon.Items.Add(loai.TenLoai);
-                }
+                cboLoaiMon.Items.Add(loai.TenLoai);
+            }
+
+            if (cboLoaiMon.Items.Contains(luaChonCu))
+                cboLoaiMon.SelectedItem = luaChonCu;
+            else if (cboLoaiMon.Items.Count > 0)
                 cboLoaiMon.SelectedIndex = 0;
-            }
-            catch (Exception ex)
-            {
-                XuLyLoi(ex);
-            }
         }
 
         private void NapDanhSachThucUong()
         {
-            try
-            {
-                _dsThucUong = _bll.LayDanhSachThucUong();
-                dgvThucUong.DataSource = null;
-                dgvThucUong.DataSource = _dsThucUong;
-            }
-            catch (Exception ex)
-            {
-                XuLyLoi(ex);
-            }
+            _dsThucUong = _bll.LayDanhSachThucUong();
+            dgvThucUong.DataSource = null;
+            dgvThucUong.DataSource = _dsThucUong;
         }
 
         private void TimKiemMonNuoc()
@@ -376,53 +462,21 @@ namespace QuanLyQuanCafe.GUI.BanHang
             }
         }
 
-        private ThucUongDTO? LayThucUongDangChon()
+        private ThucUongDTO? LayMonDangChon()
         {
             if (dgvThucUong.CurrentRow?.DataBoundItem is ThucUongDTO mon)
+            {
                 return mon;
+            }
             return null;
-        }
-
-        private void BtnKiemTraKho_Click(object? sender, EventArgs e)
-        {
-            var mon = LayThucUongDangChon();
-            if (mon == null)
-            {
-                UiHelper.ShowWarning("Vui lòng chọn món nước cần kiểm tra tồn kho.");
-                return;
-            }
-
-            int soLuong = (int)numSoLuongMon.Value;
-            try
-            {
-                bool du = _bll.KiemTraDuNguyenLieu(mon.MaThucUong, soLuong);
-                if (du)
-                {
-                    UiHelper.ShowInfo($"Kho còn đủ nguyên liệu để pha chế {soLuong} ly '{mon.TenThucUong}'.", "Kiểm tra kho");
-                }
-                else
-                {
-                    UiHelper.ShowWarning($"Kho KHÔNG đủ nguyên liệu để pha chế {soLuong} ly '{mon.TenThucUong}'!", "Cảnh báo thiếu nguyên liệu");
-                }
-            }
-            catch (Exception ex)
-            {
-                XuLyLoi(ex);
-            }
         }
 
         private void BtnThemMon_Click(object? sender, EventArgs e)
         {
-            if (_banDangChon == null)
-            {
-                UiHelper.ShowWarning("Vui lòng chọn bàn trước khi gọi món.");
-                return;
-            }
-
-            var mon = LayThucUongDangChon();
+            var mon = LayMonDangChon();
             if (mon == null)
             {
-                UiHelper.ShowWarning("Vui lòng chọn món thức uống từ danh sách.");
+                UiHelper.ShowWarning("Vui lòng chọn một món thức uống trong thực đơn.");
                 return;
             }
 
@@ -430,6 +484,12 @@ namespace QuanLyQuanCafe.GUI.BanHang
             if (soLuong <= 0)
             {
                 UiHelper.ShowWarning("Số lượng món phải lớn hơn 0.");
+                return;
+            }
+
+            if (_banDangChon == null)
+            {
+                UiHelper.ShowWarning("Vui lòng chọn bàn trước khi thêm món.");
                 return;
             }
 
@@ -456,10 +516,12 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
                 // Thêm món vào hóa đơn
                 _bll.ThemMonVaoHoaDon(_hoaDonHienTai.MaHD, mon.MaThucUong, soLuong);
-                numSoLuongMon.Value = 1;
 
-                // Refresh lại chi tiết hóa đơn
+                // Nạp lại chi tiết hóa đơn
                 NapChiTietHoaDon(_hoaDonHienTai.MaHD);
+
+                // Reset số lượng về 1
+                numSoLuongMon.Value = 1;
             }
             catch (SqlException ex)
             {
@@ -471,33 +533,42 @@ namespace QuanLyQuanCafe.GUI.BanHang
             }
         }
 
+        private void BtnKiemTraKho_Click(object? sender, EventArgs e)
+        {
+            var mon = LayMonDangChon();
+            if (mon == null)
+            {
+                UiHelper.ShowWarning("Vui lòng chọn một món thức uống cần kiểm tra tồn kho.");
+                return;
+            }
+
+            int soLuong = (int)numSoLuongMon.Value;
+
+            try
+            {
+                bool duTonKho = _bll.KiemTraTonKhoMonNuoc(mon.MaThucUong, soLuong);
+                if (duTonKho)
+                {
+                    UiHelper.ShowInfo($"Nguyên liệu trong kho ĐỦ để pha chế {soLuong} phần '{mon.TenThucUong}'.", "Kiểm tra tồn kho");
+                }
+                else
+                {
+                    UiHelper.ShowWarning($"CẢNH BÁO: Kho KHÔNG ĐỦ nguyên liệu để pha chế {soLuong} phần '{mon.TenThucUong}'. Vui lòng kiểm tra tồn kho hoặc báo Thủ kho nhập thêm!", "Thiếu nguyên liệu");
+                }
+            }
+            catch (Exception ex)
+            {
+                XuLyLoi(ex);
+            }
+        }
+
         #endregion
 
-        #region 3. Xử lý Hóa đơn chi tiết & Ô tính tiền
-
-        private void LamMoiHoaDonGiaoDien()
-        {
-            _hoaDonHienTai = null;
-            _dsChiTietHD.Clear();
-            dgvChiTietHD.DataSource = null;
-            lblMaHDHienTai.Text = "Mã HĐ: --";
-            lblGioVao.Text = "Giờ vào: --";
-            _tienHang = 0;
-            _tongThanhToan = 0;
-            lblTienHang.Text = "0 đ";
-            numGiamGia.Value = 0;
-            lblTongThanhToan.Text = "0 đ";
-            numTienKhachDua.Value = 0;
-            lblTienThoi.Text = "0 đ";
-            _khachDangChon = null;
-            lblThongTinKhach.Text = "Khách vãng lai (Chiết khấu 0%)";
-            txtTimKhach.Clear();
-        }
+        #region 3. Xử lý Chi tiết Hóa đơn & Bán hàng
 
         private void NapHoaDonCuaBanHienTai()
         {
-            if (_banDangChon == null)
-                return;
+            if (_banDangChon == null) return;
 
             try
             {
@@ -505,17 +576,17 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 if (_hoaDonHienTai != null)
                 {
                     lblMaHDHienTai.Text = $"Mã HĐ: {_hoaDonHienTai.MaHD}";
-                    lblGioVao.Text = $"Giờ vào: {_hoaDonHienTai.NgayLap:HH:mm dd/MM}";
+                    lblGioVao.Text = $"Giờ vào: {_hoaDonHienTai.NgayLap:HH:mm:ss dd/MM}";
 
-                    // Nạp khách hàng nếu hóa đơn có gắn mã khách
+                    // Nạp khách hàng nếu có
                     if (!string.IsNullOrWhiteSpace(_hoaDonHienTai.MaKH))
                     {
-                        var dsKH = _bll.TimKiemKhach(_hoaDonHienTai.MaKH);
-                        _khachDangChon = dsKH.FirstOrDefault(k => k.MaKH == _hoaDonHienTai.MaKH);
+                        var ds = _bll.TimKiemKhachHang("");
+                        _khachDangChon = ds.FirstOrDefault(k => k.MaKH == _hoaDonHienTai.MaKH);
                         if (_khachDangChon != null)
                         {
-                            txtTimKhach.Text = _khachDangChon.SoDienThoai;
-                            lblThongTinKhach.Text = $"{_khachDangChon.TenKH} ({_khachDangChon.TenLoai} - Giảm {_khachDangChon.ChietKhau}%)";
+                            decimal ck = _bll.LayChietKhauTheoKhach(_khachDangChon.MaKH);
+                            lblThongTinKhach.Text = $"⭐ {_khachDangChon.TenKH} ({_khachDangChon.TenLoaiKH} - Giảm {ck}%)";
                         }
                     }
                     else
@@ -545,20 +616,58 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 dgvChiTietHD.DataSource = null;
                 dgvChiTietHD.DataSource = _dsChiTietHD;
 
-                _tienHang = _dsChiTietHD.Sum(c => c.ThanhTien);
-                lblTienHang.Text = $"{_tienHang:N0} đ";
-
-                // Tính tiền giảm giá theo khách hàng nếu có
-                decimal chietKhau = _khachDangChon != null ? _khachDangChon.ChietKhau : 0;
-                decimal giamGia = Math.Round(_tienHang * chietKhau / 100m, 0);
-                numGiamGia.Value = Math.Min(giamGia, _tienHang);
-
-                CapNhatTongCongVaTienThoi();
+                TinhTongTienHoaDon();
             }
             catch (Exception ex)
             {
                 XuLyLoi(ex);
             }
+        }
+
+        private void LamMoiHoaDonGiaoDien()
+        {
+            _hoaDonHienTai = null;
+            lblMaHDHienTai.Text = "Mã HĐ: --";
+            lblGioVao.Text = "Giờ vào: --";
+            _dsChiTietHD.Clear();
+            dgvChiTietHD.DataSource = null;
+            _tienHang = 0;
+            lblTienHang.Text = "0 đ";
+            numGiamGia.Value = 0;
+            _tongThanhToan = 0;
+            lblTongThanhToan.Text = "0 đ";
+            numTienKhachDua.Value = 0;
+            lblTienThoi.Text = "0 đ";
+
+            if (_banDangChon == null)
+            {
+                lblBanDangChon.Text = "BÀN: Chưa chọn";
+                btnMoBan.Enabled = false;
+                btnMoBanNhanh.Enabled = false;
+                btnChuyenBan.Enabled = false;
+                btnChuyenBanNhanh.Enabled = false;
+                btnThanhToan.Enabled = false;
+                btnHuyDon.Enabled = false;
+                btnInTamTinh.Enabled = false;
+            }
+        }
+
+        private void TinhTongTienHoaDon()
+        {
+            _tienHang = _dsChiTietHD.Sum(c => c.ThanhTien);
+            lblTienHang.Text = $"{_tienHang:N0} đ";
+
+            // Áp dụng chiết khấu khách hàng tự động
+            decimal phanTramGiam = 0;
+            if (_khachDangChon != null)
+            {
+                phanTramGiam = _bll.LayChietKhauTheoKhach(_khachDangChon.MaKH);
+            }
+
+            decimal tienGiam = Math.Round(_tienHang * phanTramGiam / 100m, 0);
+            numGiamGia.Value = Math.Min(tienGiam, _tienHang);
+
+            CapNhatTongCongVaTienThoi();
         }
 
         private void CapNhatTongCongVaTienThoi()
@@ -568,12 +677,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             lblTongThanhToan.Text = $"{_tongThanhToan:N0} đ";
 
-            string pt = cboPhuongThuc.SelectedItem?.ToString() ?? "Tiền mặt";
-            if (pt != "Tiền mặt")
-            {
-                numTienKhachDua.Value = _tongThanhToan;
-            }
-            else if (numTienKhachDua.Value < _tongThanhToan && numTienKhachDua.Value == 0)
+            if (cboPhuongThuc.SelectedItem?.ToString() == "Tiền mặt" && numTienKhachDua.Value < _tongThanhToan)
             {
                 numTienKhachDua.Value = _tongThanhToan;
             }
@@ -597,12 +701,12 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             if (tienThoi >= 0)
             {
-                lblTienThoi.ForeColor = Color.FromArgb(22, 163, 74); // Xanh lá
+                lblTienThoi.ForeColor = Color.FromArgb(22, 163, 74);
                 lblTienThoi.Text = $"{tienThoi:N0} đ";
             }
             else
             {
-                lblTienThoi.ForeColor = Color.FromArgb(220, 38, 38); // Đỏ thiếu tiền
+                lblTienThoi.ForeColor = Color.FromArgb(220, 38, 38);
                 lblTienThoi.Text = $"Thiếu {Math.Abs(tienThoi):N0} đ";
             }
         }
@@ -618,7 +722,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
             if (!isTienMat)
             {
                 numTienKhachDua.Value = _tongThanhToan;
-                lblTienThoi.Text = "0 đ";
+                lblTienThoi.Text = "0 đ (Điện tử)";
+                lblTienThoi.ForeColor = Color.FromArgb(100, 116, 139);
             }
             else
             {
@@ -628,13 +733,18 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private void DatTienNhanh(decimal soTien)
         {
-            numTienKhachDua.Value = Math.Max(soTien, numTienKhachDua.Value + soTien);
+            if (numTienKhachDua.Value == 0)
+                numTienKhachDua.Value = soTien;
+            else
+                numTienKhachDua.Value += soTien;
         }
 
         private ChiTietHoaDonDTO? LayChiTietDangChon()
         {
             if (dgvChiTietHD.CurrentRow?.DataBoundItem is ChiTietHoaDonDTO ct)
+            {
                 return ct;
+            }
             return null;
         }
 
@@ -643,7 +753,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             var ct = LayChiTietDangChon();
             if (ct == null || _hoaDonHienTai == null)
             {
-                UiHelper.ShowWarning("Vui lòng chọn món trong hóa đơn cần tăng số lượng.");
+                UiHelper.ShowWarning("Vui lòng chọn món trên hóa đơn để tăng số lượng.");
                 return;
             }
 
@@ -667,25 +777,30 @@ namespace QuanLyQuanCafe.GUI.BanHang
             var ct = LayChiTietDangChon();
             if (ct == null || _hoaDonHienTai == null)
             {
-                UiHelper.ShowWarning("Vui lòng chọn món trong hóa đơn cần giảm số lượng.");
+                UiHelper.ShowWarning("Vui lòng chọn món trên hóa đơn để giảm số lượng.");
                 return;
             }
 
             try
             {
-                if (ct.SoLuong - 1 <= 0)
+                int slMoi = ct.SoLuong - 1;
+                if (slMoi <= 0)
                 {
-                    if (UiHelper.Confirm($"Số lượng sẽ về 0. Bạn có muốn xóa món '{ct.TenThucUong}' khỏi hóa đơn không?"))
+                    if (UiHelper.Confirm($"Số lượng bằng 0. Bạn có muốn xóa món '{ct.TenThucUong}' khỏi hóa đơn không?"))
                     {
                         _bll.XoaMonKhoiHoaDon(_hoaDonHienTai.MaHD, ct.MaThucUong);
-                        NapChiTietHoaDon(_hoaDonHienTai.MaHD);
+                    }
+                    else
+                    {
+                        return;
                     }
                 }
                 else
                 {
-                    _bll.CapNhatSoLuongMon(_hoaDonHienTai.MaHD, ct.MaThucUong, ct.SoLuong - 1);
-                    NapChiTietHoaDon(_hoaDonHienTai.MaHD);
+                    _bll.CapNhatSoLuongMon(_hoaDonHienTai.MaHD, ct.MaThucUong, slMoi);
                 }
+
+                NapChiTietHoaDon(_hoaDonHienTai.MaHD);
             }
             catch (SqlException ex)
             {
@@ -724,9 +839,46 @@ namespace QuanLyQuanCafe.GUI.BanHang
             }
         }
 
+        private void BtnTimKhach_Click(object? sender, EventArgs e)
+        {
+            string tuKhoa = txtTimKhach.Text.Trim();
+            try
+            {
+                var ds = _bll.TimKiemKhachHang(tuKhoa);
+                if (ds.Count == 0)
+                {
+                    UiHelper.ShowWarning("Không tìm thấy khách hàng nào phù hợp.");
+                    return;
+                }
+
+                _khachDangChon = ds[0];
+                decimal ck = _bll.LayChietKhauTheoKhach(_khachDangChon.MaKH);
+                lblThongTinKhach.Text = $"⭐ {_khachDangChon.TenKH} ({_khachDangChon.TenLoaiKH} - Giảm {ck}%)";
+
+                TinhTongTienHoaDon();
+            }
+            catch (Exception ex)
+            {
+                XuLyLoi(ex);
+            }
+        }
+
+        private void BtnThemKhachNhanh_Click(object? sender, EventArgs e)
+        {
+            UiHelper.ShowInfo("Chức năng tạo khách hàng mới đang được quản lý tại phân hệ Khách hàng (Thành viên 4). Vui lòng tìm kiếm khách hàng hiện có qua SĐT.", "Thông báo");
+        }
+
+        private void BtnBoChonKhach_Click(object? sender, EventArgs e)
+        {
+            _khachDangChon = null;
+            txtTimKhach.Clear();
+            lblThongTinKhach.Text = "Khách vãng lai (Chiết khấu 0%)";
+            TinhTongTienHoaDon();
+        }
+
         #endregion
 
-        #region 4. Các nút chức năng chính: Mở bàn, Chuyển bàn, Thanh toán, Hủy đơn
+        #region 4. Các nút chức năng chính: Mở bàn, Chuyển bàn, Thanh toán, Hủy đơn, Tạm tính
 
         private void BtnMoBan_Click(object? sender, EventArgs e)
         {
@@ -781,7 +933,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             using var formChuyen = new Form
             {
                 Text = "Chuyển bàn",
-                Size = new Size(380, 220),
+                Size = new Size(390, 230),
                 StartPosition = FormStartPosition.CenterParent,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 MaximizeBox = false,
@@ -793,14 +945,14 @@ namespace QuanLyQuanCafe.GUI.BanHang
             {
                 Text = $"Chuyển Hóa đơn {_hoaDonHienTai.MaHD} từ Bàn {_banDangChon.SoBan} sang:",
                 Location = new Point(20, 20),
-                Size = new Size(330, 24),
+                Size = new Size(340, 24),
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold)
             };
 
             var cboBanDich = new ComboBox
             {
                 Location = new Point(20, 55),
-                Size = new Size(325, 30),
+                Size = new Size(335, 30),
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Font = new Font("Segoe UI", 10F)
             };
@@ -815,23 +967,25 @@ namespace QuanLyQuanCafe.GUI.BanHang
             {
                 Text = "Xác nhận chuyển",
                 Location = new Point(80, 115),
-                Size = new Size(130, 36),
+                Size = new Size(140, 36),
                 BackColor = Color.FromArgb(139, 92, 246),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold)
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Cursor = Cursors.Hand
             };
             btnXacNhanChuyen.FlatAppearance.BorderSize = 0;
 
             var btnHuyChuyen = new Button
             {
                 Text = "Hủy",
-                Location = new Point(220, 115),
+                Location = new Point(230, 115),
                 Size = new Size(85, 36),
                 BackColor = Color.FromArgb(100, 116, 139),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F)
+                Font = new Font("Segoe UI", 9F),
+                Cursor = Cursors.Hand
             };
             btnHuyChuyen.FlatAppearance.BorderSize = 0;
 
@@ -881,52 +1035,12 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 return;
             }
 
-            string phuongThuc = cboPhuongThuc.SelectedItem?.ToString() ?? "Tiền mặt";
-
-            if (phuongThuc == "Tiền mặt" && numTienKhachDua.Value < _tongThanhToan)
+            // Mở màn hình xác nhận thanh toán chuyên biệt (frmThanhToan)
+            using var frmTT = new frmThanhToan(_hoaDonHienTai.MaHD, _banDangChon.SoBan.ToString(), _khachDangChon?.MaKH);
+            if (frmTT.ShowDialog(this) == DialogResult.OK)
             {
-                UiHelper.ShowWarning($"Tiền khách đưa ({numTienKhachDua.Value:N0} đ) chưa đủ so với tổng thanh toán ({_tongThanhToan:N0} đ).");
-                return;
-            }
-
-            decimal giamGia = numGiamGia.Value;
-
-            if (!UiHelper.Confirm($"Xác nhận thanh toán Hóa đơn '{_hoaDonHienTai.MaHD}' cho Bàn {_banDangChon.SoBan}?\n" +
-                                 $"Tổng tiền hàng: {_tienHang:N0} đ\n" +
-                                 $"Giảm giá: {giamGia:N0} đ\n" +
-                                 $"TỔNG THANH TOÁN: {_tongThanhToan:N0} đ\n" +
-                                 $"Phương thức: {phuongThuc}"))
-            {
-                return;
-            }
-
-            try
-            {
-                decimal tongThanhToanThucTe = _bll.ThanhToanHoaDon(_hoaDonHienTai.MaHD, giamGia, phuongThuc);
-                decimal tienThoi = (phuongThuc == "Tiền mặt") ? (numTienKhachDua.Value - tongThanhToanThucTe) : 0;
-
-                string thongBao = $"Thanh toán Hóa đơn {_hoaDonHienTai.MaHD} thành công!\n" +
-                                  $"Bàn {_banDangChon.SoBan} đã được giải phóng về trạng thái Trống.\n" +
-                                  $"Phương thức: {phuongThuc}\n" +
-                                  $"Tổng thanh toán: {tongThanhToanThucTe:N0} đ";
-
-                if (phuongThuc == "Tiền mặt" && tienThoi > 0)
-                {
-                    thongBao += $"\nTiền thối lại cho khách: {tienThoi:N0} đ";
-                }
-
-                UiHelper.ShowInfo(thongBao, "Thanh toán thành công");
-
-                // Nạp lại toàn bộ dữ liệu (Refresh) sau khi thanh toán
+                // Sau khi thanh toán thành công, nạp lại toàn bộ dữ liệu (Refresh)
                 RefreshDuLieu();
-            }
-            catch (SqlException ex)
-            {
-                UiHelper.ShowWarning(CustomSqlExceptionHandler.Translate(ex));
-            }
-            catch (Exception ex)
-            {
-                XuLyLoi(ex);
             }
         }
 
@@ -969,147 +1083,38 @@ namespace QuanLyQuanCafe.GUI.BanHang
             decimal giamGia = numGiamGia.Value;
             decimal tong = _tongThanhToan;
 
-            string noiDung = $"=== PHIẾU TẠM TÍNH ===\n" +
-                             $"Hóa đơn: {_hoaDonHienTai.MaHD}\n" +
-                             $"Bàn: {_banDangChon.SoBan} ({_banDangChon.TenViTri})\n" +
-                             $"Giờ vào: {_hoaDonHienTai.NgayLap:dd/MM/yyyy HH:mm}\n" +
-                             $"Khách hàng: {(_khachDangChon != null ? _khachDangChon.TenKH : "Khách vãng lai")}\n" +
-                             $"----------------------------------------\n";
+            var sb = new StringBuilder();
+            sb.AppendLine("         CAFE NHÓM 06 - COFFEE & TEA         ");
+            sb.AppendLine("     01 Võ Văn Ngân, TP. Thủ Đức, TP. HCM     ");
+            sb.AppendLine("             Hotline: 1900 6868              ");
+            sb.AppendLine("=============================================");
+            sb.AppendLine("             PHIẾU TẠM TÍNH TIỀN             ");
+            sb.AppendLine($"Số HĐ   : {_hoaDonHienTai.MaHD}");
+            sb.AppendLine($"Bàn     : Bàn {_banDangChon.SoBan} ({_banDangChon.TenViTri})");
+            sb.AppendLine($"Giờ vào : {_hoaDonHienTai.NgayLap:dd/MM/yyyy HH:mm:ss}");
+            sb.AppendLine($"Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
+            sb.AppendLine($"Thu ngân: {CurrentUser.TenNV}");
+            sb.AppendLine($"Khách   : {(_khachDangChon != null ? _khachDangChon.TenKH : "Khách vãng lai")}");
+            sb.AppendLine("---------------------------------------------");
+            sb.AppendLine(string.Format("{0,-20} {1,3} {2,9} {3,10}", "Tên món", "SL", "Đơn giá", "T.Tiền"));
+            sb.AppendLine("---------------------------------------------");
 
             foreach (var ct in _dsChiTietHD)
             {
-                noiDung += $"{ct.TenThucUong,-20} x{ct.SoLuong,-2} = {ct.ThanhTien:N0} đ\n";
+                string ten = ct.TenThucUong.Length > 20 ? ct.TenThucUong.Substring(0, 19) + "." : ct.TenThucUong;
+                sb.AppendLine(string.Format("{0,-20} {1,3} {2,9:N0} {3,10:N0}", ten, ct.SoLuong, ct.DonGia, ct.ThanhTien));
             }
 
-            noiDung += $"----------------------------------------\n" +
-                       $"Tiền hàng:      {_tienHang:N0} đ\n" +
-                       $"Giảm giá:       {giamGia:N0} đ\n" +
-                       $"TỔNG CỘNG:      {tong:N0} đ\n\n" +
-                       $"(Phiếu dùng để đối soát trước khi thanh toán)";
+            sb.AppendLine("---------------------------------------------");
+            sb.AppendLine($"Tiền hàng      : {_tienHang,28:N0} đ");
+            sb.AppendLine($"Chiết khấu     : {giamGia,28:N0} đ");
+            sb.AppendLine($"TỔNG CỘNG      : {tong,28:N0} đ");
+            sb.AppendLine("=============================================");
+            sb.AppendLine("    (Phiếu dùng để đối soát trước khi thanh toán)   ");
 
-            UiHelper.ShowInfo(noiDung, "Phiếu tạm tính");
+            using var preview = new frmXemHoaDon("Phiếu tạm tính", sb.ToString());
+            preview.ShowDialog(this);
         }
-
-        #endregion
-
-        #region 5. Xử lý Khách hàng
-
-        private void BtnTimKhach_Click(object? sender, EventArgs e)
-        {
-            string tuKhoa = txtTimKhach.Text.Trim();
-            if (string.IsNullOrWhiteSpace(tuKhoa))
-            {
-                _khachDangChon = null;
-                lblThongTinKhach.Text = "Khách vãng lai (Chiết khấu 0%)";
-                if (_hoaDonHienTai != null)
-                {
-                    NapChiTietHoaDon(_hoaDonHienTai.MaHD);
-                }
-                return;
-            }
-
-            try
-            {
-                var ds = _bll.TimKiemKhach(tuKhoa);
-                if (ds.Count > 0)
-                {
-                    _khachDangChon = ds[0];
-                    lblThongTinKhach.Text = $"{_khachDangChon.TenKH} ({_khachDangChon.TenLoai} - Chiết khấu {_khachDangChon.ChietKhau}%)";
-                    if (_hoaDonHienTai != null)
-                    {
-                        NapChiTietHoaDon(_hoaDonHienTai.MaHD);
-                    }
-                }
-                else
-                {
-                    UiHelper.ShowWarning($"Không tìm thấy khách hàng nào với từ khóa '{tuKhoa}'.");
-                }
-            }
-            catch (SqlException ex)
-            {
-                UiHelper.ShowWarning(CustomSqlExceptionHandler.Translate(ex));
-            }
-            catch (Exception ex)
-            {
-                XuLyLoi(ex);
-            }
-        }
-
-        private void BtnThemKhachNhanh_Click(object? sender, EventArgs e)
-        {
-            using var formNhap = new Form
-            {
-                Text = "Thêm nhanh khách hàng",
-                Size = new Size(380, 220),
-                StartPosition = FormStartPosition.CenterParent,
-                FormBorderStyle = FormBorderStyle.FixedDialog,
-                MaximizeBox = false,
-                MinimizeBox = false,
-                BackColor = Color.White
-            };
-
-            var lblTen = new Label { Text = "Tên khách hàng:", Location = new Point(20, 20), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            var txtTen = new TextBox { Location = new Point(140, 18), Width = 200, Font = new Font("Segoe UI", 9.5F) };
-
-            var lblSdt = new Label { Text = "Số điện thoại:", Location = new Point(20, 60), AutoSize = true, Font = new Font("Segoe UI", 9F) };
-            var txtSdt = new TextBox { Location = new Point(140, 58), Width = 200, Font = new Font("Segoe UI", 9.5F), Text = txtTimKhach.Text.Trim() };
-
-            var btnLuu = new Button
-            {
-                Text = "Lưu",
-                Location = new Point(140, 110),
-                Width = 95,
-                Height = 35,
-                BackColor = Color.FromArgb(16, 185, 129),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold)
-            };
-            btnLuu.FlatAppearance.BorderSize = 0;
-
-            var btnHuy = new Button
-            {
-                Text = "Hủy",
-                Location = new Point(245, 110),
-                Width = 95,
-                Height = 35,
-                BackColor = Color.FromArgb(100, 116, 139),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 9F)
-            };
-            btnHuy.FlatAppearance.BorderSize = 0;
-
-            btnLuu.Click += (s, ev) =>
-            {
-                try
-                {
-                    string maKH = _bll.ThemKhachHangNhanh(txtTen.Text.Trim(), txtSdt.Text.Trim());
-                    UiHelper.ShowInfo($"Thêm khách hàng thành công! Mã khách: {maKH}");
-                    txtTimKhach.Text = txtSdt.Text.Trim();
-                    formNhap.DialogResult = DialogResult.OK;
-                    formNhap.Close();
-                    BtnTimKhach_Click(sender, e);
-                }
-                catch (SqlException sqlEx)
-                {
-                    UiHelper.ShowWarning(CustomSqlExceptionHandler.Translate(sqlEx));
-                }
-                catch (Exception ex)
-                {
-                    XuLyLoi(ex);
-                }
-            };
-
-            btnHuy.Click += (s, ev) => formNhap.Close();
-
-            formNhap.Controls.AddRange(new Control[] { lblTen, txtTen, lblSdt, txtSdt, btnLuu, btnHuy });
-            formNhap.ShowDialog(this);
-        }
-
-        #endregion
-
-        #region 6. Xử lý lỗi CSDL tập trung với CustomSqlExceptionHandler
 
         private void XuLyLoi(Exception ex)
         {

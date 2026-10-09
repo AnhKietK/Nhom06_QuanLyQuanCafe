@@ -8,6 +8,7 @@ namespace QuanLyQuanCafe.DTO
         public int DiemTichLuy { get; set; }
         public string MaLoaiKH { get; set; } = "";
         public string TenLoai { get; set; } = "";
+        public string TenLoaiKH => !string.IsNullOrEmpty(TenLoai) ? TenLoai : "Thường";
         public decimal ChietKhau { get; set; }
     }
 }
