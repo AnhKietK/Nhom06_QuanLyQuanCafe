@@ -203,6 +203,11 @@ namespace QuanLyQuanCafe.BLL
             return _dal.KiemTraDuNguyenLieu(maThucUong.Trim(), soLuong);
         }
 
+        public bool KiemTraTonKhoMonNuoc(string maThucUong, int soLuong)
+        {
+            return KiemTraDuNguyenLieu(maThucUong, soLuong);
+        }
+
         public decimal LayChietKhauTheoKhach(string maKH)
         {
             if (string.IsNullOrWhiteSpace(maKH))
@@ -214,6 +219,11 @@ namespace QuanLyQuanCafe.BLL
         public List<KhachHangDTO> TimKiemKhach(string tuKhoa)
         {
             return _dal.TimKiemKhach(tuKhoa ?? "");
+        }
+
+        public List<KhachHangDTO> TimKiemKhachHang(string tuKhoa)
+        {
+            return TimKiemKhach(tuKhoa);
         }
 
         public string ThemKhachHangNhanh(string tenKH, string sdt)
