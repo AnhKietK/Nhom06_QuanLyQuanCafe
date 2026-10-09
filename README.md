@@ -7,10 +7,10 @@ bán hàng, kho, nhập hàng, khách hàng, báo cáo, phân quyền theo vai t
 ## Thành viên
 | Thành viên | MSSV | Phụ trách |
 | --- | --- | --- |
-| ... | ... | Nền tảng, bảo mật, quản trị (Quản lý) |
-| ... | ... | Bán hàng (Phục vụ, Thu ngân) |
-| ... | ... | Kho và nhà cung cấp (Thủ kho) |
-| ... | ... | Khách hàng, danh mục, báo cáo (Kế toán) |
+| Hoàng Anh Kiệt | ... | Nền tảng, bảo mật, quản trị (Quản lý) |
+| Lê Anh Duy | 24110180 | Bán hàng (Phục vụ, Thu ngân) |
+| Võ Lê Ngọc Hưng | 24110233 | Kho và nhà cung cấp (Thủ kho) |
+| Võ Tấn Phát | 24110299 | Khách hàng, danh mục, báo cáo (Kế toán) |
 
 ## Công nghệ
 C# WinForms (.NET 8), ADO.NET (Microsoft.Data.SqlClient), Microsoft SQL Server.
