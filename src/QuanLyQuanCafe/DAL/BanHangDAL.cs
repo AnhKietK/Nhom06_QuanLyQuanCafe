@@ -60,6 +60,35 @@ namespace QuanLyQuanCafe.DAL
             return list;
         }
 
+        public void ChuyenBan(string maHD, string maBanCu, string maBanMoi)
+        {
+            try
+            {
+                using var conn = new SqlConnection(ConnectionString);
+                using var cmd = new SqlCommand(@"
+                    BEGIN TRANSACTION;
+                    UPDATE HoaDon SET MaBan = @MaBanMoi WHERE MaHD = @MaHD;
+                    UPDATE Ban SET TrangThai = N'TRONG' WHERE MaBan = @MaBanCu;
+                    UPDATE Ban SET TrangThai = N'COKHACH' WHERE MaBan = @MaBanMoi;
+                    COMMIT TRANSACTION;", conn)
+                {
+                    CommandType = CommandType.Text,
+                    CommandTimeout = 15
+                };
+
+                cmd.Parameters.Add(new SqlParameter("@MaHD", maHD));
+                cmd.Parameters.Add(new SqlParameter("@MaBanCu", maBanCu));
+                cmd.Parameters.Add(new SqlParameter("@MaBanMoi", maBanMoi));
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+                throw new InvalidOperationException(CustomSqlExceptionHandler.Translate(ex), ex);
+            }
+        }
+
         #endregion
 
         #region 2. Thực đơn thức uống

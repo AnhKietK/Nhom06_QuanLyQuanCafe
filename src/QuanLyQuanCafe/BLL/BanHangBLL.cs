@@ -50,6 +50,34 @@ namespace QuanLyQuanCafe.BLL
             );
         }
 
+        public string MoHoaDon(string maBan, string? maKH = null, string phuongThucThanhToan = "Tiền mặt")
+        {
+            return MoBan(maBan, maKH, phuongThucThanhToan);
+        }
+
+        /// <summary>
+        /// Chuyển bàn: Chuyển hóa đơn đang mở từ bàn cũ sang bàn mới (phải đang trống)
+        /// </summary>
+        public void ChuyenBan(string maHD, string maBanCu, string maBanMoi)
+        {
+            ValidationHelper.BatBuocNhap(maHD, "Mã hóa đơn");
+            ValidationHelper.BatBuocNhap(maBanCu, "Mã bàn hiện tại");
+            ValidationHelper.BatBuocNhap(maBanMoi, "Mã bàn đích");
+
+            if (maBanCu.Trim().Equals(maBanMoi.Trim(), StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("Bàn đích phải khác bàn hiện tại.");
+
+            var dsBan = _dal.LayDanhSachBan();
+            var banMoi = dsBan.FirstOrDefault(b => b.MaBan.Equals(maBanMoi.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (banMoi == null)
+                throw new ArgumentException("Bàn đích không tồn tại.");
+
+            if (!banMoi.TrangThai.Equals("TRONG", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException($"Bàn {banMoi.SoBan} đang có khách hoặc đặt trước, không thể chuyển tới.");
+
+            _dal.ChuyenBan(maHD.Trim(), maBanCu.Trim(), maBanMoi.Trim());
+        }
+
         #endregion
 
         #region 2. Nghiệp vụ Gọi món & Chi tiết Hóa đơn
