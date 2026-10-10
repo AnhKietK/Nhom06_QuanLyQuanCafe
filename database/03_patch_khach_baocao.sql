@@ -6,9 +6,12 @@ CREATE OR ALTER PROCEDURE sp_LayDanhSachLoaiKhach
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT MaLoaiKH, TenLoaiKH, PhanTramGiam, DiemToiThieu
+    SELECT MaLoaiKH, 
+           TenLoai AS TenLoaiKH, 
+           ChietKhau AS PhanTramGiam, 
+           0 AS DiemToiThieu
     FROM LoaiKhach
-    ORDER BY DiemToiThieu ASC;
+    ORDER BY ChietKhau ASC;
 END
 GO
 
@@ -64,4 +67,3 @@ GO
    EXEC sp_TimKiemKhach '';
    REVERT;
 */
-
