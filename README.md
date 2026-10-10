@@ -29,8 +29,3 @@ C# WinForms (.NET 8), ADO.NET (Microsoft.Data.SqlClient), Microsoft SQL Server.
 | 0901000004 | Thu ngân |
 | 0901000005 | Thủ kho |
 | 0901000006 | Kế toán |
-
-## Quy ước làm việc
-- Không commit trực tiếp vào `main`. Làm trên nhánh `feature/...`, xong mở Pull Request.
-- Mỗi Pull Request do một thành viên khác duyệt.
-- Mỗi file chỉ một người sở hữu, xem `docs/phan-cong.md`. 
