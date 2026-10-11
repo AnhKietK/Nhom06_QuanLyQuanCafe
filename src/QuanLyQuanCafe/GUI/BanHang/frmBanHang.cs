@@ -326,7 +326,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                     Cursor = Cursors.Hand,
                     Tag = b
                 };
-                btnBan.FlatAppearance.BorderSize = 2;
+                btnBan.FlatAppearance.BorderSize = 0;
 
                 string ttHienThi;
                 Color mauNen;
@@ -358,7 +358,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 }
                 else
                 {
-                    btnBan.FlatAppearance.BorderColor = Color.Transparent;
+                    btnBan.FlatAppearance.BorderSize = 0;
                 }
 
                 btnBan.Click += (s, e) =>
@@ -387,8 +387,15 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 if (c is Button btn && btn.Tag is BanDTO b)
                 {
                     bool isSelected = (b.MaBan == maBan);
-                    btn.FlatAppearance.BorderColor = isSelected ? Color.FromArgb(37, 99, 235) : Color.Transparent;
-                    btn.FlatAppearance.BorderSize = isSelected ? 3 : 2;
+                    if (isSelected)
+                    {
+                        btn.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235);
+                        btn.FlatAppearance.BorderSize = 3;
+                    }
+                    else
+                    {
+                        btn.FlatAppearance.BorderSize = 0;
+                    }
                 }
             }
 
