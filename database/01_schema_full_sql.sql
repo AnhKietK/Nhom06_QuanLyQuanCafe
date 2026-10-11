@@ -907,7 +907,7 @@ CREATE OR ALTER PROCEDURE sp_TimKiemThucUong
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT tu.MaThucUong, tu.TenThucUong, tu.DonGiaBan, tu.HinhAnh, tu.MaLoaiTU, ltu.TenLoai AS TenLoaiTU, ltu.TenLoai AS LoaiThucUong
+    SELECT tu.MaThucUong, tu.TenThucUong, tu.DonGiaBan, tu.HinhAnh, tu.MaLoaiTU, ltu.TenLoai AS LoaiThucUong
     FROM ThucUong tu
     JOIN LoaiThucUong ltu ON ltu.MaLoaiTU = tu.MaLoaiTU
     WHERE (@TuKhoa IS NULL OR tu.TenThucUong LIKE N'%' + @TuKhoa + '%')
@@ -1242,7 +1242,7 @@ CREATE OR ALTER PROCEDURE sp_TimKiemKhach
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT k.MaKH, k.TenKH, k.SoDienThoai, k.DiemTichLuy, k.MaLoaiKH, lk.TenLoai AS TenLoaiKhach, lk.TenLoai AS TenLoai, lk.TenLoai AS TenLoaiKH, lk.ChietKhau
+    SELECT k.MaKH, k.TenKH, k.SoDienThoai, k.DiemTichLuy, k.MaLoaiKH, lk.TenLoai AS TenLoaiKhach, lk.ChietKhau
     FROM Khach k
     JOIN LoaiKhach lk ON lk.MaLoaiKH = k.MaLoaiKH
     WHERE k.TenKH LIKE N'%' + @TuKhoa + '%'
