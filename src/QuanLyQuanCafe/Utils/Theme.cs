@@ -562,7 +562,10 @@ namespace QuanLyQuanCafe.Utils
 
                 EnableDarkModeTitleBar(f);
                 EnableDarkModeScrollBars(f);
-                ApplyToControls(f.Controls);
+                if (f.Controls != null)
+                {
+                    ApplyToControls(f.Controls);
+                }
                 f.Invalidate(true);
             }
             catch
@@ -573,7 +576,9 @@ namespace QuanLyQuanCafe.Utils
 
         private static void ApplyToControls(Control.ControlCollection controls)
         {
-            foreach (Control c in controls)
+            if (controls == null) return;
+
+            foreach (Control? c in controls)
             {
                 if (c == null) continue;
 
@@ -582,7 +587,7 @@ namespace QuanLyQuanCafe.Utils
 
                 ApplyToControl(c);
 
-                if (c.HasChildren)
+                if (c.HasChildren && c.Controls != null)
                 {
                     ApplyToControls(c.Controls);
                 }
@@ -665,6 +670,8 @@ namespace QuanLyQuanCafe.Utils
 
         private static void ApplyToLabel(Label lbl)
         {
+            if (lbl == null) return;
+
             // Nếu nhãn nằm trên thanh header gradient, luôn giữ chữ trắng
             if (lbl.Parent != null && (lbl.Parent.Name == "pnlHeader" || lbl.Parent.Parent?.Name == "pnlHeader"))
             {
@@ -700,12 +707,15 @@ namespace QuanLyQuanCafe.Utils
             }
 
             // Mặc định nhãn nhập liệu (có dấu hai chấm) dùng ChuPhu, ngược lại dùng Chu
-            bool isFieldLabel = lbl.Text.TrimEnd().EndsWith(":") || lbl.Text.Contains("(*)");
+            string text = lbl.Text ?? "";
+            bool isFieldLabel = text.TrimEnd().EndsWith(":") || text.Contains("(*)");
             StyleLabel(lbl, phu: isFieldLabel);
         }
 
         private static ButtonKind DetermineButtonKind(Button btn)
         {
+            if (btn == null) return ButtonKind.Primary;
+
             string? tag = btn.Tag?.ToString()?.ToLowerInvariant();
             if (!string.IsNullOrWhiteSpace(tag))
             {
@@ -720,7 +730,7 @@ namespace QuanLyQuanCafe.Utils
                 };
             }
 
-            string name = btn.Name.ToLowerInvariant();
+            string name = btn.Name?.ToLowerInvariant() ?? "";
             if (name.Contains("xoa") || name.Contains("huy"))
                 return ButtonKind.Danger;
             if (name.Contains("luu") || name.Contains("them") || name.Contains("thanhtoan") ||

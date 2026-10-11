@@ -1,14 +1,24 @@
-create database quanlyquancafe;
-go
+-- quanlyquancafe: bảng, view, trigger, function, stored procedure, phân quyền
+-- Chạy lại được nhiều lần: mỗi lần chạy sẽ xóa CSDL cũ rồi tạo lại từ đầu.
+-- Chạy xong file này thì chạy tiếp 02_du_lieu_mau.sql để nạp dữ liệu.
 
-use quanlyquancafe;
-go
+USE master;
+GO
 
--- =====================================================================
--- CSDL_HQT_FULL.SQL — FILE CSDL HOÀN CHỈNH ĐÃ FIX LỖI VÀ BỔ SUNG CRUD
--- =====================================================================
+IF DB_ID(N'quanlyquancafe') IS NOT NULL
+BEGIN
+    ALTER DATABASE quanlyquancafe SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE quanlyquancafe;
+END
+GO
 
--- ############### PHẦN A: 16 BẢNG GỐC + 2 VIEW BAN ĐẦU ###############
+CREATE DATABASE quanlyquancafe;
+GO
+
+USE quanlyquancafe;
+GO
+
+-- A. Bảng
 
 CREATE TABLE LoaiKhach (
     MaLoaiKH VARCHAR(20) PRIMARY KEY CHECK (MaLoaiKH LIKE 'LKH%'),
@@ -218,9 +228,7 @@ CREATE TABLE ChiTietPhieuNhap (
 );
 GO
 
--- =====================================================================
--- SEQUENCES: CHỐNG XUNG ĐỘT TRÙNG MÃ KHI TẠO ĐƠN ĐỒNG THỜI
--- =====================================================================
+-- Sequence sinh mã
 
 CREATE SEQUENCE Seq_HoaDon
     START WITH 1
@@ -246,9 +254,7 @@ CREATE SEQUENCE Seq_PhieuChi
     NO CYCLE;
 GO
 
--- =====================================================================
--- PHẦN B: VIEWS
--- =====================================================================
+-- B. View
 
 CREATE OR ALTER VIEW v_PhieuNhap AS
 SELECT 
@@ -335,9 +341,7 @@ FROM Khach kh
 JOIN LoaiKhach lkh ON lkh.MaLoaiKH = kh.MaLoaiKH;
 GO
 
--- =====================================================================
--- PHẦN C: TRIGGERS
--- =====================================================================
+-- C. Trigger
 
 CREATE OR ALTER TRIGGER trg_CTHD_TruKho
 ON ChiTietHoaDon
@@ -434,7 +438,7 @@ BEGIN
 END
 GO
 
--- XXX
+-- hủy hóa đơn: hoàn kho, trả bàn
 CREATE OR ALTER TRIGGER trg_HoaDon_Huy_HoanKho
 ON HoaDon
 AFTER UPDATE
@@ -467,7 +471,7 @@ BEGIN
 END
 GO
 
--- xxx
+-- sửa/xóa chi tiết hóa đơn: điều chỉnh kho
 CREATE OR ALTER TRIGGER trg_CTHD_DieuChinhKho
 ON ChiTietHoaDon
 AFTER UPDATE, DELETE
@@ -508,9 +512,7 @@ BEGIN
 END
 GO
 
--- =====================================================================
--- PHẦN D: INDEX
--- =====================================================================
+-- D. Index
 
 CREATE INDEX IX_HoaDon_NgayLap ON HoaDon(NgayLap);
 GO
@@ -527,9 +529,7 @@ GO
 CREATE INDEX IX_CTPN_HanSuDung ON ChiTietPhieuNhap(HanSuDung);
 GO
 
--- =====================================================================
--- PHẦN E: FUNCTIONS
--- =====================================================================
+-- E. Function
 
 CREATE OR ALTER FUNCTION fn_TinhThanhTienHoaDon (@MaHD VARCHAR(20))
 RETURNS DECIMAL(12,2)
@@ -625,11 +625,9 @@ BEGIN
 END
 GO
 
--- =====================================================================
--- PHẦN F: STORED PROCEDURES (BỔ SUNG VÀ HOÀN CHỈNH)
--- =====================================================================
+-- F. Stored procedure
 
--- 1. Tạo hóa đơn (Dùng sequence tự sinh mã chống race condition)
+-- 1. Tạo hóa đơn
 CREATE OR ALTER PROCEDURE sp_TaoHoaDon
     @MaHD  VARCHAR(20) = NULL OUTPUT,
     @MaKH  VARCHAR(20) = NULL,
@@ -717,7 +715,7 @@ BEGIN
 END
 GO
 
--- 3. Thanh toán hóa đơn (Đã fix kiểm tra trạng thái và nhận phương thức thanh toán)
+-- 3. Thanh toán hóa đơn
 CREATE OR ALTER PROCEDURE sp_ThanhToanHoaDon
     @MaHD VARCHAR(20),
     @TienGiamGia DECIMAL(12,2) = NULL,
@@ -805,7 +803,7 @@ BEGIN
 END
 GO
 
--- 5. Tạo phiếu nhập kho (Dùng sequence tự sinh mã nếu rỗng)
+-- 5. Tạo phiếu nhập kho
 CREATE OR ALTER PROCEDURE sp_NhapKho
     @MaPN VARCHAR(20) = NULL OUTPUT,
     @MaNCC VARCHAR(20),
@@ -909,7 +907,7 @@ CREATE OR ALTER PROCEDURE sp_TimKiemThucUong
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT tu.MaThucUong, tu.TenThucUong, tu.DonGiaBan, tu.HinhAnh, tu.MaLoaiTU, ltu.TenLoai AS LoaiThucUong
+    SELECT tu.MaThucUong, tu.TenThucUong, tu.DonGiaBan, tu.HinhAnh, tu.MaLoaiTU, ltu.TenLoai AS TenLoaiTU, ltu.TenLoai AS LoaiThucUong
     FROM ThucUong tu
     JOIN LoaiThucUong ltu ON ltu.MaLoaiTU = tu.MaLoaiTU
     WHERE (@TuKhoa IS NULL OR tu.TenThucUong LIKE N'%' + @TuKhoa + '%')
@@ -1165,7 +1163,7 @@ BEGIN
 END
 GO
 
--- 20. Thêm khách hàng (Dùng SEQUENCE tránh xung đột đồng thời)
+-- 20. Thêm khách hàng
 CREATE OR ALTER PROCEDURE sp_ThemKhachHang
     @MaKH VARCHAR(20) = NULL OUTPUT,
     @TenKH NVARCHAR(100),
@@ -1244,7 +1242,7 @@ CREATE OR ALTER PROCEDURE sp_TimKiemKhach
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT k.MaKH, k.TenKH, k.SoDienThoai, k.DiemTichLuy, k.MaLoaiKH, lk.TenLoai AS TenLoaiKhach, lk.ChietKhau
+    SELECT k.MaKH, k.TenKH, k.SoDienThoai, k.DiemTichLuy, k.MaLoaiKH, lk.TenLoai AS TenLoaiKhach, lk.TenLoai AS TenLoai, lk.TenLoai AS TenLoaiKH, lk.ChietKhau
     FROM Khach k
     JOIN LoaiKhach lk ON lk.MaLoaiKH = k.MaLoaiKH
     WHERE k.TenKH LIKE N'%' + @TuKhoa + '%'
@@ -1423,7 +1421,7 @@ BEGIN
 END
 GO
 
--- 31. Lấy danh mục các loại thức uống
+-- 31. Lấy danh sách loại thức uống
 CREATE OR ALTER PROCEDURE sp_LayDanhSachLoaiThucUong
 AS
 BEGIN
@@ -1465,7 +1463,7 @@ BEGIN
 END
 GO
 
--- 35. Quản lý Bàn: Thêm Bàn
+-- 35. Thêm bàn
 CREATE OR ALTER PROCEDURE sp_ThemBan
     @MaBan VARCHAR(20),
     @SoBan INT,
@@ -1486,7 +1484,7 @@ BEGIN
 END
 GO
 
--- 36. Quản lý Bàn: Sửa Bàn
+-- 36. Sửa bàn
 CREATE OR ALTER PROCEDURE sp_SuaBan
     @MaBan VARCHAR(20),
     @SoBan INT,
@@ -1515,7 +1513,7 @@ BEGIN
 END
 GO
 
--- 37. Quản lý Bàn: Xóa Bàn
+-- 37. Xóa bàn
 CREATE OR ALTER PROCEDURE sp_XoaBan
     @MaBan VARCHAR(20)
 AS
@@ -1537,7 +1535,7 @@ BEGIN
 END
 GO
 
--- 38. Quản lý Vị trí: Thêm Vị trí bàn
+-- 38. Thêm vị trí bàn
 CREATE OR ALTER PROCEDURE sp_ThemViTriBan
     @MaViTri VARCHAR(20),
     @TenViTri NVARCHAR(100),
@@ -1557,7 +1555,7 @@ BEGIN
 END
 GO
 
--- 39. Quản lý Vị trí: Sửa Vị trí bàn
+-- 39. Sửa vị trí bàn
 CREATE OR ALTER PROCEDURE sp_SuaViTriBan
     @MaViTri VARCHAR(20),
     @TenViTri NVARCHAR(100),
@@ -1582,7 +1580,7 @@ BEGIN
 END
 GO
 
--- 40. Quản lý Vị trí: Xóa Vị trí bàn
+-- 40. Xóa vị trí bàn
 CREATE OR ALTER PROCEDURE sp_XoaViTriBan
     @MaViTri VARCHAR(20)
 AS
@@ -1601,7 +1599,7 @@ BEGIN
 END
 GO
 
--- 41. Lấy danh sách Vị trí bàn
+-- 41. Lấy danh sách vị trí bàn
 CREATE OR ALTER PROCEDURE sp_LayDanhSachViTriBan
 AS
 BEGIN
@@ -1610,11 +1608,194 @@ BEGIN
 END
 GO
 
--- =====================================================================
--- PHẦN G: SECURITY (LOGIN / USER / ROLE / PERMISSION)
--- =====================================================================
+-- 42. Đặt lại mật khẩu nhân viên (chỉ quản trị dùng)
+CREATE OR ALTER PROCEDURE sp_DatLaiMatKhau
+    @MaNV VARCHAR(20),
+    @MatKhauMoi VARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM NhanVien WHERE MaNV = @MaNV)
+            THROW 50000, N'Nhân viên không tồn tại.', 1;
+        UPDATE NhanVien
+        SET MatKhau = CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', @MatKhauMoi), 2)
+        WHERE MaNV = @MaNV;
+        SELECT N'Đặt lại mật khẩu thành công' AS KetQua;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
+GO
 
--- ---------- 1. LOGIN DÙNG CHO FORM ĐĂNG NHẬP ----------
+-- 43. Công thức pha chế của một thức uống
+CREATE OR ALTER PROCEDURE sp_LayCongThuc
+    @MaThucUong VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT ct.MaThucUong, ct.MaNL, nl.TenNL, lnl.DonViTinh, ct.SoLuongQuyDinh
+    FROM CongThuc ct
+    JOIN NguyenLieu nl ON nl.MaNL = ct.MaNL
+    JOIN LoaiNguyenLieu lnl ON lnl.MaLoaiNL = nl.MaLoaiNL
+    WHERE ct.MaThucUong = @MaThucUong
+    ORDER BY nl.TenNL;
+END
+GO
+
+-- 44. Xóa nguyên liệu (chỉ khi chưa dùng ở đâu)
+CREATE OR ALTER PROCEDURE sp_XoaNguyenLieu
+    @MaNL VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM NguyenLieu WHERE MaNL = @MaNL)
+            THROW 50000, N'Nguyên liệu không tồn tại.', 1;
+        IF EXISTS (SELECT 1 FROM CongThuc WHERE MaNL = @MaNL)
+            THROW 50000, N'Không thể xóa nguyên liệu đang được dùng trong công thức pha chế.', 1;
+        IF EXISTS (SELECT 1 FROM ChiTietPhieuNhap WHERE MaNL = @MaNL)
+            THROW 50000, N'Không thể xóa nguyên liệu đã có phiếu nhập.', 1;
+        DELETE FROM NguyenLieu WHERE MaNL = @MaNL;
+        SELECT N'Xóa nguyên liệu thành công' AS KetQua;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
+GO
+
+-- 45. Xóa nhà cung cấp (chỉ khi chưa có phiếu nhập, phiếu chi)
+CREATE OR ALTER PROCEDURE sp_XoaNCC
+    @MaNCC VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM NhaCungCap WHERE MaNCC = @MaNCC)
+            THROW 50000, N'Nhà cung cấp không tồn tại.', 1;
+        IF EXISTS (SELECT 1 FROM PhieuNhap WHERE MaNCC = @MaNCC)
+            THROW 50000, N'Không thể xóa nhà cung cấp đã có phiếu nhập.', 1;
+        IF EXISTS (SELECT 1 FROM PhieuChi WHERE MaNCC = @MaNCC)
+            THROW 50000, N'Không thể xóa nhà cung cấp đã có phiếu chi.', 1;
+        DELETE FROM NhaCungCap WHERE MaNCC = @MaNCC;
+        SELECT N'Xóa nhà cung cấp thành công' AS KetQua;
+    END TRY
+    BEGIN CATCH
+        THROW;
+    END CATCH
+END
+GO
+
+-- 46. Lấy danh sách loại khách (nạp ComboBox)
+CREATE OR ALTER PROCEDURE sp_LayDanhSachLoaiKhach
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT MaLoaiKH,
+           TenLoai AS TenLoaiKH,
+           ChietKhau AS PhanTramGiam,
+           0 AS DiemToiThieu
+    FROM LoaiKhach
+    ORDER BY ChietKhau ASC;
+END
+GO
+
+-- 47. Lấy danh sách loại nguyên liệu (nạp ComboBox)
+CREATE OR ALTER PROCEDURE sp_LayDanhSachLoaiNguyenLieu
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT MaLoaiNL, TenLoai, DonViTinh FROM LoaiNguyenLieu ORDER BY TenLoai;
+END
+GO
+
+-- 48. Chi tiết của một phiếu nhập
+CREATE OR ALTER PROCEDURE sp_LayChiTietPhieuNhap
+    @MaPN VARCHAR(20)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT ct.MaPN, ct.MaNL, nl.TenNL, lnl.DonViTinh,
+           ct.SoLuongNhap, ct.DonGiaNhap, ct.ThanhTien, ct.HanSuDung
+    FROM ChiTietPhieuNhap ct
+    JOIN NguyenLieu nl ON nl.MaNL = ct.MaNL
+    JOIN LoaiNguyenLieu lnl ON lnl.MaLoaiNL = nl.MaLoaiNL
+    WHERE ct.MaPN = @MaPN
+    ORDER BY nl.TenNL;
+END
+GO
+
+-- 49. Nhập kho trọn gói: tạo phiếu và các dòng chi tiết trong 1 transaction
+--     @DanhSachJson: [{"MaNL":"NL01","SoLuongNhap":10,"DonGiaNhap":95,"HanSuDung":"2026-12-31"}]
+--     HanSuDung có thể null. Tồn kho tự cộng nhờ trigger trg_CTPN_CongKho.
+CREATE OR ALTER PROCEDURE sp_NhapKhoTronGoi
+    @MaNCC VARCHAR(20),
+    @MaNV VARCHAR(20),
+    @GhiChu NVARCHAR(255) = NULL,
+    @DanhSachJson NVARCHAR(MAX)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+    BEGIN TRY
+        IF ISNULL(ISJSON(@DanhSachJson), 0) <> 1
+            THROW 50000, N'Danh sách nguyên liệu không hợp lệ.', 1;
+        IF NOT EXISTS (SELECT 1 FROM OPENJSON(@DanhSachJson))
+            THROW 50000, N'Phiếu nhập phải có ít nhất một nguyên liệu.', 1;
+        IF NOT EXISTS (SELECT 1 FROM NhaCungCap WHERE MaNCC = @MaNCC)
+            THROW 50000, N'Nhà cung cấp không tồn tại.', 1;
+
+        BEGIN TRANSACTION;
+            DECLARE @Seq BIGINT = NEXT VALUE FOR Seq_PhieuNhap;
+            DECLARE @MaPN VARCHAR(20) = 'PN' + RIGHT('000000' + CAST(@Seq AS VARCHAR(10)), 6);
+
+            INSERT INTO PhieuNhap (MaPN, MaNCC, MaNV, GhiChu)
+            VALUES (@MaPN, @MaNCC, @MaNV, @GhiChu);
+
+            INSERT INTO ChiTietPhieuNhap (MaPN, MaNL, SoLuongNhap, DonGiaNhap, HanSuDung)
+            SELECT @MaPN, MaNL, SoLuongNhap, DonGiaNhap, HanSuDung
+            FROM OPENJSON(@DanhSachJson)
+            WITH (
+                MaNL        VARCHAR(20)   '$.MaNL',
+                SoLuongNhap DECIMAL(12,3) '$.SoLuongNhap',
+                DonGiaNhap  DECIMAL(12,2) '$.DonGiaNhap',
+                HanSuDung   DATE          '$.HanSuDung'
+            );
+        COMMIT TRANSACTION;
+
+        SELECT N'Tạo phiếu nhập thành công' AS KetQua, @MaPN AS MaPN;
+    END TRY
+    BEGIN CATCH
+        IF XACT_STATE() <> 0 ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END
+GO
+
+-- 50. Lịch sử phiếu chi theo khoảng ngày
+CREATE OR ALTER PROCEDURE sp_LayDanhSachPhieuChi
+    @TuNgay DATE = NULL,
+    @DenNgay DATE = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT pc.MaPC, pc.NgayChi, pc.SoTienChi, pc.LyDoChi,
+           pc.MaNV, nv.TenNV,
+           pc.MaNCC, ISNULL(ncc.TenNCC, N'(Chi phí khác)') AS TenNCC
+    FROM PhieuChi pc
+    LEFT JOIN NhanVien nv ON pc.MaNV = nv.MaNV
+    LEFT JOIN NhaCungCap ncc ON pc.MaNCC = ncc.MaNCC
+    WHERE (@TuNgay IS NULL OR CAST(pc.NgayChi AS DATE) >= @TuNgay)
+      AND (@DenNgay IS NULL OR CAST(pc.NgayChi AS DATE) <= @DenNgay)
+    ORDER BY pc.NgayChi DESC;
+END
+GO
+
+-- G. Login, user, role, phân quyền
+
+-- login cho form đăng nhập
 IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_auth')
     CREATE LOGIN login_auth WITH PASSWORD = 'AuthLogin@123';
 GO
@@ -1624,7 +1805,7 @@ GO
 GRANT EXECUTE ON sp_DangNhap TO user_auth;
 GO
 
--- ---------- 2. QUẢN TRỊ VIÊN: toàn quyền ----------
+-- quản trị: toàn quyền
 IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_quantri')
     CREATE LOGIN login_quantri WITH PASSWORD = 'QuanTri@123';
 GO
@@ -1634,7 +1815,7 @@ GO
 ALTER ROLE db_owner ADD MEMBER user_quantri;
 GO
 
--- ---------- 3. NHÂN VIÊN PHỤC VỤ / THU NGÂN ----------
+-- phục vụ / thu ngân
 IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_phucvu')
     CREATE LOGIN login_phucvu WITH PASSWORD = 'PhucVu@123';
 GO
@@ -1645,7 +1826,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'NhanVienPhucV
     CREATE ROLE NhanVienPhucVu;
 GO
 
--- Phân quyền bảng / view
+-- bảng, view
 GRANT SELECT, INSERT, UPDATE ON Ban                   TO NhanVienPhucVu;
 GRANT SELECT, INSERT, UPDATE ON HoaDon                TO NhanVienPhucVu;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ChiTietHoaDon TO NhanVienPhucVu;
@@ -1657,11 +1838,11 @@ GRANT SELECT                 ON LoaiKhach             TO NhanVienPhucVu;
 GRANT SELECT                 ON v_KhachHangThanThiet  TO NhanVienPhucVu;
 GRANT SELECT                 ON v_HoaDon              TO NhanVienPhucVu;
 
--- Phân quyền Sequence
+-- sequence
 GRANT UPDATE ON Seq_HoaDon TO NhanVienPhucVu;
 GRANT UPDATE ON Seq_Khach  TO NhanVienPhucVu;
 
--- Phân quyền Stored Procedures
+-- stored procedure
 GRANT EXECUTE ON sp_TaoHoaDon                   TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_ThemMonVaoHoaDon            TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_ThanhToanHoaDon             TO NhanVienPhucVu;
@@ -1677,9 +1858,10 @@ GRANT EXECUTE ON sp_TimKiemKhach                TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_LayDanhSachThucUongTheoLoai TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_LayDanhSachLoaiThucUong     TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_LayDanhSachViTriBan         TO NhanVienPhucVu;
+GRANT EXECUTE ON sp_LayDanhSachLoaiKhach        TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_DoiMatKhau                  TO NhanVienPhucVu;
 
--- Phân quyền Functions
+-- function
 GRANT EXECUTE ON dbo.fn_SinhMaTuDong       TO NhanVienPhucVu;
 GRANT EXECUTE ON dbo.fn_KiemTraDuNguyenLieu TO NhanVienPhucVu;
 GRANT EXECUTE ON dbo.fn_TinhThanhTienHoaDon TO NhanVienPhucVu;
@@ -1689,7 +1871,7 @@ GRANT SELECT  ON dbo.fn_LichSuMuaHang      TO NhanVienPhucVu;
 ALTER ROLE NhanVienPhucVu ADD MEMBER user_phucvu;
 GO
 
--- ---------- 4. THỦ KHO ----------
+-- thủ kho
 IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_thukho')
     CREATE LOGIN login_thukho WITH PASSWORD = 'ThuKho@123';
 GO
@@ -1721,13 +1903,21 @@ GRANT EXECUTE ON sp_SuaNCC                 TO ThuKho;
 GRANT EXECUTE ON sp_LuuCongThuc            TO ThuKho;
 GRANT EXECUTE ON sp_LayDanhSachNguyenLieu  TO ThuKho;
 GRANT EXECUTE ON sp_LayDanhSachNCC         TO ThuKho;
+GRANT EXECUTE ON sp_LayDanhSachLoaiNguyenLieu TO ThuKho;
+GRANT EXECUTE ON sp_LayDanhSachThucUongTheoLoai TO ThuKho;
+GRANT EXECUTE ON sp_LayDanhSachLoaiThucUong TO ThuKho;
+GRANT EXECUTE ON sp_LayCongThuc            TO ThuKho;
+GRANT EXECUTE ON sp_LayChiTietPhieuNhap    TO ThuKho;
+GRANT EXECUTE ON sp_XoaNguyenLieu          TO ThuKho;
+GRANT EXECUTE ON sp_XoaNCC                 TO ThuKho;
+GRANT EXECUTE ON sp_NhapKhoTronGoi         TO ThuKho;
 GRANT EXECUTE ON sp_DoiMatKhau             TO ThuKho;
 GRANT EXECUTE ON dbo.fn_SinhMaTuDong        TO ThuKho;
 
 ALTER ROLE ThuKho ADD MEMBER user_thukho;
 GO
 
--- ---------- 5. KẾ TOÁN ----------
+-- kế toán
 IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_ketoan')
     CREATE LOGIN login_ketoan WITH PASSWORD = 'KeToan@123';
 GO
@@ -1743,138 +1933,18 @@ GRANT SELECT ON v_DoanhThuTheoNgay  TO KeToan;
 GRANT SELECT ON v_MonBanChay         TO KeToan;
 GRANT SELECT ON v_PhieuNhap          TO KeToan;
 GRANT SELECT, INSERT ON PhieuChi     TO KeToan;
+GRANT SELECT ON NhaCungCap           TO KeToan;
+GRANT SELECT ON LoaiKhach            TO KeToan;
 
 GRANT UPDATE ON Seq_PhieuChi TO KeToan;
 
 GRANT EXECUTE ON sp_ChiTienNCC       TO KeToan;
 GRANT EXECUTE ON sp_ThongKeDoanhThu  TO KeToan;
+GRANT EXECUTE ON sp_LayDanhSachPhieuChi TO KeToan;
+GRANT EXECUTE ON sp_LayDanhSachNCC   TO KeToan;
+GRANT EXECUTE ON sp_LayDanhSachLoaiKhach TO KeToan;
 GRANT EXECUTE ON sp_DoiMatKhau       TO KeToan;
 GRANT SELECT  ON dbo.fn_MonBanChayNhat TO KeToan;
 
 ALTER ROLE KeToan ADD MEMBER user_ketoan;
-GO
--- ======================================================================
--- PHẦN H. THỦ TỤC BỔ SUNG
--- ======================================================================
-
--- Đặt lại mật khẩu nhân viên (dành riêng cho Quản lý)
-CREATE OR ALTER PROCEDURE sp_DatLaiMatKhau
-    @MaNV VARCHAR(20),
-    @MatKhauMoi VARCHAR(255)
-AS
-BEGIN
-    SET NOCOUNT ON;
-    BEGIN TRY
-        IF NOT EXISTS (SELECT 1 FROM NhanVien WHERE MaNV = @MaNV)
-            THROW 50000, N'Nhân viên không tồn tại.', 1;
-        UPDATE NhanVien
-        SET MatKhau = CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', @MatKhauMoi), 2)
-        WHERE MaNV = @MaNV;
-        SELECT N'Đặt lại mật khẩu thành công' AS KetQua;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END
-GO
-
--- 2. Truy vấn danh sách định lượng công thức pha chế theo mã thức uống (Kho & Quản lý)
-CREATE OR ALTER PROCEDURE sp_LayCongThuc
-    @MaThucUong VARCHAR(20)
-AS
-BEGIN
-    SET NOCOUNT ON;
-    BEGIN TRY
-        IF NOT EXISTS (SELECT 1 FROM ThucUong WHERE MaThucUong = @MaThucUong)
-            THROW 50000, N'Thức uống không tồn tại.', 1;
-
-        SELECT ct.MaThucUong,
-               tu.TenThucUong,
-               ct.MaNL,
-               nl.TenNL,
-               ct.SoLuongQuyDinh,
-               lnl.DonViTinh
-        FROM CongThuc ct
-        JOIN ThucUong tu ON ct.MaThucUong = tu.MaThucUong
-        JOIN NguyenLieu nl ON ct.MaNL = nl.MaNL
-        JOIN LoaiNguyenLieu lnl ON nl.MaLoaiNL = lnl.MaLoaiNL
-        WHERE ct.MaThucUong = @MaThucUong
-        ORDER BY ct.MaNL;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END
-GO
-GRANT EXECUTE ON sp_LayCongThuc TO ThuKho;
-GO
-
--- 3. Xóa nguyên liệu khi chưa từng phát sinh giao dịch nhập kho hoặc công thức (Kho & Quản lý)
-CREATE OR ALTER PROCEDURE sp_XoaNguyenLieu
-    @MaNL VARCHAR(20)
-AS
-BEGIN
-    SET NOCOUNT ON;
-    BEGIN TRY
-        IF NOT EXISTS (SELECT 1 FROM NguyenLieu WHERE MaNL = @MaNL)
-            THROW 50000, N'Nguyên liệu không tồn tại.', 1;
-
-        IF EXISTS (SELECT 1 FROM ChiTietPhieuNhap WHERE MaNL = @MaNL)
-            THROW 50000, N'Nguyên liệu đã có lịch sử nhập kho, không thể xóa.', 1;
-
-        IF EXISTS (SELECT 1 FROM CongThuc WHERE MaNL = @MaNL)
-            THROW 50000, N'Nguyên liệu đang được sử dụng trong công thức thức uống, không thể xóa.', 1;
-
-        DELETE FROM NguyenLieu WHERE MaNL = @MaNL;
-        SELECT N'Xóa nguyên liệu thành công' AS KetQua;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END
-GO
-GRANT EXECUTE ON sp_XoaNguyenLieu TO ThuKho;
-GO
-
--- 4. Cấp quyền cho Kế toán xem danh sách Nhà cung cấp để lập phiếu chi tiền NCC
-GRANT EXECUTE ON sp_LayDanhSachNCC TO KeToan;
-GRANT SELECT  ON NhaCungCap        TO KeToan;
-GO
-
--- 5. Lấy danh sách loại khách hàng để nạp combobox phân loại khách (Phục vụ, Thu ngân, Kế toán, Quản lý)
-CREATE OR ALTER PROCEDURE sp_LayDanhSachLoaiKhach
-AS
-BEGIN
-    SET NOCOUNT ON;
-    BEGIN TRY
-        SELECT MaLoaiKH, TenLoai, ChietKhau
-        FROM LoaiKhach
-        ORDER BY MaLoaiKH;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END
-GO
-GRANT EXECUTE ON sp_LayDanhSachLoaiKhach TO NhanVienPhucVu;
-GRANT EXECUTE ON sp_LayDanhSachLoaiKhach TO KeToan;
-GRANT SELECT  ON LoaiKhach              TO KeToan;
-GO
-
--- 6. Lấy danh sách loại nguyên liệu và đơn vị tính để nạp combobox (Kho & Quản lý)
-CREATE OR ALTER PROCEDURE sp_LayDanhSachLoaiNguyenLieu
-AS
-BEGIN
-    SET NOCOUNT ON;
-    BEGIN TRY
-        SELECT MaLoaiNL, TenLoai, DonViTinh
-        FROM LoaiNguyenLieu
-        ORDER BY MaLoaiNL;
-    END TRY
-    BEGIN CATCH
-        THROW;
-    END CATCH
-END
-GO
-GRANT EXECUTE ON sp_LayDanhSachLoaiNguyenLieu TO ThuKho;
 GO

@@ -296,6 +296,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.flpDanhSachBan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flpDanhSachBan.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpDanhSachBan.Padding = new System.Windows.Forms.Padding(6);
+            this.flpDanhSachBan.Tag = "NoTheme";
 
             // pnlActionBan
             this.pnlActionBan.Dock = System.Windows.Forms.DockStyle.Bottom;

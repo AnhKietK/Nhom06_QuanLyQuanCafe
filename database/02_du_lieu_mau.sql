@@ -1,6 +1,6 @@
 ﻿-- =====================================================================
 -- 02_du_lieu_mau.sql  -  DỮ LIỆU MẪU CHO CSDL quanlyquancafe
--- Chạy SAU khi đã chạy xong file tạo CSDL (scripts-hqt-csdl.sql).
+-- Chạy SAU file 01_schema_full_sql.sql.
 -- Chạy bằng tài khoản quản trị (sa / Windows Authentication) trong SSMS.
 --
 -- CẢNH BÁO: PHẦN 0 XÓA SẠCH DỮ LIỆU CŨ của mọi bảng và đặt lại các SEQUENCE,
@@ -392,3 +392,29 @@ SELECT * FROM v_TonKhoCanhBao;                                        -- mong đ
 SELECT TOP 7 * FROM v_DoanhThuTheoNgay ORDER BY Ngay DESC;
 SELECT MaKH, TenKH, DiemTichLuy FROM Khach ORDER BY MaKH;
 GO
+
+-- Kiểm tra các SP mới (chạy tay trong SSMS)
+/*
+EXEC sp_LayDanhSachLoaiKhach;
+EXEC sp_LayDanhSachLoaiNguyenLieu;
+EXEC sp_LayDanhSachPhieuChi '2026-01-01', '2026-12-31';
+EXEC sp_LayCongThuc 'TU01';
+EXEC sp_LayChiTietPhieuNhap 'PN000001';
+
+-- NLXXX không tồn tại nên phải báo lỗi, không tạo phiếu, không đổi tồn kho
+SELECT COUNT(*) AS SoPhieuTruoc FROM PhieuNhap;
+EXEC sp_NhapKhoTronGoi @MaNCC = 'NCC01', @MaNV = 'NV005', @GhiChu = N'thu loi',
+     @DanhSachJson = N'[{"MaNL":"NL01","SoLuongNhap":10,"DonGiaNhap":95},{"MaNL":"NLXXX","SoLuongNhap":5,"DonGiaNhap":10}]';
+SELECT COUNT(*) AS SoPhieuSau FROM PhieuNhap;
+
+-- thử quyền
+EXECUTE AS LOGIN = 'login_ketoan';
+EXEC sp_LayDanhSachPhieuChi;
+EXEC sp_ThongKeDoanhThu '2026-01-01', '2026-12-31';
+REVERT;
+
+EXECUTE AS LOGIN = 'login_thukho';
+EXEC sp_LayCongThuc 'TU01';
+EXEC sp_LayDanhSachLoaiThucUong;
+REVERT;
+*/
