@@ -207,8 +207,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
                      ControlStyles.OptimizedDoubleBuffer |
                      ControlStyles.ResizeRedraw, true);
 
-            Size = new Size(130, 98);
-            Margin = new Padding(6);
+            Size = new Size(160, 110);
+            Margin = new Padding(5);
             Cursor = Cursors.Hand;
             Tag = "NoTheme";
         }
@@ -275,7 +275,6 @@ namespace QuanLyQuanCafe.GUI.BanHang
             // Nền thẻ
             using (var path = PosPalette.CreateRoundedPath(rect, PosTokens.RadiusCard))
             {
-                // Nếu được chọn hoặc hover: tăng độ nổi bật
                 if (_isSelected)
                 {
                     bgColor = Color.FromArgb(255, 255, 255);
@@ -303,16 +302,25 @@ namespace QuanLyQuanCafe.GUI.BanHang
             }
 
             // Dòng 1: Tên bàn (trái) + Badge trạng thái (phải)
+            int badgeW = 68, badgeH = 20;
+            Rectangle badgeRect = new(Width - badgeW - 8, 8, badgeW, badgeH);
+
+            // Tên bàn rộng rãi, không bao giờ bị đè bởi badge
             string tenBan = $"BÀN {(_ban.SoBan < 10 ? "0" : "")}{_ban.SoBan}";
             using (var fontName = new Font("Segoe UI", 11F, FontStyle.Bold))
             using (var brText = new SolidBrush(PosPalette.TextMain))
             {
-                g.DrawString(tenBan, fontName, brText, new PointF(10, 8));
+                var titleRect = new RectangleF(8, 8, badgeRect.X - 10, 22);
+                var sfTitle = new StringFormat
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center,
+                    Trimming = StringTrimming.EllipsisCharacter
+                };
+                g.DrawString(tenBan, fontName, brText, titleRect, sfTitle);
             }
 
             // Badge trạng thái nhỏ gọn có chấm màu
-            int badgeW = 66, badgeH = 20;
-            Rectangle badgeRect = new(Width - badgeW - 10, 8, badgeW, badgeH);
             using (var badgePath = PosPalette.CreateRoundedPath(badgeRect, 10))
             using (var badgeBrush = new SolidBrush(Color.FromArgb(240, 255, 255, 255)))
             using (var badgePen = new Pen(borderColor, 1F))
@@ -336,41 +344,63 @@ namespace QuanLyQuanCafe.GUI.BanHang
             string viTriInfo = $"{_ban.TenViTri} · {_ban.SoChoNgoi} chỗ";
             using (var brMuted = new SolidBrush(PosPalette.TextMuted))
             {
-                g.DrawString(viTriInfo, PosPalette.FontCaption, brMuted, new PointF(10, 32));
+                var viTriRect = new RectangleF(8, 32, Width - 16, 18);
+                var sfMuted = new StringFormat
+                {
+                    Alignment = StringAlignment.Near,
+                    LineAlignment = StringAlignment.Center,
+                    Trimming = StringTrimming.EllipsisWord
+                };
+                g.DrawString(viTriInfo, PosPalette.FontCaption, brMuted, viTriRect, sfMuted);
             }
 
             // Đường kẻ phân tách mảnh
             using (var penLine = new Pen(Color.FromArgb(30, 0, 0, 0), 0.8F))
             {
-                g.DrawLine(penLine, 10, 52, Width - 10, 52);
+                g.DrawLine(penLine, 8, 52, Width - 8, 52);
             }
 
-            // Dòng 3: Bàn có khách hiển thị Tạm tính & Thời gian ngồi
+            // Dòng 3 & Dòng 4: Bàn có khách hiển thị Tạm tính & Thời gian ngồi riêng biệt không đè nhau
             if (_ban.TrangThai.Equals("COKHACH", StringComparison.OrdinalIgnoreCase))
             {
                 string tienStr = _tamTinh > 0 ? $"{_tamTinh:#,##0} đ" : "Đang gọi món...";
                 using (var brTien = new SolidBrush(PosPalette.Primary))
-                using (var fontTien = new Font("Segoe UI", 9.5F, FontStyle.Bold))
+                using (var fontTien = new Font("Segoe UI", 10F, FontStyle.Bold))
                 {
-                    g.DrawString(tienStr, fontTien, brTien, new PointF(10, 58));
+                    var rectTien = new RectangleF(8, 56, Width - 16, 20);
+                    g.DrawString(tienStr, fontTien, brTien, rectTien);
                 }
 
-                if (_phutNgoi > 0)
+                string tgStr = _phutNgoi > 0 ? $"🕒 Ngồi {_phutNgoi} phút" : "⏳ Đang phục vụ";
+                using (var brTg = new SolidBrush(PosPalette.TextMuted))
                 {
-                    string tgStr = $"🕒 {_phutNgoi}p";
-                    using (var brTg = new SolidBrush(PosPalette.TextMuted))
-                    {
-                        var sizeTg = g.MeasureString(tgStr, PosPalette.FontCaption);
-                        g.DrawString(tgStr, PosPalette.FontCaption, brTg, new PointF(Width - sizeTg.Width - 10, 60));
-                    }
+                    var rectTg = new RectangleF(8, 80, Width - 28, 18);
+                    g.DrawString(tgStr, PosPalette.FontCaption, brTg, rectTg);
+                }
+            }
+            else if (_ban.TrangThai.Equals("DATTRUOC", StringComparison.OrdinalIgnoreCase))
+            {
+                using (var brDat = new SolidBrush(PosPalette.TableReservedText))
+                using (var fontBold = new Font("Segoe UI", 9F, FontStyle.Bold))
+                {
+                    g.DrawString("🟡 Đã có khách đặt", fontBold, brDat, new PointF(8, 58));
+                }
+                using (var brTg = new SolidBrush(PosPalette.TextMuted))
+                {
+                    g.DrawString("Nhấp để nhận bàn", PosPalette.FontCaption, brTg, new PointF(8, 80));
                 }
             }
             else
             {
                 // Bàn trống hiển thị hướng dẫn thân thiện
                 using (var brSanSang = new SolidBrush(PosPalette.TableEmptyText))
+                using (var fontBold = new Font("Segoe UI", 9F, FontStyle.Bold))
                 {
-                    g.DrawString("✓ Sẵn sàng đón khách", PosPalette.FontCaption, brSanSang, new PointF(10, 60));
+                    g.DrawString("✓ Sẵn sàng đón khách", fontBold, brSanSang, new PointF(8, 58));
+                }
+                using (var brTg = new SolidBrush(PosPalette.TextMuted))
+                {
+                    g.DrawString("Nhấp để mở bàn gọi món", PosPalette.FontCaption, brTg, new PointF(8, 80));
                 }
             }
 
@@ -396,6 +426,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
     public class PosDrinkCard : Control
     {
         private ThucUongDTO _thucUong;
+        private Image? _drinkImage;
         private int _soLuongTrongDon;
         private bool _isHovered;
         private bool _isPressed;
@@ -405,6 +436,16 @@ namespace QuanLyQuanCafe.GUI.BanHang
         public event EventHandler<ThucUongDTO>? QuickPlusClicked;
 
         public ThucUongDTO ThucUong => _thucUong;
+
+        public Image? DrinkImage
+        {
+            get => _drinkImage;
+            set
+            {
+                _drinkImage = value;
+                Invalidate();
+            }
+        }
 
         public int SoLuongTrongDon
         {
@@ -422,6 +463,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
         public PosDrinkCard(ThucUongDTO thucUong)
         {
             _thucUong = thucUong;
+            _drinkImage = DrinkImageHelper.GetDrinkImage(thucUong);
             SetStyle(ControlStyles.UserPaint |
                      ControlStyles.AllPaintingInWmPaint |
                      ControlStyles.OptimizedDoubleBuffer |
@@ -436,6 +478,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
         public void CapNhatThucUong(ThucUongDTO thucUong, int soLuongTrongDon = 0)
         {
             _thucUong = thucUong;
+            _drinkImage = DrinkImageHelper.GetDrinkImage(thucUong);
             _soLuongTrongDon = soLuongTrongDon;
             Invalidate();
         }
@@ -522,8 +565,32 @@ namespace QuanLyQuanCafe.GUI.BanHang
             using (var topPath = PosPalette.CreateTopRoundedPath(imgRect, PosTokens.RadiusCard))
             {
                 g.SetClip(topPath);
-                // Vẽ placeholder cà phê nét đẹp, sạch
-                PosPalette.DrawCoffeePlaceholder(g, imgRect);
+                if (_drinkImage != null)
+                {
+                    using var brSubtle = new SolidBrush(PosPalette.CardSubtle);
+                    g.FillRectangle(brSubtle, imgRect);
+
+                    float srcRatio = (float)_drinkImage.Width / _drinkImage.Height;
+                    float dstRatio = (float)imgRect.Width / imgRect.Height;
+                    Rectangle drawRect;
+                    if (srcRatio > dstRatio)
+                    {
+                        int h = (int)(imgRect.Width / srcRatio);
+                        drawRect = new Rectangle(imgRect.X, imgRect.Y + (imgRect.Height - h) / 2, imgRect.Width, h);
+                    }
+                    else
+                    {
+                        int w = (int)(imgRect.Height * srcRatio);
+                        drawRect = new Rectangle(imgRect.X + (imgRect.Width - w) / 2, imgRect.Y, w, imgRect.Height);
+                    }
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(_drinkImage, drawRect);
+                }
+                else
+                {
+                    // Vẽ placeholder cà phê nét vector đẹp, sạch
+                    PosPalette.DrawCoffeePlaceholder(g, imgRect);
+                }
                 g.ResetClip();
 
                 // Đường viền ngăn cách ảnh và nội dung
@@ -626,6 +693,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 if (_countBadge != value)
                 {
                     _countBadge = value;
+                    CapNhatKichThuoc();
                     Invalidate();
                 }
             }
@@ -654,7 +722,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             using var g = CreateGraphics();
             string full = Text + (string.IsNullOrWhiteSpace(_countBadge) ? "" : $" ({_countBadge})");
             var sz = g.MeasureString(full, Font);
-            Width = Math.Max(70, (int)sz.Width + 24);
+            Width = Math.Max(76, (int)sz.Width + 28);
         }
 
         protected override void OnTextChanged(EventArgs e)

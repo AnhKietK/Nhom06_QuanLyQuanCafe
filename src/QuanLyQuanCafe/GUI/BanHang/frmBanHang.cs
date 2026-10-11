@@ -214,6 +214,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
         {
             try
             {
+                DrinkImageHelper.ClearCache();
                 NapDanhSachBan();
                 NapDanhSachLoaiMon();
                 NapDanhSachThucUong();

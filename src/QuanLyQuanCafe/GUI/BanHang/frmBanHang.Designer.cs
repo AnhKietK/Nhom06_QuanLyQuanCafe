@@ -267,10 +267,11 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.grpSoDoBan.Controls.Add(this.pnlActionBan);
             this.grpSoDoBan.Controls.Add(this.pnlThongKeBan);
             this.grpSoDoBan.Controls.Add(this.pnlFilterBan);
+            this.flpDanhSachBan.SendToBack();
 
             // pnlFilterBan
             this.pnlFilterBan.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlFilterBan.Height = 110;
+            this.pnlFilterBan.Height = 126;
             this.pnlFilterBan.Controls.Add(this.flpTrangThaiBanChips);
             this.pnlFilterBan.Controls.Add(this.cboKhuVuc);
             this.pnlFilterBan.Controls.Add(this.lblLocKhuVuc);
@@ -304,7 +305,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             this.flpTrangThaiBanChips.Location = new System.Drawing.Point(4, 70);
             this.flpTrangThaiBanChips.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpTrangThaiBanChips.Size = new System.Drawing.Size(326, 36);
+            this.flpTrangThaiBanChips.Size = new System.Drawing.Size(326, 50);
             this.flpTrangThaiBanChips.WrapContents = false;
             this.flpTrangThaiBanChips.AutoScroll = true;
             this.flpTrangThaiBanChips.Tag = "NoTheme";
@@ -326,7 +327,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.flpDanhSachBan.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(244)))), ((int)(((byte)(239)))));
             this.flpDanhSachBan.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.flpDanhSachBan.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpDanhSachBan.Padding = new System.Windows.Forms.Padding(6);
+            this.flpDanhSachBan.Padding = new System.Windows.Forms.Padding(8, 12, 8, 8);
             this.flpDanhSachBan.Tag = "NoTheme";
 
             // pnlActionBan
@@ -377,6 +378,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.grpThucDon.Controls.Add(this.pnlActionMon);
             this.grpThucDon.Controls.Add(this.pnlFilterMon);
             this.grpThucDon.Controls.Add(this.pnlThucDonHeader);
+            this.pnlThucDonContent.SendToBack();
 
             // pnlThucDonHeader
             this.pnlThucDonHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -407,7 +409,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             // pnlFilterMon
             this.pnlFilterMon.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlFilterMon.Height = 74;
+            this.pnlFilterMon.Height = 92;
             this.pnlFilterMon.Controls.Add(this.flpLoaiMonChips);
             this.pnlFilterMon.Controls.Add(this.txtTimKiemMon);
             this.pnlFilterMon.Controls.Add(this.lblTimMon);
@@ -424,15 +426,16 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.txtTimKiemMon.Size = new System.Drawing.Size(400, 29);
             this.txtTimKiemMon.PlaceholderText = "🔍 Tìm kiếm theo tên hoặc mã món...";
 
-            this.flpLoaiMonChips.Location = new System.Drawing.Point(4, 37);
+            this.flpLoaiMonChips.Location = new System.Drawing.Point(4, 38);
             this.flpLoaiMonChips.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpLoaiMonChips.Size = new System.Drawing.Size(400, 34);
+            this.flpLoaiMonChips.Size = new System.Drawing.Size(400, 50);
             this.flpLoaiMonChips.WrapContents = false;
             this.flpLoaiMonChips.AutoScroll = true;
             this.flpLoaiMonChips.Tag = "NoTheme";
 
             // pnlThucDonContent
             this.pnlThucDonContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlThucDonContent.Padding = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.pnlThucDonContent.Controls.Add(this.flpThucDonCards);
             this.pnlThucDonContent.Controls.Add(this.dgvThucUong);
 
@@ -440,7 +443,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.flpThucDonCards.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpThucDonCards.AutoScroll = true;
             this.flpThucDonCards.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(244)))), ((int)(((byte)(239)))));
-            this.flpThucDonCards.Padding = new System.Windows.Forms.Padding(4);
+            this.flpThucDonCards.Padding = new System.Windows.Forms.Padding(6);
             this.flpThucDonCards.Tag = "NoTheme";
 
             // dgvThucUong
