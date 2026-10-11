@@ -30,14 +30,13 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             // Cột 1: Sơ đồ bàn
             this.grpSoDoBan = new System.Windows.Forms.GroupBox();
-            this.pnlFilterBan = new System.Windows.Forms.Panel();
+            this.pnlFilterBan = new System.Windows.Forms.TableLayoutPanel();
             this.lblLocKhuVuc = new System.Windows.Forms.Label();
             this.cboKhuVuc = new System.Windows.Forms.ComboBox();
             this.lblLocTrangThai = new System.Windows.Forms.Label();
             this.cboTrangThaiBan = new System.Windows.Forms.ComboBox();
             this.lblTimKiemBan = new System.Windows.Forms.Label();
             this.txtTimKiemBan = new System.Windows.Forms.TextBox();
-            this.pnlThongKeBan = new System.Windows.Forms.Panel();
             this.lblThongKeBan = new System.Windows.Forms.Label();
             this.flpDanhSachBan = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlActionBan = new System.Windows.Forms.Panel();
@@ -119,7 +118,6 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.pnlMain.SuspendLayout();
             this.grpSoDoBan.SuspendLayout();
             this.pnlFilterBan.SuspendLayout();
-            this.pnlThongKeBan.SuspendLayout();
             this.pnlActionBan.SuspendLayout();
             this.grpThucDon.SuspendLayout();
             this.pnlFilterMon.SuspendLayout();
@@ -236,67 +234,74 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.grpSoDoBan.Text = "🪑 SƠ ĐỒ BÀN";
             this.grpSoDoBan.Controls.Add(this.flpDanhSachBan);
             this.grpSoDoBan.Controls.Add(this.pnlActionBan);
-            this.grpSoDoBan.Controls.Add(this.pnlThongKeBan);
             this.grpSoDoBan.Controls.Add(this.pnlFilterBan);
 
             // pnlFilterBan
+            this.pnlFilterBan.ColumnCount = 2;
+            this.pnlFilterBan.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 78F));
+            this.pnlFilterBan.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.pnlFilterBan.RowCount = 4;
+            this.pnlFilterBan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
+            this.pnlFilterBan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
+            this.pnlFilterBan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 36F));
+            this.pnlFilterBan.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 32F));
             this.pnlFilterBan.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlFilterBan.Height = 100;
-            this.pnlFilterBan.Controls.Add(this.lblLocKhuVuc);
-            this.pnlFilterBan.Controls.Add(this.cboKhuVuc);
-            this.pnlFilterBan.Controls.Add(this.lblLocTrangThai);
-            this.pnlFilterBan.Controls.Add(this.cboTrangThaiBan);
-            this.pnlFilterBan.Controls.Add(this.lblTimKiemBan);
-            this.pnlFilterBan.Controls.Add(this.txtTimKiemBan);
+            this.pnlFilterBan.Height = 144;
+            this.pnlFilterBan.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlFilterBan.Controls.Add(this.lblLocKhuVuc, 0, 0);
+            this.pnlFilterBan.Controls.Add(this.cboKhuVuc, 1, 0);
+            this.pnlFilterBan.Controls.Add(this.lblLocTrangThai, 0, 1);
+            this.pnlFilterBan.Controls.Add(this.cboTrangThaiBan, 1, 1);
+            this.pnlFilterBan.Controls.Add(this.lblTimKiemBan, 0, 2);
+            this.pnlFilterBan.Controls.Add(this.txtTimKiemBan, 1, 2);
+            this.pnlFilterBan.Controls.Add(this.lblThongKeBan, 0, 3);
+            this.pnlFilterBan.SetColumnSpan(this.lblThongKeBan, 2);
 
+            this.lblLocKhuVuc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblLocKhuVuc.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblLocKhuVuc.Location = new System.Drawing.Point(4, 6);
-            this.lblLocKhuVuc.Size = new System.Drawing.Size(72, 24);
+            this.lblLocKhuVuc.Margin = new System.Windows.Forms.Padding(0, 3, 2, 3);
+            this.lblLocKhuVuc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblLocKhuVuc.Text = "Khu vực:";
 
+            this.cboKhuVuc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboKhuVuc.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboKhuVuc.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.cboKhuVuc.Location = new System.Drawing.Point(80, 4);
-            this.cboKhuVuc.Size = new System.Drawing.Size(250, 29);
+            this.cboKhuVuc.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 
+            this.lblLocTrangThai.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblLocTrangThai.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblLocTrangThai.Location = new System.Drawing.Point(4, 38);
-            this.lblLocTrangThai.Size = new System.Drawing.Size(72, 24);
+            this.lblLocTrangThai.Margin = new System.Windows.Forms.Padding(0, 3, 2, 3);
+            this.lblLocTrangThai.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblLocTrangThai.Text = "Trạng thái:";
 
+            this.cboTrangThaiBan.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboTrangThaiBan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThaiBan.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.cboTrangThaiBan.Location = new System.Drawing.Point(80, 35);
-            this.cboTrangThaiBan.Size = new System.Drawing.Size(250, 29);
+            this.cboTrangThaiBan.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 
+            this.lblTimKiemBan.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTimKiemBan.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblTimKiemBan.Location = new System.Drawing.Point(4, 70);
-            this.lblTimKiemBan.Size = new System.Drawing.Size(72, 24);
+            this.lblTimKiemBan.Margin = new System.Windows.Forms.Padding(0, 3, 2, 3);
+            this.lblTimKiemBan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblTimKiemBan.Text = "Tìm bàn:";
 
-            this.txtTimKiemBan.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtTimKiemBan.Location = new System.Drawing.Point(80, 67);
-            this.txtTimKiemBan.Size = new System.Drawing.Size(250, 27);
+            this.txtTimKiemBan.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtTimKiemBan.Font = new System.Drawing.Font("Segoe UI", 9.5F);
+            this.txtTimKiemBan.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.txtTimKiemBan.PlaceholderText = "Nhập số bàn để chọn nhanh...";
-
-            // pnlThongKeBan
-            this.pnlThongKeBan.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlThongKeBan.Height = 32;
-            this.pnlThongKeBan.Controls.Add(this.lblThongKeBan);
 
             this.lblThongKeBan.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblThongKeBan.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.lblThongKeBan.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.lblThongKeBan.Margin = new System.Windows.Forms.Padding(2, 4, 2, 2);
             this.lblThongKeBan.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblThongKeBan.Text = "Tổng: 0 | 🟢 Trống: 0 | 🔴 Có khách: 0";
 
             // flpDanhSachBan
             this.flpDanhSachBan.AutoScroll = true;
-            this.flpDanhSachBan.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
+            this.flpDanhSachBan.BackColor = QuanLyQuanCafe.Utils.Theme.NenTrongHon;
             this.flpDanhSachBan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.flpDanhSachBan.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpDanhSachBan.Padding = new System.Windows.Forms.Padding(6);
-            this.flpDanhSachBan.Tag = "NoTheme";
 
             // pnlActionBan
             this.pnlActionBan.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -841,7 +846,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            this.BackColor = QuanLyQuanCafe.Utils.Theme.Nen;
             this.ClientSize = new System.Drawing.Size(1200, 780);
             this.Controls.Add(this.pnlMain);
             this.Controls.Add(this.pnlTopHeader);
@@ -857,7 +862,6 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.grpSoDoBan.ResumeLayout(false);
             this.pnlFilterBan.ResumeLayout(false);
             this.pnlFilterBan.PerformLayout();
-            this.pnlThongKeBan.ResumeLayout(false);
             this.pnlActionBan.ResumeLayout(false);
             this.grpThucDon.ResumeLayout(false);
             this.pnlFilterMon.ResumeLayout(false);
@@ -891,14 +895,13 @@ namespace QuanLyQuanCafe.GUI.BanHang
         private System.Windows.Forms.Button btnLamMoiToanBo;
         private System.Windows.Forms.TableLayoutPanel pnlMain;
         private System.Windows.Forms.GroupBox grpSoDoBan;
-        private System.Windows.Forms.Panel pnlFilterBan;
+        private System.Windows.Forms.TableLayoutPanel pnlFilterBan;
         private System.Windows.Forms.Label lblLocKhuVuc;
         private System.Windows.Forms.ComboBox cboKhuVuc;
         private System.Windows.Forms.Label lblLocTrangThai;
         private System.Windows.Forms.ComboBox cboTrangThaiBan;
         private System.Windows.Forms.Label lblTimKiemBan;
         private System.Windows.Forms.TextBox txtTimKiemBan;
-        private System.Windows.Forms.Panel pnlThongKeBan;
         private System.Windows.Forms.Label lblThongKeBan;
         private System.Windows.Forms.FlowLayoutPanel flpDanhSachBan;
         private System.Windows.Forms.Panel pnlActionBan;

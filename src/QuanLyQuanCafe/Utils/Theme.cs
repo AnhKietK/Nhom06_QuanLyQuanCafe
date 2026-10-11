@@ -589,6 +589,14 @@ namespace QuanLyQuanCafe.Utils
 
                 if (c.HasChildren && c.Controls != null)
                 {
+                    // Tránh ghi đè style của các nút bàn trong sơ đồ bàn
+                    if (c.Name.Equals("flpDanhSachBan", StringComparison.OrdinalIgnoreCase) ||
+                        c.Name.Contains("flpBan", StringComparison.OrdinalIgnoreCase) ||
+                        c.Name.Contains("pnlBanContainer", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
                     ApplyToControls(c.Controls);
                 }
             }
@@ -653,10 +661,36 @@ namespace QuanLyQuanCafe.Utils
                     EnableDarkModeScrollBars(tv);
                     break;
 
+                case FlowLayoutPanel flp:
+                    if (flp.Name.Equals("flpDanhSachBan", StringComparison.OrdinalIgnoreCase) ||
+                        flp.Name.Contains("flpBan", StringComparison.OrdinalIgnoreCase) ||
+                        flp.Name.Contains("pnlBanContainer", StringComparison.OrdinalIgnoreCase))
+                    {
+                        flp.BackColor = NenTrongHon;
+                    }
+                    else if (flp.BackColor == NenDark || flp.BackColor == NenLight ||
+                             flp.BackColor == SystemColors.Control || flp.BackColor == Color.White ||
+                             flp.BackColor == SystemColors.Window || flp.BackColor == Color.FromArgb(248, 250, 252))
+                    {
+                        flp.BackColor = Color.Transparent;
+                    }
+
+                    if (flp.AutoScroll)
+                    {
+                        EnableDarkModeScrollBars(flp);
+                    }
+                    break;
+
                 case Panel pnl:
-                    if (pnl.BackColor == NenDark || pnl.BackColor == NenLight ||
-                        pnl.BackColor == SystemColors.Control || pnl.BackColor == Color.White ||
-                        pnl.BackColor == SystemColors.Window)
+                    if (pnl.Name.Equals("flpDanhSachBan", StringComparison.OrdinalIgnoreCase) ||
+                        pnl.Name.Contains("flpBan", StringComparison.OrdinalIgnoreCase) ||
+                        pnl.Name.Contains("pnlBanContainer", StringComparison.OrdinalIgnoreCase))
+                    {
+                        pnl.BackColor = NenTrongHon;
+                    }
+                    else if (pnl.BackColor == NenDark || pnl.BackColor == NenLight ||
+                             pnl.BackColor == SystemColors.Control || pnl.BackColor == Color.White ||
+                             pnl.BackColor == SystemColors.Window || pnl.BackColor == Color.FromArgb(248, 250, 252))
                     {
                         pnl.BackColor = Color.Transparent;
                     }

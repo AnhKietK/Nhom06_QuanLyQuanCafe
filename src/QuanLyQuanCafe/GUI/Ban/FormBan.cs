@@ -9,6 +9,7 @@ namespace QuanLyQuanCafe.GUI.Ban
         private readonly BanBLL _bll = new();
         private List<BanDTO> _dsBan = new();
         private List<ViTriBanDTO> _dsViTri = new();
+        private bool _isLoaded = false;
 
         private class ViTriComboItem
         {
@@ -33,11 +34,20 @@ namespace QuanLyQuanCafe.GUI.Ban
             NapDanhSachBan();
             LamMoiBan();
             LamMoiViTri();
+            _isLoaded = true;
         }
 
         private void KhoiTaoCacDieuKhien()
         {
             this.Load += FormBan_Load;
+            this.Activated += (s, e) =>
+            {
+                if (_isLoaded)
+                {
+                    NapDanhSachViTri();
+                    NapDanhSachBan();
+                }
+            };
         }
 
         private void DangKySuKien()

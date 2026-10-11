@@ -24,6 +24,9 @@ namespace QuanLyQuanCafe.GUI.BanHang
         private decimal _tienHang = 0;
         private decimal _tongThanhToan = 0;
 
+        private bool _isLoaded = false;
+        private bool _isRefreshing = false;
+
         public frmBanHang()
         {
             InitializeComponent();
@@ -71,6 +74,13 @@ namespace QuanLyQuanCafe.GUI.BanHang
         private void KhoiTaoSuKien()
         {
             this.Load += FrmBanHang_Load;
+            this.Activated += (s, e) =>
+            {
+                if (_isLoaded)
+                {
+                    RefreshDuLieu();
+                }
+            };
 
             // Đồng hồ thời gian thực
             timerDongHo.Tick += (s, e) =>
@@ -149,6 +159,9 @@ namespace QuanLyQuanCafe.GUI.BanHang
                     CurrentUser.Set("NV002", "Trần Thị Bình", "Phục vụ", AppConfig.Get("PhucVuConn"));
                 }
 
+                Theme.Apply(this);
+                flpDanhSachBan.BackColor = Theme.NenTrongHon;
+
                 lblSubtitle.Text = $"Nhân viên: {CurrentUser.TenNV} ({CurrentUser.ChucVu}) | Quán Cafe Nhóm 06";
                 lblClock.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
                 timerDongHo.Start();
@@ -156,6 +169,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 NapPhuongThucThanhToan();
                 NapDanhSachTrangThai();
                 RefreshDuLieu();
+                _isLoaded = true;
             }
             catch (SqlException ex)
             {
@@ -190,18 +204,27 @@ namespace QuanLyQuanCafe.GUI.BanHang
         /// </summary>
         public void RefreshDuLieu()
         {
+            if (_isRefreshing) return;
+            _isRefreshing = true;
+
             try
             {
+                string? maBanDangChon = _banDangChon?.MaBan;
+
+                // Đồng bộ màu nền sơ đồ bàn theo theme
+                flpDanhSachBan.BackColor = Theme.NenTrongHon;
+
                 NapDanhSachBan();
                 NapDanhSachLoaiMon();
-                NapDanhSachThucUong();
+                TimKiemMonNuoc();
 
-                if (_banDangChon != null)
+                if (!string.IsNullOrEmpty(maBanDangChon) && _dsBan.Any(b => b.MaBan == maBanDangChon))
                 {
-                    ChonBan(_banDangChon.MaBan);
+                    ChonBan(maBanDangChon);
                 }
                 else
                 {
+                    _banDangChon = null;
                     LamMoiHoaDonGiaoDien();
                 }
             }
@@ -212,6 +235,10 @@ namespace QuanLyQuanCafe.GUI.BanHang
             catch (Exception ex)
             {
                 XuLyLoi(ex);
+            }
+            finally
+            {
+                _isRefreshing = false;
             }
         }
 
