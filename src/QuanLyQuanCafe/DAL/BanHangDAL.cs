@@ -145,6 +145,19 @@ namespace QuanLyQuanCafe.DAL
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
+                    string tenLoaiTU = "";
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string col = reader.GetName(i);
+                        if (col.Equals("TenLoaiTU", StringComparison.OrdinalIgnoreCase) ||
+                            col.Equals("LoaiThucUong", StringComparison.OrdinalIgnoreCase) ||
+                            col.Equals("TenLoai", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (reader[i] != DBNull.Value) tenLoaiTU = reader[i].ToString() ?? "";
+                            break;
+                        }
+                    }
+
                     list.Add(new ThucUongDTO
                     {
                         MaThucUong = reader["MaThucUong"].ToString() ?? "",
@@ -152,7 +165,7 @@ namespace QuanLyQuanCafe.DAL
                         DonGiaBan = Convert.ToDecimal(reader["DonGiaBan"]),
                         HinhAnh = reader["HinhAnh"] == DBNull.Value ? null : reader["HinhAnh"].ToString(),
                         MaLoaiTU = reader["MaLoaiTU"].ToString() ?? "",
-                        TenLoaiTU = reader["TenLoaiTU"].ToString() ?? ""
+                        TenLoaiTU = tenLoaiTU
                     });
                 }
             }
@@ -184,6 +197,19 @@ namespace QuanLyQuanCafe.DAL
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
+                    string tenLoaiTU = "";
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string col = reader.GetName(i);
+                        if (col.Equals("TenLoaiTU", StringComparison.OrdinalIgnoreCase) ||
+                            col.Equals("LoaiThucUong", StringComparison.OrdinalIgnoreCase) ||
+                            col.Equals("TenLoai", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (reader[i] != DBNull.Value) tenLoaiTU = reader[i].ToString() ?? "";
+                            break;
+                        }
+                    }
+
                     list.Add(new ThucUongDTO
                     {
                         MaThucUong = reader["MaThucUong"].ToString() ?? "",
@@ -191,7 +217,7 @@ namespace QuanLyQuanCafe.DAL
                         DonGiaBan = Convert.ToDecimal(reader["DonGiaBan"]),
                         HinhAnh = reader["HinhAnh"] == DBNull.Value ? null : reader["HinhAnh"].ToString(),
                         MaLoaiTU = reader["MaLoaiTU"].ToString() ?? "",
-                        TenLoaiTU = reader["TenLoaiTU"].ToString() ?? ""
+                        TenLoaiTU = tenLoaiTU
                     });
                 }
             }
@@ -323,7 +349,12 @@ namespace QuanLyQuanCafe.DAL
                     CommandTimeout = 15
                 };
 
-                cmd.Parameters.Add(new SqlParameter("@MaHD", DBNull.Value));
+                var pMaHD = new SqlParameter("@MaHD", SqlDbType.VarChar, 20)
+                {
+                    Direction = ParameterDirection.InputOutput,
+                    Value = DBNull.Value
+                };
+                cmd.Parameters.Add(pMaHD);
                 cmd.Parameters.Add(new SqlParameter("@MaKH", string.IsNullOrWhiteSpace(maKH) ? DBNull.Value : maKH));
                 cmd.Parameters.Add(new SqlParameter("@MaNV", maNV));
                 cmd.Parameters.Add(new SqlParameter("@MaBan", maBan));
@@ -333,7 +364,18 @@ namespace QuanLyQuanCafe.DAL
                 using var reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    return reader["MaHD"].ToString() ?? "";
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        if (reader.GetName(i).Equals("MaHD", StringComparison.OrdinalIgnoreCase) && reader[i] != DBNull.Value)
+                        {
+                            return reader[i].ToString() ?? "";
+                        }
+                    }
+                }
+
+                if (pMaHD.Value != null && pMaHD.Value != DBNull.Value)
+                {
+                    return pMaHD.Value.ToString() ?? "";
                 }
 
                 return "";
@@ -531,6 +573,19 @@ namespace QuanLyQuanCafe.DAL
                 using var reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
+                    string tenLoai = "";
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string col = reader.GetName(i);
+                        if (col.Equals("TenLoai", StringComparison.OrdinalIgnoreCase) ||
+                            col.Equals("TenLoaiKhach", StringComparison.OrdinalIgnoreCase) ||
+                            col.Equals("TenLoaiKH", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (reader[i] != DBNull.Value) tenLoai = reader[i].ToString() ?? "";
+                            break;
+                        }
+                    }
+
                     list.Add(new KhachHangDTO
                     {
                         MaKH = reader["MaKH"].ToString() ?? "",
@@ -538,7 +593,7 @@ namespace QuanLyQuanCafe.DAL
                         SoDienThoai = reader["SoDienThoai"].ToString() ?? "",
                         DiemTichLuy = reader["DiemTichLuy"] == DBNull.Value ? 0 : Convert.ToInt32(reader["DiemTichLuy"]),
                         MaLoaiKH = reader["MaLoaiKH"].ToString() ?? "",
-                        TenLoai = reader["TenLoai"].ToString() ?? "",
+                        TenLoai = tenLoai,
                         ChietKhau = reader["ChietKhau"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["ChietKhau"])
                     });
                 }
@@ -562,7 +617,12 @@ namespace QuanLyQuanCafe.DAL
                     CommandTimeout = 15
                 };
 
-                cmd.Parameters.Add(new SqlParameter("@MaKH", DBNull.Value));
+                var pMaKH = new SqlParameter("@MaKH", SqlDbType.VarChar, 20)
+                {
+                    Direction = ParameterDirection.InputOutput,
+                    Value = DBNull.Value
+                };
+                cmd.Parameters.Add(pMaKH);
                 cmd.Parameters.Add(new SqlParameter("@TenKH", tenKH));
                 cmd.Parameters.Add(new SqlParameter("@SoDienThoai", sdt));
                 cmd.Parameters.Add(new SqlParameter("@MaLoaiKH", "LKH01"));
@@ -571,7 +631,21 @@ namespace QuanLyQuanCafe.DAL
                 using var reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    return reader["MaKHMoi"].ToString() ?? "";
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        string col = reader.GetName(i);
+                        if ((col.Equals("MaKHMoi", StringComparison.OrdinalIgnoreCase) ||
+                             col.Equals("MaKH", StringComparison.OrdinalIgnoreCase)) &&
+                            reader[i] != DBNull.Value)
+                        {
+                            return reader[i].ToString() ?? "";
+                        }
+                    }
+                }
+
+                if (pMaKH.Value != null && pMaKH.Value != DBNull.Value)
+                {
+                    return pMaKH.Value.ToString() ?? "";
                 }
 
                 return "";

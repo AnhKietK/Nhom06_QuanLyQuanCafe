@@ -141,19 +141,30 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private void FrmBanHang_Load(object? sender, EventArgs e)
         {
-            // Nếu form được khởi chạy độc lập (chưa qua màn hình đăng nhập), thiết lập phiên làm việc mẫu cho Phục vụ
-            if (!CurrentUser.IsLoggedIn)
+            try
             {
-                CurrentUser.Set("NV002", "Trần Thị Bình", "Phục vụ", AppConfig.Get("PhucVuConn"));
+                // Nếu form được khởi chạy độc lập (chưa qua màn hình đăng nhập), thiết lập phiên làm việc mẫu cho Phục vụ
+                if (!CurrentUser.IsLoggedIn)
+                {
+                    CurrentUser.Set("NV002", "Trần Thị Bình", "Phục vụ", AppConfig.Get("PhucVuConn"));
+                }
+
+                lblSubtitle.Text = $"Nhân viên: {CurrentUser.TenNV} ({CurrentUser.ChucVu}) | Quán Cafe Nhóm 06";
+                lblClock.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
+                timerDongHo.Start();
+
+                NapPhuongThucThanhToan();
+                NapDanhSachTrangThai();
+                RefreshDuLieu();
             }
-
-            lblSubtitle.Text = $"Nhân viên: {CurrentUser.TenNV} ({CurrentUser.ChucVu}) | Quán Cafe Nhóm 06";
-            lblClock.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
-            timerDongHo.Start();
-
-            NapPhuongThucThanhToan();
-            NapDanhSachTrangThai();
-            RefreshDuLieu();
+            catch (SqlException ex)
+            {
+                CustomSqlExceptionHandler.XuLy(ex);
+            }
+            catch (Exception ex)
+            {
+                XuLyLoi(ex);
+            }
         }
 
         private void HienThiHuongDanPhimTat()
@@ -196,7 +207,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             }
             catch (SqlException ex)
             {
-                UiHelper.ShowWarning(CustomSqlExceptionHandler.Translate(ex));
+                CustomSqlExceptionHandler.XuLy(ex);
             }
             catch (Exception ex)
             {
@@ -1120,11 +1131,11 @@ namespace QuanLyQuanCafe.GUI.BanHang
         {
             if (ex is SqlException sqlEx)
             {
-                UiHelper.ShowWarning(CustomSqlExceptionHandler.Translate(sqlEx));
+                CustomSqlExceptionHandler.XuLy(sqlEx);
             }
             else if (ex.InnerException is SqlException innerSqlEx)
             {
-                UiHelper.ShowWarning(CustomSqlExceptionHandler.Translate(innerSqlEx));
+                CustomSqlExceptionHandler.XuLy(innerSqlEx);
             }
             else if (ex is ArgumentException or InvalidOperationException)
             {
@@ -1132,7 +1143,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             }
             else
             {
-                UiHelper.HienLoi(ex);
+                UiHelper.HienThongBaoLoi("Lỗi: " + ex.Message + "\nChi tiết: " + ex.StackTrace);
             }
         }
 

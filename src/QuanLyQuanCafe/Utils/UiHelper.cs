@@ -23,6 +23,12 @@ namespace QuanLyQuanCafe.Utils
                 MessageBoxDefaultButton.Button2) == DialogResult.Yes;
         }
 
+        public static void HienThongBaoLoi(string noiDung, string tieuDe = "Lỗi")
+        {
+            MessageBox.Show(noiDung, tieuDe,
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         public static void HienLoi(Exception ex)
         {
             switch (ex)
@@ -40,9 +46,7 @@ namespace QuanLyQuanCafe.Utils
                     break;
 
                 default:
-                    MessageBox.Show(
-                        "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại.",
-                        "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    HienThongBaoLoi($"Lỗi: {ex.Message}\nChi tiết: {ex.StackTrace}");
                     break;
             }
         }
