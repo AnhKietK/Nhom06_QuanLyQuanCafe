@@ -553,6 +553,7 @@ namespace QuanLyQuanCafe.Utils
         public static void Apply(Form f)
         {
             if (f == null) return;
+            if (string.Equals(f.Tag?.ToString(), "NoTheme", StringComparison.OrdinalIgnoreCase)) return;
 
             try
             {

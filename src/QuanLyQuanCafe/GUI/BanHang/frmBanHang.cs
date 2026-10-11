@@ -72,7 +72,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 e.Handled = true;
                 BtnThanhToan_Click(sender, e);
             }
-            else if (e.KeyCode == Keys.Delete && dgvChiTietHD.Focused)
+            else if (e.KeyCode == Keys.Delete && !(ActiveControl is TextBoxBase || ActiveControl is NumericUpDown || ActiveControl is ComboBox))
             {
                 e.Handled = true;
                 BtnXoaMon_Click(sender, e);
@@ -968,7 +968,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             if (pt != "Tiền mặt")
             {
-                lblTienThoi.ForeColor = Color.FromArgb(100, 116, 139);
+                lblTienThoi.ForeColor = Color.FromArgb(122, 111, 102);
                 lblTienThoi.Text = "0 đ (Điện tử)";
                 return;
             }
@@ -978,12 +978,12 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             if (tienThoi >= 0)
             {
-                lblTienThoi.ForeColor = Color.FromArgb(22, 163, 74);
+                lblTienThoi.ForeColor = Color.FromArgb(47, 125, 91); // #2F7D5B Accent Green
                 lblTienThoi.Text = $"{tienThoi:N0} đ";
             }
             else
             {
-                lblTienThoi.ForeColor = Color.FromArgb(220, 38, 38);
+                lblTienThoi.ForeColor = Color.FromArgb(214, 69, 69); // #D64545 Warning Red
                 lblTienThoi.Text = $"Thiếu {Math.Abs(tienThoi):N0} đ";
             }
         }
@@ -1000,7 +1000,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             {
                 numTienKhachDua.Value = _tongThanhToan;
                 lblTienThoi.Text = "0 đ (Điện tử)";
-                lblTienThoi.ForeColor = Color.FromArgb(100, 116, 139);
+                lblTienThoi.ForeColor = Color.FromArgb(122, 111, 102);
             }
             else
             {
@@ -1010,7 +1010,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private void DatTienNhanh(decimal soTien)
         {
-            if (numTienKhachDua.Value == 0)
+            if (numTienKhachDua.Value == 0 || numTienKhachDua.Value == _tongThanhToan)
                 numTienKhachDua.Value = soTien;
             else
                 numTienKhachDua.Value += soTien;
