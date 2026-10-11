@@ -1,4 +1,5 @@
 using System.Data;
+using System.IO;
 using System.Text;
 using Microsoft.Data.SqlClient;
 using QuanLyQuanCafe.BLL;
@@ -12,6 +13,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
     public partial class frmBanHang : Form
     {
         private readonly BanHangBLL _bll = new();
+        private readonly Dictionary<string, Image?> _imageCache = new(StringComparer.OrdinalIgnoreCase);
         private List<BanDTO> _dsBan = new();
         private List<ThucUongDTO> _dsThucUong = new();
         private List<LoaiThucUongDTO> _dsLoaiTU = new();
@@ -105,6 +107,9 @@ namespace QuanLyQuanCafe.GUI.BanHang
             btnThemMon.Click += BtnThemMon_Click;
             btnKiemTraKho.Click += BtnKiemTraKho_Click;
             dgvThucUong.CellDoubleClick += (s, e) => BtnThemMon_Click(s, e);
+            dgvThucUong.CellFormatting += DgvThucUong_CellFormatting;
+            dgvThucUong.DataError += (s, e) => { e.ThrowException = false; };
+            this.FormClosed += (s, e) => XoaCacheHinhAnh();
 
             // Nút số lượng nhanh
             btnSL1.Click += (s, e) => numSoLuongMon.Value = 1;
@@ -161,6 +166,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
                 Theme.Apply(this);
                 flpDanhSachBan.BackColor = Theme.NenTrongHon;
+                dgvThucUong.RowTemplate.Height = 48;
 
                 lblSubtitle.Text = $"Nhân viên: {CurrentUser.TenNV} ({CurrentUser.ChucVu}) | Quán Cafe Nhóm 06";
                 lblClock.Text = DateTime.Now.ToString("HH:mm:ss - dd/MM/yyyy");
@@ -214,6 +220,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 // Đồng bộ màu nền sơ đồ bàn theo theme
                 flpDanhSachBan.BackColor = Theme.NenTrongHon;
 
+                XoaCacheHinhAnh();
                 NapDanhSachBan();
                 NapDanhSachLoaiMon();
                 TimKiemMonNuoc();
@@ -481,6 +488,11 @@ namespace QuanLyQuanCafe.GUI.BanHang
             _dsThucUong = _bll.LayDanhSachThucUong();
             dgvThucUong.DataSource = null;
             dgvThucUong.DataSource = _dsThucUong;
+            dgvThucUong.RowTemplate.Height = 48;
+            foreach (DataGridViewRow r in dgvThucUong.Rows)
+            {
+                r.Height = 48;
+            }
         }
 
         private void TimKiemMonNuoc()
@@ -500,10 +512,107 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 var ketQua = _bll.TimKiemThucUong(tuKhoa, maLoai);
                 dgvThucUong.DataSource = null;
                 dgvThucUong.DataSource = ketQua;
+                dgvThucUong.RowTemplate.Height = 48;
+                foreach (DataGridViewRow r in dgvThucUong.Rows)
+                {
+                    r.Height = 48;
+                }
             }
             catch (Exception ex)
             {
                 XuLyLoi(ex);
+            }
+        }
+
+        private void DgvThucUong_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex >= 0 && e.ColumnIndex == colHinhAnh.Index)
+            {
+                if (dgvThucUong.Rows[e.RowIndex].DataBoundItem is ThucUongDTO mon)
+                {
+                    e.Value = LayHinhAnhThucUong(mon.HinhAnh);
+                    e.FormattingApplied = true;
+                }
+            }
+        }
+
+        private Image? LayHinhAnhThucUong(string? tenFile)
+        {
+            if (string.IsNullOrWhiteSpace(tenFile))
+            {
+                return null;
+            }
+
+            if (_imageCache.TryGetValue(tenFile, out var cachedImg))
+            {
+                return cachedImg;
+            }
+
+            try
+            {
+                string folder = Path.Combine(AppContext.BaseDirectory, "Images");
+                string fullPath = Path.Combine(folder, tenFile);
+
+                if (!File.Exists(fullPath))
+                {
+                    string pathSub = Path.Combine(folder, "ThucUong", tenFile);
+                    if (File.Exists(pathSub))
+                    {
+                        fullPath = pathSub;
+                    }
+                    else
+                    {
+                        string pathRes = Path.Combine(AppContext.BaseDirectory, "Resources", "Images", tenFile);
+                        if (File.Exists(pathRes))
+                        {
+                            fullPath = pathRes;
+                        }
+                        else
+                        {
+                            string pathResSub = Path.Combine(AppContext.BaseDirectory, "Resources", "Images", "ThucUong", tenFile);
+                            if (File.Exists(pathResSub))
+                            {
+                                fullPath = pathResSub;
+                            }
+                            else if (File.Exists(tenFile))
+                            {
+                                fullPath = tenFile;
+                            }
+                        }
+                    }
+                }
+
+                if (File.Exists(fullPath))
+                {
+                    using var fs = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                    using var temp = Image.FromStream(fs);
+                    var bmp = new Bitmap(temp);
+                    _imageCache[tenFile] = bmp;
+                    return bmp;
+                }
+            }
+            catch
+            {
+                // Bỏ qua lỗi đọc file ảnh hỏng
+            }
+
+            _imageCache[tenFile] = null;
+            return null;
+        }
+
+        private void XoaCacheHinhAnh()
+        {
+            var images = _imageCache.Values.ToList();
+            _imageCache.Clear();
+            foreach (var img in images)
+            {
+                try
+                {
+                    img?.Dispose();
+                }
+                catch
+                {
+                }
             }
         }
 

@@ -51,6 +51,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.lblLoaiMon = new System.Windows.Forms.Label();
             this.cboLoaiMon = new System.Windows.Forms.ComboBox();
             this.dgvThucUong = new System.Windows.Forms.DataGridView();
+            this.colHinhAnh = new System.Windows.Forms.DataGridViewImageColumn();
             this.colMaTU = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTenTU = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLoaiTU = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -277,7 +278,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.cboTrangThaiBan.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cboTrangThaiBan.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTrangThaiBan.Font = new System.Drawing.Font("Segoe UI", 9.5F);
-            this.cboTrangThaiBan.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.cboTrangThaiBan.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
 
             this.lblTimKiemBan.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTimKiemBan.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -372,22 +373,37 @@ namespace QuanLyQuanCafe.GUI.BanHang
             // dgvThucUong
             this.dgvThucUong.AllowUserToAddRows = false;
             this.dgvThucUong.AllowUserToDeleteRows = false;
+            this.dgvThucUong.AllowUserToResizeRows = false;
+            this.dgvThucUong.AutoGenerateColumns = false;
             this.dgvThucUong.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvThucUong.BackgroundColor = System.Drawing.Color.White;
             this.dgvThucUong.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvThucUong.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvThucUong.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-                this.colMaTU, this.colTenTU, this.colLoaiTU, this.colDonGia
+                this.colHinhAnh, this.colMaTU, this.colTenTU, this.colLoaiTU, this.colDonGia
             });
             this.dgvThucUong.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvThucUong.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.dgvThucUong.ReadOnly = true;
             this.dgvThucUong.RowHeadersVisible = false;
+            this.dgvThucUong.RowTemplate.Height = 48;
             this.dgvThucUong.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+
+            // colHinhAnh
+            this.colHinhAnh.HeaderText = "Hình ảnh";
+            this.colHinhAnh.Name = "colHinhAnh";
+            this.colHinhAnh.ReadOnly = true;
+            this.colHinhAnh.Width = 65;
+            this.colHinhAnh.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.colHinhAnh.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.colHinhAnh.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.colHinhAnh.DefaultCellStyle.NullValue = null;
+            this.colHinhAnh.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 
             this.colMaTU.DataPropertyName = "MaThucUong";
             this.colMaTU.HeaderText = "Mã";
             this.colMaTU.FillWeight = 40F;
+            this.colMaTU.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
 
             this.colTenTU.DataPropertyName = "TenThucUong";
             this.colTenTU.HeaderText = "Tên thức uống";
@@ -914,6 +930,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
         private System.Windows.Forms.Label lblLoaiMon;
         private System.Windows.Forms.ComboBox cboLoaiMon;
         private System.Windows.Forms.DataGridView dgvThucUong;
+        private System.Windows.Forms.DataGridViewImageColumn colHinhAnh;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMaTU;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTenTU;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLoaiTU;
