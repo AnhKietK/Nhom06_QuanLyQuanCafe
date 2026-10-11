@@ -24,6 +24,17 @@ namespace QuanLyQuanCafe.GUI.BanHang
         private decimal _tienHang = 0;
         private decimal _tongThanhToan = 0;
 
+        // Quản lý trạng thái giao diện hiện đại (Lượt 2)
+        private PosChipButton? _chipTatCaBan;
+        private PosChipButton? _chipBanTrong;
+        private PosChipButton? _chipBanCoKhach;
+        private PosChipButton? _chipDatTruoc;
+        private PosChipButton? _chipTatCaMon;
+        private string? _maLoaiMonDangChon = null;
+        private ThucUongDTO? _thucUongDangChon = null;
+        private bool _isCardModeThucDon = true;
+        private readonly Dictionary<string, (decimal TamTinh, int PhutNgoi)> _thongTinHoaDonBan = new();
+
         public frmBanHang()
         {
             InitializeComponent();
@@ -94,9 +105,19 @@ namespace QuanLyQuanCafe.GUI.BanHang
             cboLoaiMon.SelectedIndexChanged += (s, e) => TimKiemMonNuoc();
             btnThemMon.Click += BtnThemMon_Click;
             btnKiemTraKho.Click += BtnKiemTraKho_Click;
+            btnDoiCheDoXem.Click += (s, e) => ToggleCheDoXemThucDon();
             dgvThucUong.CellDoubleClick += (s, e) => BtnThemMon_Click(s, e);
+            dgvThucUong.SelectionChanged += (s, e) =>
+            {
+                if (dgvThucUong.CurrentRow?.DataBoundItem is ThucUongDTO tu)
+                {
+                    _thucUongDangChon = tu;
+                }
+            };
 
-            // Nút số lượng nhanh
+            // Nút số lượng nhanh & Stepper
+            btnGiamSLMon.Click += (s, e) => { if (numSoLuongMon.Value > 1) numSoLuongMon.Value--; };
+            btnTangSLMon.Click += (s, e) => { if (numSoLuongMon.Value < numSoLuongMon.Maximum) numSoLuongMon.Value++; };
             btnSL1.Click += (s, e) => numSoLuongMon.Value = 1;
             btnSL2.Click += (s, e) => numSoLuongMon.Value = 2;
             btnSL5.Click += (s, e) => numSoLuongMon.Value = 5;
@@ -155,6 +176,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
                 NapPhuongThucThanhToan();
                 NapDanhSachTrangThai();
+                KhoiTaoChipsTrangThaiBan();
                 RefreshDuLieu();
             }
             catch (SqlException ex)
@@ -259,9 +281,65 @@ namespace QuanLyQuanCafe.GUI.BanHang
             cboTrangThaiBan.SelectedIndex = 0;
         }
 
+        private void KhoiTaoChipsTrangThaiBan()
+        {
+            flpTrangThaiBanChips.SuspendLayout();
+            flpTrangThaiBanChips.Controls.Clear();
+
+            _chipTatCaBan = new PosChipButton("Tất cả", true);
+            _chipBanTrong = new PosChipButton("Trống", false);
+            _chipBanCoKhach = new PosChipButton("Có khách", false);
+            _chipDatTruoc = new PosChipButton("Đặt trước", false);
+
+            _chipTatCaBan.Click += (s, e) => ChonChipTrangThaiBan("Tất cả trạng thái", _chipTatCaBan);
+            _chipBanTrong.Click += (s, e) => ChonChipTrangThaiBan("Trống", _chipBanTrong);
+            _chipBanCoKhach.Click += (s, e) => ChonChipTrangThaiBan("Có khách", _chipBanCoKhach);
+            _chipDatTruoc.Click += (s, e) => ChonChipTrangThaiBan("Đặt trước", _chipDatTruoc);
+
+            flpTrangThaiBanChips.Controls.Add(_chipTatCaBan);
+            flpTrangThaiBanChips.Controls.Add(_chipBanTrong);
+            flpTrangThaiBanChips.Controls.Add(_chipBanCoKhach);
+            flpTrangThaiBanChips.Controls.Add(_chipDatTruoc);
+            flpTrangThaiBanChips.ResumeLayout();
+        }
+
+        private void ChonChipTrangThaiBan(string trangThai, PosChipButton chipChon)
+        {
+            if (_chipTatCaBan != null) _chipTatCaBan.IsActive = (chipChon == _chipTatCaBan);
+            if (_chipBanTrong != null) _chipBanTrong.IsActive = (chipChon == _chipBanTrong);
+            if (_chipBanCoKhach != null) _chipBanCoKhach.IsActive = (chipChon == _chipBanCoKhach);
+            if (_chipDatTruoc != null) _chipDatTruoc.IsActive = (chipChon == _chipDatTruoc);
+
+            if (cboTrangThaiBan.Items.Contains(trangThai))
+            {
+                cboTrangThaiBan.SelectedItem = trangThai;
+            }
+            ApDungBoLocBan();
+        }
+
         private void NapDanhSachBan()
         {
             _dsBan = _bll.LayDanhSachBan();
+            _thongTinHoaDonBan.Clear();
+
+            // Lấy thông tin tạm tính & thời gian vào của các bàn có khách để hiển thị trực quan
+            foreach (var b in _dsBan.Where(b => b.TrangThai.Equals("COKHACH", StringComparison.OrdinalIgnoreCase)))
+            {
+                try
+                {
+                    var hd = _bll.LayHoaDonDangMoTheoBan(b.MaBan);
+                    if (hd != null)
+                    {
+                        int phut = (int)Math.Max(0, (DateTime.Now - hd.NgayLap).TotalMinutes);
+                        _thongTinHoaDonBan[b.MaBan] = (hd.TongTienThanhToan, phut);
+                    }
+                }
+                catch
+                {
+                    // Bỏ qua lỗi đọc đơn tạm
+                }
+            }
+
             NapDanhSachKhuVuc();
             ApDungBoLocBan();
         }
@@ -313,63 +391,42 @@ namespace QuanLyQuanCafe.GUI.BanHang
             int coKhach = _dsBan.Count(b => b.TrangThai.Equals("COKHACH", StringComparison.OrdinalIgnoreCase));
             int datTruoc = _dsBan.Count(b => b.TrangThai.Equals("DATTRUOC", StringComparison.OrdinalIgnoreCase));
 
-            lblThongKeBan.Text = $"Tổng: {tong} | 🟢 Trống: {trong} | 🔴 Có khách: {coKhach}" + (datTruoc > 0 ? $" | 🟡 Đặt: {datTruoc}" : "");
+            lblThongKeBan.Text = $"Tổng: {tong}   |   🟢 Trống: {trong}   |   🔴 Có khách: {coKhach}" + (datTruoc > 0 ? $"   |   🟡 Đặt: {datTruoc}" : "");
 
-            foreach (var b in danhSach)
+            // Cập nhật số lượng trên các badge chip lọc
+            if (_chipTatCaBan != null) _chipTatCaBan.CountBadge = tong.ToString();
+            if (_chipBanTrong != null) _chipBanTrong.CountBadge = trong.ToString();
+            if (_chipBanCoKhach != null) _chipBanCoKhach.CountBadge = coKhach.ToString();
+            if (_chipDatTruoc != null) _chipDatTruoc.CountBadge = datTruoc.ToString();
+
+            if (danhSach.Count == 0)
             {
-                var btnBan = new Button
+                flpDanhSachBan.Controls.Add(new PosEmptyState("Không tìm thấy bàn phù hợp", "Vui lòng chọn bộ lọc khác hoặc kiểm tra lại từ khóa tìm kiếm"));
+            }
+            else
+            {
+                foreach (var b in danhSach)
                 {
-                    Width = 135,
-                    Height = 90,
-                    Margin = new Padding(6),
-                    FlatStyle = FlatStyle.Flat,
-                    Cursor = Cursors.Hand,
-                    Tag = b
-                };
-                btnBan.FlatAppearance.BorderSize = 0;
+                    var card = new PosTableCard(b);
 
-                string ttHienThi;
-                Color mauNen;
-                if (b.TrangThai.Equals("COKHACH", StringComparison.OrdinalIgnoreCase))
-                {
-                    ttHienThi = "🔴 CÓ KHÁCH";
-                    mauNen = Color.FromArgb(239, 68, 68); // Đỏ Soft Crimson
-                }
-                else if (b.TrangThai.Equals("DATTRUOC", StringComparison.OrdinalIgnoreCase))
-                {
-                    ttHienThi = "🟡 ĐẶT TRƯỚC";
-                    mauNen = Color.FromArgb(245, 158, 11); // Vàng Amber
-                }
-                else
-                {
-                    ttHienThi = "🟢 TRỐNG";
-                    mauNen = Color.FromArgb(16, 185, 129); // Xanh Emerald
-                }
-
-                btnBan.BackColor = mauNen;
-                btnBan.ForeColor = Color.White;
-                btnBan.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-                btnBan.Text = $"BÀN {b.SoBan}\n{b.TenViTri} ({b.SoChoNgoi} chỗ)\n{ttHienThi}";
-
-                if (_banDangChon != null && _banDangChon.MaBan == b.MaBan)
-                {
-                    btnBan.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235); // Viền xanh Blue nổi bật
-                    btnBan.FlatAppearance.BorderSize = 3;
-                }
-                else
-                {
-                    btnBan.FlatAppearance.BorderSize = 0;
-                }
-
-                btnBan.Click += (s, e) =>
-                {
-                    if (s is Button btn && btn.Tag is BanDTO banDTO)
+                    if (_banDangChon != null && _banDangChon.MaBan == b.MaBan)
                     {
-                        ChonBan(banDTO.MaBan);
+                        card.IsSelected = true;
                     }
-                };
 
-                flpDanhSachBan.Controls.Add(btnBan);
+                    if (_thongTinHoaDonBan.TryGetValue(b.MaBan, out var info))
+                    {
+                        card.TamTinh = info.TamTinh;
+                        card.PhutNgoi = info.PhutNgoi;
+                    }
+
+                    card.Click += (s, e) =>
+                    {
+                        ChonBan(b.MaBan);
+                    };
+
+                    flpDanhSachBan.Controls.Add(card);
+                }
             }
 
             flpDanhSachBan.ResumeLayout();
@@ -381,21 +438,12 @@ namespace QuanLyQuanCafe.GUI.BanHang
             if (_banDangChon == null)
                 return;
 
-            // Highlight button bàn trên sơ đồ
+            // Highlight thẻ bàn trên sơ đồ
             foreach (Control c in flpDanhSachBan.Controls)
             {
-                if (c is Button btn && btn.Tag is BanDTO b)
+                if (c is PosTableCard card)
                 {
-                    bool isSelected = (b.MaBan == maBan);
-                    if (isSelected)
-                    {
-                        btn.FlatAppearance.BorderColor = Color.FromArgb(37, 99, 235);
-                        btn.FlatAppearance.BorderSize = 3;
-                    }
-                    else
-                    {
-                        btn.FlatAppearance.BorderSize = 0;
-                    }
+                    card.IsSelected = (card.Ban.MaBan == maBan);
                 }
             }
 
@@ -426,6 +474,9 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 btnThemMon.Enabled = true; // Cho phép bấm thêm món, hệ thống tự mở đơn
                 btnInTamTinh.Enabled = false;
             }
+
+            // Đồng bộ số lượng món đã gọi trong đơn hiện tại lên các card thực đơn
+            CapNhatBadgeSoLuongMonTrongDon();
         }
 
         #endregion
@@ -447,13 +498,65 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 cboLoaiMon.SelectedItem = luaChonCu;
             else if (cboLoaiMon.Items.Count > 0)
                 cboLoaiMon.SelectedIndex = 0;
+
+            // Nạp danh sách chips nhóm món nước
+            flpLoaiMonChips.SuspendLayout();
+            flpLoaiMonChips.Controls.Clear();
+
+            _chipTatCaMon = new PosChipButton("Tất cả", _maLoaiMonDangChon == null, _dsThucUong.Count > 0 ? _dsThucUong.Count.ToString() : "");
+            _chipTatCaMon.Click += (s, e) => ChonNhomMon(null);
+            flpLoaiMonChips.Controls.Add(_chipTatCaMon);
+
+            foreach (var loai in _dsLoaiTU)
+            {
+                int count = _dsThucUong.Count(tu => tu.MaLoaiTU == loai.MaLoaiTU);
+                var chip = new PosChipButton(loai.TenLoai, _maLoaiMonDangChon == loai.MaLoaiTU, count > 0 ? count.ToString() : "")
+                {
+                    Tag = loai.MaLoaiTU
+                };
+                chip.Click += (s, e) => ChonNhomMon(loai.MaLoaiTU);
+                flpLoaiMonChips.Controls.Add(chip);
+            }
+
+            flpLoaiMonChips.ResumeLayout();
+        }
+
+        private void ChonNhomMon(string? maLoaiTU)
+        {
+            _maLoaiMonDangChon = maLoaiTU;
+
+            if (_chipTatCaMon != null)
+                _chipTatCaMon.IsActive = (maLoaiTU == null);
+
+            foreach (Control c in flpLoaiMonChips.Controls)
+            {
+                if (c is PosChipButton chip && chip.Tag is string id)
+                {
+                    chip.IsActive = (id == maLoaiTU);
+                }
+            }
+
+            // Đồng bộ sang cboLoaiMon
+            if (maLoaiTU == null)
+            {
+                cboLoaiMon.SelectedIndex = 0;
+            }
+            else
+            {
+                var loai = _dsLoaiTU.FirstOrDefault(x => x.MaLoaiTU == maLoaiTU);
+                if (loai != null && cboLoaiMon.Items.Contains(loai.TenLoai))
+                {
+                    cboLoaiMon.SelectedItem = loai.TenLoai;
+                }
+            }
+
+            TimKiemMonNuoc();
         }
 
         private void NapDanhSachThucUong()
         {
             _dsThucUong = _bll.LayDanhSachThucUong();
-            dgvThucUong.DataSource = null;
-            dgvThucUong.DataSource = _dsThucUong;
+            TimKiemMonNuoc();
         }
 
         private void TimKiemMonNuoc()
@@ -461,8 +564,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
             string tuKhoa = txtTimKiemMon.Text.Trim();
             string loai = cboLoaiMon.SelectedItem?.ToString() ?? "Tất cả loại món";
 
-            string? maLoai = null;
-            if (loai != "Tất cả loại món")
+            string? maLoai = _maLoaiMonDangChon;
+            if (maLoai == null && loai != "Tất cả loại món")
             {
                 var l = _dsLoaiTU.FirstOrDefault(x => x.TenLoai == loai);
                 if (l != null) maLoai = l.MaLoaiTU;
@@ -471,8 +574,141 @@ namespace QuanLyQuanCafe.GUI.BanHang
             try
             {
                 var ketQua = _bll.TimKiemThucUong(tuKhoa, maLoai);
-                dgvThucUong.DataSource = null;
-                dgvThucUong.DataSource = ketQua;
+                HienThiThucDonLenGiaoDien(ketQua);
+            }
+            catch (Exception ex)
+            {
+                XuLyLoi(ex);
+            }
+        }
+
+        private void HienThiThucDonLenGiaoDien(List<ThucUongDTO> danhSach)
+        {
+            flpThucDonCards.SuspendLayout();
+            flpThucDonCards.Controls.Clear();
+
+            dgvThucUong.DataSource = null;
+            dgvThucUong.DataSource = danhSach;
+
+            if (danhSach.Count == 0)
+            {
+                flpThucDonCards.Controls.Add(new PosEmptyState("Không tìm thấy món nước", "Vui lòng nhập từ khóa khác hoặc bấm nhóm món khác"));
+            }
+            else
+            {
+                foreach (var tu in danhSach)
+                {
+                    int slTrongDon = _dsChiTietHD.FirstOrDefault(ct => ct.MaThucUong == tu.MaThucUong)?.SoLuong ?? 0;
+                    var card = new PosDrinkCard(tu)
+                    {
+                        SoLuongTrongDon = slTrongDon
+                    };
+
+                    card.DrinkClicked += (s, item) =>
+                    {
+                        _thucUongDangChon = item;
+                        // Đồng bộ dòng chọn trên bảng
+                        foreach (DataGridViewRow row in dgvThucUong.Rows)
+                        {
+                            if (row.DataBoundItem is ThucUongDTO rItem && rItem.MaThucUong == item.MaThucUong)
+                            {
+                                row.Selected = true;
+                                break;
+                            }
+                        }
+                    };
+
+                    card.QuickPlusClicked += (s, item) =>
+                    {
+                        ThemNhanhMonVaoDon(item, 1);
+                    };
+
+                    flpThucDonCards.Controls.Add(card);
+                }
+            }
+
+            flpThucDonCards.ResumeLayout();
+        }
+
+        private void ToggleCheDoXemThucDon()
+        {
+            _isCardModeThucDon = !_isCardModeThucDon;
+            if (_isCardModeThucDon)
+            {
+                flpThucDonCards.Visible = true;
+                dgvThucUong.Visible = false;
+                btnDoiCheDoXem.Text = "☰ Dạng bảng";
+            }
+            else
+            {
+                flpThucDonCards.Visible = false;
+                dgvThucUong.Visible = true;
+                btnDoiCheDoXem.Text = "⊞ Dạng thẻ";
+            }
+        }
+
+        private void CapNhatBadgeSoLuongMonTrongDon()
+        {
+            foreach (Control c in flpThucDonCards.Controls)
+            {
+                if (c is PosDrinkCard card)
+                {
+                    int sl = _dsChiTietHD.FirstOrDefault(ct => ct.MaThucUong == card.ThucUong.MaThucUong)?.SoLuong ?? 0;
+                    card.SoLuongTrongDon = sl;
+                }
+            }
+        }
+
+        private void ThemNhanhMonVaoDon(ThucUongDTO mon, int soLuong)
+        {
+            if (_banDangChon == null)
+            {
+                UiHelper.ShowWarning("Vui lòng chọn một bàn trước khi thêm món.");
+                return;
+            }
+
+            try
+            {
+                if (_hoaDonHienTai == null)
+                {
+                    if (UiHelper.Confirm($"Bàn {_banDangChon.SoBan} đang trống. Bạn có muốn mở bàn và gọi '{mon.TenThucUong}' không?"))
+                    {
+                        string? maKH = _khachDangChon?.MaKH;
+                        string maHDMoi = _bll.MoBan(_banDangChon.MaBan, maKH);
+                        NapDanhSachBan();
+                        ChonBan(_banDangChon.MaBan);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                if (_hoaDonHienTai == null)
+                    return;
+
+                _bll.ThemMonVaoHoaDon(_hoaDonHienTai.MaHD, mon.MaThucUong, soLuong);
+                NapChiTietHoaDon(_hoaDonHienTai.MaHD);
+
+                // Cập nhật thẻ bàn đang chọn
+                if (_banDangChon != null)
+                {
+                    _thongTinHoaDonBan[_banDangChon.MaBan] = (_tongThanhToan, 0);
+                    foreach (Control c in flpDanhSachBan.Controls)
+                    {
+                        if (c is PosTableCard card && card.Ban.MaBan == _banDangChon.MaBan)
+                        {
+                            card.TamTinh = _tongThanhToan;
+                            break;
+                        }
+                    }
+                }
+
+                CapNhatBadgeSoLuongMonTrongDon();
+            }
+            catch (SqlException ex)
+            {
+                UiHelper.ShowWarning(CustomSqlExceptionHandler.Translate(ex));
             }
             catch (Exception ex)
             {
@@ -482,6 +718,9 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private ThucUongDTO? LayMonDangChon()
         {
+            if (_thucUongDangChon != null)
+                return _thucUongDangChon;
+
             if (dgvThucUong.CurrentRow?.DataBoundItem is ThucUongDTO mon)
             {
                 return mon;
@@ -537,6 +776,22 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
                 // Nạp lại chi tiết hóa đơn
                 NapChiTietHoaDon(_hoaDonHienTai.MaHD);
+
+                // Cập nhật thẻ bàn đang chọn
+                if (_banDangChon != null)
+                {
+                    _thongTinHoaDonBan[_banDangChon.MaBan] = (_tongThanhToan, 0);
+                    foreach (Control c in flpDanhSachBan.Controls)
+                    {
+                        if (c is PosTableCard card && card.Ban.MaBan == _banDangChon.MaBan)
+                        {
+                            card.TamTinh = _tongThanhToan;
+                            break;
+                        }
+                    }
+                }
+
+                CapNhatBadgeSoLuongMonTrongDon();
 
                 // Reset số lượng về 1
                 numSoLuongMon.Value = 1;
@@ -635,6 +890,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 dgvChiTietHD.DataSource = _dsChiTietHD;
 
                 TinhTongTienHoaDon();
+                CapNhatBadgeSoLuongMonTrongDon();
             }
             catch (Exception ex)
             {
@@ -666,8 +922,11 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 btnChuyenBanNhanh.Enabled = false;
                 btnThanhToan.Enabled = false;
                 btnHuyDon.Enabled = false;
+                btnThemMon.Enabled = false;
                 btnInTamTinh.Enabled = false;
             }
+
+            CapNhatBadgeSoLuongMonTrongDon();
         }
 
         private void TinhTongTienHoaDon()
