@@ -160,8 +160,8 @@ namespace QuanLyQuanCafe.GUI.Auth
             // FormDoiMatKhau
             this.AcceptButton = this.btnLuu;
             this.CancelButton = this.btnHuy;
-            this.AutoScaleDimensions = new SizeF(8F, 20F);
-            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(96F, 96F);
+            this.AutoScaleMode = AutoScaleMode.Dpi;
             this.ClientSize = new Size(420, 350);
             this.Controls.Add(this.pnlCard);
             this.Font = new Font("Segoe UI", 10F);

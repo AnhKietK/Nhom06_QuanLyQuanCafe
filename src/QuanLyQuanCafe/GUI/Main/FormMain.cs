@@ -44,6 +44,7 @@ namespace QuanLyQuanCafe.GUI.Main
         private static readonly string[] ThuTuNhom = { "Bán hàng", "Khách hàng", "Kho", "Danh mục", "Báo cáo", "Hệ thống" };
 
         public bool DangXuat { get; private set; }
+        private WorkspaceHome? workspaceHome;
 
         public FormMain()
         {
@@ -77,6 +78,7 @@ namespace QuanLyQuanCafe.GUI.Main
             CapNhatNutTheme();
             KhoiTaoMenu();
             PhanQuyenMenu();
+            KhoiTaoKhongGianLamViec();
         }
 
         private void BtnToggleTheme_Click(object? sender, EventArgs e)
@@ -87,6 +89,7 @@ namespace QuanLyQuanCafe.GUI.Main
 
         private void CapNhatGiaoDienSauKhiDoiTheme()
         {
+            workspaceHome?.Invalidate(true);
             pnlHeader.Invalidate();
             stsMain.BackColor = Theme.NenStatusStrip;
             stsMain.Invalidate();
@@ -108,6 +111,63 @@ namespace QuanLyQuanCafe.GUI.Main
             }
             btnToggleTheme.Size = isSmallScreen ? new Size(44, 34) : new Size(82, 34);
             Theme.StyleButton(btnToggleTheme, Theme.ButtonKind.Info);
+        }
+
+        private void KhoiTaoKhongGianLamViec()
+        {
+            // Separate navigation from account controls so the header never overlaps.
+            pnlHeader.Controls.Remove(mnuMain);
+            mnuMain.Dock = DockStyle.Top;
+            mnuMain.Height = 48;
+            mnuMain.Padding = new Padding(20, 4, 12, 4);
+            mnuMain.CanOverflow = true;
+            Controls.Add(mnuMain);
+            mnuMain.BringToFront();
+            pnlHeader.BringToFront();
+            pnlHeader.Height = 76;
+            lblThuongHieu.AutoSize = false;
+            lblThuongHieu.Dock = DockStyle.Fill;
+            lblThuongHieu.BringToFront();
+            MinimumSize = new Size(1000, 700);
+
+            var permitted = DanhSachMenu.Where(cfg => cfg.ChucVuChoPhep.Any(role =>
+                string.Equals(role, CurrentUser.ChucVu?.Trim(), StringComparison.OrdinalIgnoreCase)));
+            workspaceHome = new WorkspaceHome(permitted, cfg =>
+                MoManHinh(cfg));
+            var mdi = Controls.OfType<MdiClient>().FirstOrDefault();
+            if (mdi != null)
+            {
+                workspaceHome.Dock = DockStyle.None;
+                Controls.Add(workspaceHome);
+                Layout += (_, _) => workspaceHome.Bounds = mdi.Bounds;
+                workspaceHome.Bounds = mdi.Bounds;
+                workspaceHome.BringToFront();
+            }
+            Controls.SetChildIndex(pnlHeader, Controls.Count - 1);
+            Controls.SetChildIndex(mnuMain, Controls.Count - 2);
+            Controls.SetChildIndex(stsMain, Controls.Count - 3);
+            var homeButton = new ToolStripButton("Tổng quan")
+            {
+                Font = Theme.FontMenu, Padding = new Padding(11, 6, 11, 6)
+            };
+            homeButton.Click += (_, _) =>
+            {
+                workspaceHome.Visible = true;
+                workspaceHome.BringToFront();
+            };
+            mnuMain.Items.Insert(0, homeButton);
+            MdiChildActivate += (_, _) =>
+            {
+                workspaceHome.Visible = ActiveMdiChild == null;
+                if (workspaceHome.Visible) workspaceHome.BringToFront();
+            };
+        }
+
+        private void MoManHinh(MenuConfigItem cfg)
+        {
+            FormLauncher.Mo(this, cfg.TenDayDuKieu, cfg.TenMuc, cfg.Modal);
+            if (!cfg.Modal && ActiveMdiChild != null && workspaceHome != null)
+                workspaceHome.Visible = false;
         }
 
         private void FormMain_Load(object? sender, EventArgs e)
@@ -207,7 +267,7 @@ namespace QuanLyQuanCafe.GUI.Main
 
                     subItem.Click += (s, e) =>
                     {
-                        FormLauncher.Mo(this, cfg.TenDayDuKieu, cfg.TenMuc, cfg.Modal);
+                        MoManHinh(cfg);
                     };
 
                     topItem.DropDownItems.Add(subItem);

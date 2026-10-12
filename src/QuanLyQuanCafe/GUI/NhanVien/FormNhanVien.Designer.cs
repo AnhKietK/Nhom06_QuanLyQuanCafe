@@ -30,13 +30,13 @@ namespace QuanLyQuanCafe.GUI.NhanVien
             this.lblTenNV = new Label();
             this.txtTenNV = new TextBox();
             this.lblChucVu = new Label();
-            this.cboChucVu = new ComboBox();
+            this.cboChucVu = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblSoDienThoai = new Label();
             this.txtSoDienThoai = new TextBox();
             this.lblCaLamViec = new Label();
-            this.cboCaLamViec = new ComboBox();
+            this.cboCaLamViec = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblQuanLy = new Label();
-            this.cboQuanLy = new ComboBox();
+            this.cboQuanLy = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblMatKhau = new Label();
             this.txtMatKhau = new TextBox();
             this.flpButtons = new TableLayoutPanel();
@@ -427,8 +427,8 @@ namespace QuanLyQuanCafe.GUI.NhanVien
             this.colQuanLy.ReadOnly = true;
 
             // FormNhanVien
-            this.AutoScaleDimensions = new SizeF(8F, 20F);
-            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(96F, 96F);
+            this.AutoScaleMode = AutoScaleMode.Dpi;
             this.ClientSize = new Size(1000, 560);
             this.Controls.Add(this.pnlLeft);
             this.Controls.Add(this.pnlRight);

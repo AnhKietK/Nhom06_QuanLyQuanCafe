@@ -17,7 +17,7 @@ namespace QuanLyQuanCafe.GUI.Ban
 
         private void InitializeComponent()
         {
-            this.tabMain = new TabControl();
+            this.tabMain = new QuanLyQuanCafe.Utils.ThemeTabControl();
             this.tabBan = new TabPage();
             this.pnlRightBan = new Panel();
             this.grbThongTinBan = new GroupBox();
@@ -29,7 +29,7 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.lblSoChoNgoi = new Label();
             this.numSoChoNgoi = new NumericUpDown();
             this.lblViTri = new Label();
-            this.cboViTri = new ComboBox();
+            this.cboViTri = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblTrangThaiTitle = new Label();
             this.lblHienTrangThai = new Label();
             this.flpButtonsBan = new TableLayoutPanel();
@@ -617,8 +617,8 @@ namespace QuanLyQuanCafe.GUI.Ban
             this.colMoTa.ReadOnly = true;
 
             // FormBan
-            this.AutoScaleDimensions = new SizeF(8F, 20F);
-            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(96F, 96F);
+            this.AutoScaleMode = AutoScaleMode.Dpi;
             this.ClientSize = new Size(1000, 580);
             this.Controls.Add(this.tabMain);
             this.Font = new Font("Segoe UI", 10F);

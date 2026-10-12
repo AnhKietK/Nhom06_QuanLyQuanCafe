@@ -40,7 +40,8 @@ namespace QuanLyQuanCafe.GUI.Main
         {
             if (e.ToolStrip is MenuStrip)
             {
-                // Để lộ dải màu gradient của Header
+                using var brush = new SolidBrush(Theme.The);
+                e.Graphics.FillRectangle(brush, e.AffectedBounds);
                 return;
             }
 
@@ -85,14 +86,14 @@ namespace QuanLyQuanCafe.GUI.Main
                 if (item.Pressed)
                 {
                     Rectangle rect = new(2, 2, item.Width - 4, item.Height - 4);
-                    using var brush = new SolidBrush(Color.FromArgb(70, 255, 255, 255));
+                    using var brush = new SolidBrush(Theme.DongChon);
                     using var path = Theme.RoundedRect(rect, 6);
                     g.FillPath(brush, path);
                 }
                 else if (item.Selected)
                 {
                     Rectangle rect = new(2, 2, item.Width - 4, item.Height - 4);
-                    using var brush = new SolidBrush(Color.FromArgb(46, 255, 255, 255));
+                    using var brush = new SolidBrush(Theme.DongLe);
                     using var path = Theme.RoundedRect(rect, 6);
                     g.FillPath(brush, path);
                 }
@@ -114,8 +115,7 @@ namespace QuanLyQuanCafe.GUI.Main
             }
             else
             {
-                // Trên thanh MenuStrip chính (nền gradient xanh-tím): luôn là màu trắng nổi bật
-                e.TextColor = Color.White;
+                e.TextColor = Theme.Chu;
             }
 
             base.OnRenderItemText(e);
@@ -130,7 +130,7 @@ namespace QuanLyQuanCafe.GUI.Main
 
         protected override void OnRenderArrow(ToolStripArrowRenderEventArgs e)
         {
-            e.ArrowColor = (e.Item?.IsOnDropDown == true) ? Theme.Chu : Color.White;
+            e.ArrowColor = Theme.ChuPhu;
             base.OnRenderArrow(e);
         }
 

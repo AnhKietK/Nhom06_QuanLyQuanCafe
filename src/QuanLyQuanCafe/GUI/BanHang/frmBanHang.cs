@@ -1,4 +1,4 @@
-using System.Data;
+﻿using System.Data;
 using System.IO;
 using System.Text;
 using Microsoft.Data.SqlClient;
@@ -32,11 +32,70 @@ namespace QuanLyQuanCafe.GUI.BanHang
         public frmBanHang()
         {
             InitializeComponent();
+            pnlTopHeader.Name = "pnlTopHeader";
+            pnlMain.Name = "pnlMain";
+            flpDanhSachBan.Name = "flpDanhSachBan";
+            lblTongThanhToan.Tag = "nhanmanh";
+            lblSubtitle.Tag = "phu";
+            grpSoDoBan.Text = "01   Sơ đồ bàn";
+            grpThucDon.Text = "02   Thực đơn thức uống";
+            grpHoaDon.Text = "03   Hóa đơn & thanh toán";
+            btnHuyDon.Tag = "danger";
+            btnXoaMon.Tag = "danger";
+            btnThanhToan.Tag = "success";
+            btnHuongDan.Tag = "neutral";
+            btnKiemTraKho.Tag = "neutral";
+            btnInTamTinh.Tag = "neutral";
+            Theme.Apply(this);
+            CaiDatBoCucBanHang();
 
             this.KeyPreview = true;
             this.KeyDown += FrmBanHang_KeyDown;
 
             KhoiTaoSuKien();
+        }
+
+        private void CaiDatBoCucBanHang()
+        {
+            lblTitle.Text = "Bán hàng & gọi món";
+            pnlActionMon.Height = 92;
+            pnlTinhTien.Height = 254;
+            pnlTinhTien.BorderStyle = BorderStyle.None;
+            tlpTinhTien.RowStyles[5].Height = 64;
+            pnlTienNhanh.Dock = DockStyle.Fill;
+            foreach (Control control in tlpTinhTien.Controls)
+                if (control != pnlTienNhanh) control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+
+            void Arrange()
+            {
+                btnLamMoiToanBo.Bounds = new Rectangle(pnlTopHeader.Width - 124, 12, 108, 36);
+                btnHuongDan.Bounds = new Rectangle(pnlTopHeader.Width - 252, 12, 120, 36);
+                lblClock.Bounds = new Rectangle(pnlTopHeader.Width - 470, 16, 200, 28);
+                int width = pnlActionBan.ClientSize.Width;
+                btnMoBanNhanh.Bounds = new Rectangle(4, 8, (width - 14) / 2, 36);
+                btnChuyenBanNhanh.Bounds = new Rectangle(width / 2 + 2, 8, (width - 14) / 2, 36);
+                width = pnlActionMon.ClientSize.Width;
+                btnThemMon.Bounds = new Rectangle(4, 46, Math.Max(140, width - 116), 38);
+                btnKiemTraKho.Bounds = new Rectangle(width - 106, 46, 102, 38);
+                width = pnlActionHD.ClientSize.Width;
+                var topButtons = new[] { btnMoBan, btnChuyenBan, btnHuyDon };
+                for (int i = 0; i < topButtons.Length; i++)
+                    topButtons[i].Bounds = new Rectangle(4 + i * (width - 4) / 3, 5, (width - 16) / 3, 34);
+                btnThanhToan.Bounds = new Rectangle(4, 45, (width - 14) * 3 / 5, 40);
+                btnInTamTinh.Bounds = new Rectangle(btnThanhToan.Right + 6, 45, width - btnThanhToan.Right - 10, 40);
+                width = pnlDieuChinhCT.ClientSize.Width;
+                var lineButtons = new[] { btnTangSL, btnGiamSL, btnXoaMon };
+                for (int i = 0; i < lineButtons.Length; i++)
+                    lineButtons[i].Bounds = new Rectangle(4 + i * (width - 4) / 3, 4, (width - 16) / 3, 30);
+                width = pnlKhachHang.ClientSize.Width;
+                txtTimKhach.Bounds = new Rectangle(60, 4, Math.Max(90, width - 210), 28);
+                btnTimKhach.Bounds = new Rectangle(txtTimKhach.Right + 4, 4, 48, 28);
+                btnThemKhachNhanh.Bounds = new Rectangle(btnTimKhach.Right + 4, 4, 40, 28);
+                btnBoChonKhach.Bounds = new Rectangle(btnThemKhachNhanh.Right + 4, 4, 40, 28);
+            }
+            foreach (var panel in new[] { pnlTopHeader, pnlActionBan, pnlActionMon, pnlActionHD, pnlDieuChinhCT, pnlKhachHang })
+                panel.Resize += (_, _) => Arrange();
+            Arrange();
         }
 
         private void FrmBanHang_KeyDown(object? sender, KeyEventArgs e)
@@ -367,23 +426,24 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 if (b.TrangThai.Equals("COKHACH", StringComparison.OrdinalIgnoreCase))
                 {
                     ttHienThi = "🔴 CÓ KHÁCH";
-                    mauNen = Color.FromArgb(239, 68, 68); // Đỏ Soft Crimson
+                    mauNen = Theme.BanCoKhach;
                 }
                 else if (b.TrangThai.Equals("DATTRUOC", StringComparison.OrdinalIgnoreCase))
                 {
                     ttHienThi = "🟡 ĐẶT TRƯỚC";
-                    mauNen = Color.FromArgb(245, 158, 11); // Vàng Amber
+                    mauNen = Theme.BanDatTruoc;
                 }
                 else
                 {
                     ttHienThi = "🟢 TRỐNG";
-                    mauNen = Color.FromArgb(16, 185, 129); // Xanh Emerald
+                    mauNen = Theme.BanTrong;
                 }
 
                 btnBan.BackColor = mauNen;
                 btnBan.ForeColor = Color.White;
                 btnBan.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
                 btnBan.Text = $"BÀN {b.SoBan}\n{b.TenViTri} ({b.SoChoNgoi} chỗ)\n{ttHienThi}";
+                Theme.StyleTableTile(btnBan, () => b.TrangThai);
 
                 if (_banDangChon != null && _banDangChon.MaBan == b.MaBan)
                 {
@@ -845,7 +905,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             if (pt != "Tiền mặt")
             {
-                lblTienThoi.ForeColor = Color.FromArgb(100, 116, 139);
+                lblTienThoi.Tag = "phu";
+                lblTienThoi.ForeColor = Theme.ChuPhu;
                 lblTienThoi.Text = "0 đ (Điện tử)";
                 return;
             }
@@ -855,12 +916,14 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             if (tienThoi >= 0)
             {
-                lblTienThoi.ForeColor = Color.FromArgb(22, 163, 74);
+                lblTienThoi.Tag = "success";
+                lblTienThoi.ForeColor = Theme.SuccessTop;
                 lblTienThoi.Text = $"{tienThoi:N0} đ";
             }
             else
             {
-                lblTienThoi.ForeColor = Color.FromArgb(220, 38, 38);
+                lblTienThoi.Tag = "danger";
+                lblTienThoi.ForeColor = Theme.DangerTop;
                 lblTienThoi.Text = $"Thiếu {Math.Abs(tienThoi):N0} đ";
             }
         }
@@ -877,7 +940,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
             {
                 numTienKhachDua.Value = _tongThanhToan;
                 lblTienThoi.Text = "0 đ (Điện tử)";
-                lblTienThoi.ForeColor = Color.FromArgb(100, 116, 139);
+                lblTienThoi.Tag = "phu";
+                lblTienThoi.ForeColor = Theme.ChuPhu;
             }
             else
             {
@@ -1103,7 +1167,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 Font = new Font("Segoe UI", 9.5F, FontStyle.Bold)
             };
 
-            var cboBanDich = new ComboBox
+            var cboBanDich = new ThemeComboBox
             {
                 Location = new Point(20, 55),
                 Size = new Size(335, 30),
@@ -1172,6 +1236,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             btnHuyChuyen.Click += (s, ev) => formChuyen.Close();
 
             formChuyen.Controls.AddRange(new Control[] { lblTieuDe, cboBanDich, btnXacNhanChuyen, btnHuyChuyen });
+            Theme.Apply(formChuyen);
             formChuyen.ShowDialog(this);
         }
 

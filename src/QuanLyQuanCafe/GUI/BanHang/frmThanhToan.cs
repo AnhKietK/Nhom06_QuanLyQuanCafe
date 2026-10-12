@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using Microsoft.Data.SqlClient;
 using QuanLyQuanCafe.BLL;
 using QuanLyQuanCafe.DAL;
@@ -27,6 +27,23 @@ namespace QuanLyQuanCafe.GUI.BanHang
         public frmThanhToan(string maHD, string? soBan = null, string? maKH = null)
         {
             InitializeComponent();
+            pnlHeader.Name = "pnlHeader";
+            pnlMain.Name = "pnlMain";
+            lblTongCong.Tag = "nhanmanh";
+            btnXacNhan.Tag = "success";
+            btnDong.Tag = "neutral";
+            ClientSize = new Size(760, 740);
+            grpChiTiet.Height = 180;
+            foreach (Control control in tlpThanhToan.Controls)
+            {
+                if (control is Label label)
+                {
+                    label.Dock = DockStyle.Fill;
+                    label.TextAlign = ContentAlignment.MiddleLeft;
+                }
+                else control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
+            }
+            Theme.Apply(this);
 
             _maHD = maHD;
             _soBan = soBan ?? "";
@@ -201,7 +218,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             if (pt != "Tiền mặt")
             {
-                lblTienThoi.ForeColor = Color.FromArgb(100, 116, 139);
+                lblTienThoi.Tag = "phu";
+                lblTienThoi.ForeColor = Theme.ChuPhu;
                 lblTienThoi.Text = "0 đ (Điện tử)";
                 return;
             }
@@ -211,12 +229,14 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             if (tienThoi >= 0)
             {
-                lblTienThoi.ForeColor = Color.FromArgb(22, 163, 74);
+                lblTienThoi.Tag = "success";
+                lblTienThoi.ForeColor = Theme.SuccessTop;
                 lblTienThoi.Text = $"{tienThoi:N0} đ";
             }
             else
             {
-                lblTienThoi.ForeColor = Color.FromArgb(220, 38, 38);
+                lblTienThoi.Tag = "danger";
+                lblTienThoi.ForeColor = Theme.DangerTop;
                 lblTienThoi.Text = $"Thiếu {Math.Abs(tienThoi):N0} đ";
             }
         }
@@ -235,7 +255,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
             {
                 numTienKhachDua.Value = _tongCong;
                 lblTienThoi.Text = "0 đ (Điện tử)";
-                lblTienThoi.ForeColor = Color.FromArgb(100, 116, 139);
+                lblTienThoi.Tag = "phu";
+                lblTienThoi.ForeColor = Theme.ChuPhu;
             }
             else
             {

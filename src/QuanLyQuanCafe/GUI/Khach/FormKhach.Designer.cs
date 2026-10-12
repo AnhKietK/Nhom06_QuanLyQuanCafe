@@ -44,7 +44,7 @@ namespace QuanLyQuanCafe.GUI.Khach
             this.lblSoDienThoai = new System.Windows.Forms.Label();
             this.txtSoDienThoai = new System.Windows.Forms.TextBox();
             this.lblLoaiKhach = new System.Windows.Forms.Label();
-            this.cboLoaiKhach = new System.Windows.Forms.ComboBox();
+            this.cboLoaiKhach = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblDiemTieuDe = new System.Windows.Forms.Label();
             this.lblDiemTichLuy = new System.Windows.Forms.Label();
             this.lblChietKhauTieuDe = new System.Windows.Forms.Label();
@@ -583,8 +583,8 @@ namespace QuanLyQuanCafe.GUI.Khach
             // 
             // FormKhach
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1100, 650);
             this.Controls.Add(this.splMain);
             this.Controls.Add(this.pnlTop);
