@@ -32,6 +32,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             // Header
             pnlHeader = new Panel
             {
+                Name = "pnlHeader",
                 Dock = DockStyle.Top,
                 Height = 55,
                 BackColor = Color.FromArgb(15, 23, 42),
@@ -132,6 +133,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.Controls.Add(pnlBody);
             this.Controls.Add(pnlFooter);
             this.Controls.Add(pnlHeader);
+            Theme.Apply(this);
         }
 
         private void InHoaDon()

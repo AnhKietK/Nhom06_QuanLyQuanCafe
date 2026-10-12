@@ -184,8 +184,8 @@ namespace QuanLyQuanCafe.GUI.Auth
 
             // FormDangNhap
             this.AcceptButton = this.btnDangNhap;
-            this.AutoScaleDimensions = new SizeF(8F, 20F);
-            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(96F, 96F);
+            this.AutoScaleMode = AutoScaleMode.Dpi;
             this.CancelButton = this.btnThoat;
             this.ClientSize = new Size(460, 560);
             this.Controls.Add(this.pnlContainer);

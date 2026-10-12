@@ -32,9 +32,9 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.grpSoDoBan = new System.Windows.Forms.GroupBox();
             this.pnlFilterBan = new System.Windows.Forms.TableLayoutPanel();
             this.lblLocKhuVuc = new System.Windows.Forms.Label();
-            this.cboKhuVuc = new System.Windows.Forms.ComboBox();
+            this.cboKhuVuc = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblLocTrangThai = new System.Windows.Forms.Label();
-            this.cboTrangThaiBan = new System.Windows.Forms.ComboBox();
+            this.cboTrangThaiBan = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblTimKiemBan = new System.Windows.Forms.Label();
             this.txtTimKiemBan = new System.Windows.Forms.TextBox();
             this.lblThongKeBan = new System.Windows.Forms.Label();
@@ -49,7 +49,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.lblTimMon = new System.Windows.Forms.Label();
             this.txtTimKiemMon = new System.Windows.Forms.TextBox();
             this.lblLoaiMon = new System.Windows.Forms.Label();
-            this.cboLoaiMon = new System.Windows.Forms.ComboBox();
+            this.cboLoaiMon = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.dgvThucUong = new System.Windows.Forms.DataGridView();
             this.colHinhAnh = new System.Windows.Forms.DataGridViewImageColumn();
             this.colMaTU = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -96,7 +96,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.lblTongThanhToanTieuDe = new System.Windows.Forms.Label();
             this.lblTongThanhToan = new System.Windows.Forms.Label();
             this.lblPhuongThucTieuDe = new System.Windows.Forms.Label();
-            this.cboPhuongThuc = new System.Windows.Forms.ComboBox();
+            this.cboPhuongThuc = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblTienKhachDuaTieuDe = new System.Windows.Forms.Label();
             this.numTienKhachDua = new System.Windows.Forms.NumericUpDown();
             this.lblTienThoiTieuDe = new System.Windows.Forms.Label();
@@ -860,8 +860,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
             // 
             // frmBanHang
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = QuanLyQuanCafe.Utils.Theme.Nen;
             this.ClientSize = new System.Drawing.Size(1200, 780);
             this.Controls.Add(this.pnlMain);

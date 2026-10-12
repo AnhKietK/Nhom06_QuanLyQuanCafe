@@ -148,8 +148,8 @@ namespace QuanLyQuanCafe.GUI.Main
             this.lblTrangThai.Text = "Xin chào";
 
             // FormMain
-            this.AutoScaleDimensions = new SizeF(8F, 20F);
-            this.AutoScaleMode = AutoScaleMode.Font;
+            this.AutoScaleDimensions = new SizeF(96F, 96F);
+            this.AutoScaleMode = AutoScaleMode.Dpi;
             this.ClientSize = new Size(900, 550);
             this.Controls.Add(this.stsMain);
             this.Controls.Add(this.pnlHeader);

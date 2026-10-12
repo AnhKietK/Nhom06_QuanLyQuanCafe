@@ -19,7 +19,7 @@ namespace QuanLyQuanCafe.GUI.BaoCao
         {
             this.pnlTop = new System.Windows.Forms.Panel();
             this.lblTieuDeTrang = new System.Windows.Forms.Label();
-            this.tabMain = new System.Windows.Forms.TabControl();
+            this.tabMain = new QuanLyQuanCafe.Utils.ThemeTabControl();
             this.tabDoanhThu = new System.Windows.Forms.TabPage();
             this.dgvDoanhThu = new System.Windows.Forms.DataGridView();
             this.colDTNgay = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -34,9 +34,9 @@ namespace QuanLyQuanCafe.GUI.BaoCao
             this.lblDoanhThuTB = new System.Windows.Forms.Label();
             this.pnlDoanhThuFilter = new System.Windows.Forms.Panel();
             this.btnThongKe = new System.Windows.Forms.Button();
-            this.dtpDenNgayDT = new System.Windows.Forms.DateTimePicker();
+            this.dtpDenNgayDT = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblDenNgayDT = new System.Windows.Forms.Label();
-            this.dtpTuNgayDT = new System.Windows.Forms.DateTimePicker();
+            this.dtpTuNgayDT = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblTuNgayDT = new System.Windows.Forms.Label();
             this.tabMonBanChay = new System.Windows.Forms.TabPage();
             this.dgvMonBanChay = new System.Windows.Forms.DataGridView();
@@ -51,9 +51,9 @@ namespace QuanLyQuanCafe.GUI.BaoCao
             this.pnlMonFilter = new System.Windows.Forms.Panel();
             this.btnTopToanThoiGian = new System.Windows.Forms.Button();
             this.btnLocMon = new System.Windows.Forms.Button();
-            this.dtpDenNgayMon = new System.Windows.Forms.DateTimePicker();
+            this.dtpDenNgayMon = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblDenNgayMon = new System.Windows.Forms.Label();
-            this.dtpTuNgayMon = new System.Windows.Forms.DateTimePicker();
+            this.dtpTuNgayMon = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblTuNgayMon = new System.Windows.Forms.Label();
             this.tabHoaDon = new System.Windows.Forms.TabPage();
             this.dgvHoaDon = new System.Windows.Forms.DataGridView();
@@ -73,9 +73,9 @@ namespace QuanLyQuanCafe.GUI.BaoCao
             this.txtTimKiemHD = new System.Windows.Forms.TextBox();
             this.lblTimKiemHD = new System.Windows.Forms.Label();
             this.btnLocHD = new System.Windows.Forms.Button();
-            this.dtpDenNgayHD = new System.Windows.Forms.DateTimePicker();
+            this.dtpDenNgayHD = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblDenNgayHD = new System.Windows.Forms.Label();
-            this.dtpTuNgayHD = new System.Windows.Forms.DateTimePicker();
+            this.dtpTuNgayHD = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblTuNgayHD = new System.Windows.Forms.Label();
             this.pnlTop.SuspendLayout();
             this.tabMain.SuspendLayout();
@@ -769,8 +769,8 @@ namespace QuanLyQuanCafe.GUI.BaoCao
             // 
             // FormBaoCao
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1100, 650);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.pnlTop);

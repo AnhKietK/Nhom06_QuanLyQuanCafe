@@ -29,7 +29,7 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             this.pnlLocThucUong = new System.Windows.Forms.Panel();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
             this.lblTimKiem = new System.Windows.Forms.Label();
-            this.cboLoaiThucUong = new System.Windows.Forms.ComboBox();
+            this.cboLoaiThucUong = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblLoaiTU = new System.Windows.Forms.Label();
             this.grbCongThuc = new System.Windows.Forms.GroupBox();
             this.dgvCongThuc = new System.Windows.Forms.DataGridView();
@@ -40,7 +40,7 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             this.grbNhapDong = new System.Windows.Forms.GroupBox();
             this.tlpNhapDong = new System.Windows.Forms.TableLayoutPanel();
             this.lblChonNL = new System.Windows.Forms.Label();
-            this.cboNguyenLieu = new System.Windows.Forms.ComboBox();
+            this.cboNguyenLieu = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblDonViTinhTieuDe = new System.Windows.Forms.Label();
             this.lblDonViTinh = new System.Windows.Forms.Label();
             this.lblSoLuongQuyDinh = new System.Windows.Forms.Label();
@@ -480,8 +480,8 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
             this.btnLamMoi.UseVisualStyleBackColor = true;
 
             // FormCongThuc
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1100, 650);
             this.Controls.Add(this.sptMain);
             this.Controls.Add(this.pnlTop);

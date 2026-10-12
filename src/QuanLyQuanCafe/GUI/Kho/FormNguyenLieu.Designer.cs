@@ -32,7 +32,7 @@ namespace QuanLyQuanCafe.GUI.Kho
             this.lblTenNL = new System.Windows.Forms.Label();
             this.txtTenNL = new System.Windows.Forms.TextBox();
             this.lblLoaiNL = new System.Windows.Forms.Label();
-            this.cboLoaiNL = new System.Windows.Forms.ComboBox();
+            this.cboLoaiNL = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblDonViTinhTieuDe = new System.Windows.Forms.Label();
             this.lblDonViTinh = new System.Windows.Forms.Label();
             this.lblMucToiThieu = new System.Windows.Forms.Label();
@@ -453,8 +453,8 @@ namespace QuanLyQuanCafe.GUI.Kho
             this.colTinhTrang.Width = 95;
 
             // FormNguyenLieu
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1100, 650);
             this.Controls.Add(this.pnlLeft);
             this.Controls.Add(this.pnlRight);

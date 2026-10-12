@@ -19,7 +19,7 @@ namespace QuanLyQuanCafe.GUI.BaoCao
         {
             this.pnlTop = new System.Windows.Forms.Panel();
             this.lblTieuDeTrang = new System.Windows.Forms.Label();
-            this.tabMain = new System.Windows.Forms.TabControl();
+            this.tabMain = new QuanLyQuanCafe.Utils.ThemeTabControl();
             this.tabLapPhieu = new System.Windows.Forms.TabPage();
             this.pnlLapPhieuContent = new System.Windows.Forms.Panel();
             this.grbThongTinChi = new System.Windows.Forms.GroupBox();
@@ -27,7 +27,7 @@ namespace QuanLyQuanCafe.GUI.BaoCao
             this.lblNguoiLapTieuDe = new System.Windows.Forms.Label();
             this.lblNguoiLap = new System.Windows.Forms.Label();
             this.lblNhaCungCap = new System.Windows.Forms.Label();
-            this.cboNhaCungCap = new System.Windows.Forms.ComboBox();
+            this.cboNhaCungCap = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblSoTien = new System.Windows.Forms.Label();
             this.numSoTienChi = new System.Windows.Forms.NumericUpDown();
             this.lblLyDo = new System.Windows.Forms.Label();
@@ -47,9 +47,9 @@ namespace QuanLyQuanCafe.GUI.BaoCao
             this.lblTongTienChi = new System.Windows.Forms.Label();
             this.pnlBoLoc = new System.Windows.Forms.Panel();
             this.btnLoc = new System.Windows.Forms.Button();
-            this.dtpDenNgay = new System.Windows.Forms.DateTimePicker();
+            this.dtpDenNgay = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblDenNgay = new System.Windows.Forms.Label();
-            this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
+            this.dtpTuNgay = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblTuNgay = new System.Windows.Forms.Label();
             this.pnlTop.SuspendLayout();
             this.tabMain.SuspendLayout();
@@ -470,8 +470,8 @@ namespace QuanLyQuanCafe.GUI.BaoCao
             // 
             // FormChiTien
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1100, 650);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.pnlTop);

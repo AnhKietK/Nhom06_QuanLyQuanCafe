@@ -19,7 +19,7 @@ namespace QuanLyQuanCafe.GUI.Kho
         {
             this.pnlTop = new System.Windows.Forms.Panel();
             this.lblTieuDeTrang = new System.Windows.Forms.Label();
-            this.tabNhapKho = new System.Windows.Forms.TabControl();
+            this.tabNhapKho = new QuanLyQuanCafe.Utils.ThemeTabControl();
             this.tabLapPhieu = new System.Windows.Forms.TabPage();
             this.pnlLapPhieuCenter = new System.Windows.Forms.Panel();
             this.grbDanhSachDong = new System.Windows.Forms.GroupBox();
@@ -40,7 +40,7 @@ namespace QuanLyQuanCafe.GUI.Kho
             this.grbChiTietDong = new System.Windows.Forms.GroupBox();
             this.tlpNhapDong = new System.Windows.Forms.TableLayoutPanel();
             this.lblChonNL = new System.Windows.Forms.Label();
-            this.cboNguyenLieu = new System.Windows.Forms.ComboBox();
+            this.cboNguyenLieu = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblDonViTinhTieuDe = new System.Windows.Forms.Label();
             this.lblDonViTinh = new System.Windows.Forms.Label();
             this.lblSoLuongNhap = new System.Windows.Forms.Label();
@@ -48,14 +48,14 @@ namespace QuanLyQuanCafe.GUI.Kho
             this.lblDonGiaNhap = new System.Windows.Forms.Label();
             this.numDonGiaNhap = new System.Windows.Forms.NumericUpDown();
             this.lblHanSuDung = new System.Windows.Forms.Label();
-            this.dtpHanSuDung = new System.Windows.Forms.DateTimePicker();
+            this.dtpHanSuDung = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.pnlNutDong = new System.Windows.Forms.Panel();
             this.btnXoaDong = new System.Windows.Forms.Button();
             this.btnThemDong = new System.Windows.Forms.Button();
             this.grbThongTinPhieu = new System.Windows.Forms.GroupBox();
             this.tlpDauPhieu = new System.Windows.Forms.TableLayoutPanel();
             this.lblNhaCungCap = new System.Windows.Forms.Label();
-            this.cboNhaCungCap = new System.Windows.Forms.ComboBox();
+            this.cboNhaCungCap = new QuanLyQuanCafe.Utils.ThemeComboBox();
             this.lblNguoiNhapTieuDe = new System.Windows.Forms.Label();
             this.lblNguoiNhap = new System.Windows.Forms.Label();
             this.lblGhiChu = new System.Windows.Forms.Label();
@@ -82,9 +82,9 @@ namespace QuanLyQuanCafe.GUI.Kho
             this.pnlLocLichSu = new System.Windows.Forms.Panel();
             this.lblTongCong = new System.Windows.Forms.Label();
             this.btnLoc = new System.Windows.Forms.Button();
-            this.dtpDenNgay = new System.Windows.Forms.DateTimePicker();
+            this.dtpDenNgay = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblDenNgay = new System.Windows.Forms.Label();
-            this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
+            this.dtpTuNgay = new QuanLyQuanCafe.Utils.ThemeDateTimePicker();
             this.lblTuNgay = new System.Windows.Forms.Label();
 
             this.pnlTop.SuspendLayout();
@@ -854,8 +854,8 @@ namespace QuanLyQuanCafe.GUI.Kho
             this.colCtThanhTien.Width = 130;
 
             // FormNhapKho
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1100, 650);
             this.Controls.Add(this.tabNhapKho);
             this.Controls.Add(this.pnlTop);
