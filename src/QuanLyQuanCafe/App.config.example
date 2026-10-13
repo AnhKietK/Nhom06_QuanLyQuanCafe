@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<connectionStrings>
+		<!-- Chuỗi kết nối dùng cho màn hình Đăng nhập (login_auth) -->
+		<add name="AuthConn"
+			 connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_auth;Password=PW;TrustServerCertificate=True;"
+			 providerName="Microsoft.Data.SqlClient" />
+
+		<!-- Quản lý (db_owner) -->
+		<add name="QuanLyConn"
+			 connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_quantri;Password=PW;TrustServerCertificate=True;"
+			 providerName="Microsoft.Data.SqlClient" />
+
+		<!-- Phục vụ / Thu ngân -->
+		<add name="PhucVuConn"
+			 connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_phucvu;Password=PW;TrustServerCertificate=True;"
+			 providerName="Microsoft.Data.SqlClient" />
+
+		<!-- Thủ kho -->
+		<add name="ThuKhoConn"
+			 connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_thukho;Password=PW;TrustServerCertificate=True;"
+			 providerName="Microsoft.Data.SqlClient" />
+
+		<!-- Kế toán -->
+		<add name="KeToanConn"
+			 connectionString="Server=localhost;Database=quanlyquancafe;User Id=login_ketoan;Password=PW;TrustServerCertificate=True;"
+			 providerName="Microsoft.Data.SqlClient" />
+	</connectionStrings>
+</configuration>
