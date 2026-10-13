@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace QuanLyQuanCafe.DAL
 {
@@ -19,9 +19,17 @@ namespace QuanLyQuanCafe.DAL
                 2627 or 2601 => "Dữ liệu hoặc mã này đã tồn tại trong hệ thống.",
                 547 => "Dữ liệu vi phạm ràng buộc hoặc đang được sử dụng ở bảng khác (không thể xóa).",
                 229 or 230 or 262 => "Bạn không có quyền thực hiện chức năng này.",
-                18456 => "Sai tài khoản SQL trong cấu hình kết nối (App.config).",
-                _ => "Đã xảy ra lỗi CSDL. Vui lòng thử lại hoặc liên hệ quản trị viên."
+                _ => $"Lỗi CSDL ({ex.Number}): {ex.Message}"
             };
+        }
+
+        public static void XuLy(SqlException ex)
+        {
+            MessageBox.Show(
+                $"Lỗi SQL ({ex.Number}): {Translate(ex)}\nChi tiết: {ex.Message}\nThủ tục/Vị trí: {ex.Procedure ?? "N/A"} (Dòng {ex.LineNumber})\nServer: {ex.Server}",
+                "Lỗi Cơ Sở Dữ Liệu",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
     }
 

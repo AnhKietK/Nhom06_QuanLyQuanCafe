@@ -22,9 +22,10 @@ namespace QuanLyQuanCafe.GUI.Main
                 Form? dangMo = cha.MdiChildren.FirstOrDefault(f => f.GetType() == type);
                 if (dangMo != null)
                 {
-                    if (dangMo.WindowState == FormWindowState.Minimized)
+                    if (dangMo.WindowState != FormWindowState.Maximized)
                         dangMo.WindowState = FormWindowState.Maximized;
                     dangMo.Activate();
+                    dangMo.BringToFront();
                     return;
                 }
             }
@@ -56,13 +57,21 @@ namespace QuanLyQuanCafe.GUI.Main
                 return;
             }
 
+            // Đồng bộ giao diện qua Theme cho mọi form trước khi hiển thị
+            Theme.Apply(formMoi);
+
             if (modal)
             {
-                formMoi.StartPosition = FormStartPosition.CenterParent;
-                formMoi.ShowDialog(cha);
+                using (formMoi)
+                {
+                    formMoi.StartPosition = FormStartPosition.CenterParent;
+                    formMoi.ShowDialog(cha);
+                }
             }
             else
             {
+                formMoi.FormBorderStyle = FormBorderStyle.None;
+                formMoi.ControlBox = false;
                 formMoi.MdiParent = cha;
                 formMoi.WindowState = FormWindowState.Maximized;
                 formMoi.Show();
@@ -70,3 +79,4 @@ namespace QuanLyQuanCafe.GUI.Main
         }
     }
 }
+
