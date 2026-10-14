@@ -15,6 +15,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
         private readonly BanHangBLL _bll = new();
         private string _maHD = "";
         private string _soBan = "";
+        // MANG VE: hiển thị hình thức phục vụ, không thông báo trả bàn cho đơn mang về.
+        private string MoTaPhucVu => _soBan == "Mang về" ? "Mang về" : $"Bàn {(string.IsNullOrEmpty(_soBan) ? "--" : _soBan)}";
         private string? _maKH = null;
 
         private decimal _tienHang = 0;
@@ -154,7 +156,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 return;
             }
 
-            lblThongTinDon.Text = $"Hóa đơn: {_maHD} | Bàn: {(!string.IsNullOrEmpty(_soBan) ? _soBan : "--")} | Thu ngân: {(string.IsNullOrEmpty(CurrentUser.TenNV) ? "Trần Thị Bình" : CurrentUser.TenNV)}";
+            lblThongTinDon.Text = $"Hóa đơn: {_maHD} | {MoTaPhucVu} | Thu ngân: {(string.IsNullOrEmpty(CurrentUser.TenNV) ? "Trần Thị Bình" : CurrentUser.TenNV)}";
 
             TaiChiTietHoaDon();
         }
@@ -373,7 +375,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 decimal tienThoi = (phuongThuc == "Tiền mặt") ? (numTienKhachDua.Value - tongThanhToanThucTe) : 0;
 
                 string thongBao = $"Thanh toán Hóa đơn {_maHD} thành công!\n" +
-                                  $"Bàn {(!string.IsNullOrEmpty(_soBan) ? _soBan : "--")} đã được giải phóng về trạng thái Trống.\n\n" +
+                                  (_soBan == "Mang về" ? "Đơn mang về đã hoàn tất.\n\n" : $"{MoTaPhucVu} đã được giải phóng về trạng thái Trống.\n\n") +
                                   $"Phương thức: {phuongThuc}\n" +
                                   $"Tổng thanh toán: {tongThanhToanThucTe:N0} đ";
 
@@ -423,7 +425,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             sb.AppendLine("=============================================");
             sb.AppendLine("             HÓA ĐƠN BÁN HÀNG               ");
             sb.AppendLine($"Số HĐ   : {_maHD}");
-            sb.AppendLine($"Bàn     : Bàn {(!string.IsNullOrEmpty(_soBan) ? _soBan : "--")}");
+            sb.AppendLine($"Phục vụ : {MoTaPhucVu}");
             sb.AppendLine($"Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
             sb.AppendLine($"Thu ngân: {(string.IsNullOrEmpty(CurrentUser.TenNV) ? "Trần Thị Bình" : CurrentUser.TenNV)}");
             sb.AppendLine($"Khách   : {(_khachHang != null ? _khachHang.TenKH : "Khách vãng lai")}");

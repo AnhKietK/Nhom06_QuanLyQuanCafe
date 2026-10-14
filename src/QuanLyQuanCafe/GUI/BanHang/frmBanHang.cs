@@ -28,6 +28,11 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private bool _isLoaded = false;
         private bool _isRefreshing = false;
+        // MANG VE: mỗi đơn có MaHD riêng; bàn quy ước chỉ dùng để lưu vào CSDL.
+        private readonly ComboBox _cboHinhThuc = new() { DropDownStyle = ComboBoxStyle.DropDownList, Width = 180 };
+        private List<HoaDonDTO> _donMangVe = new();
+        private bool LaMangVe => _cboHinhThuc.SelectedIndex == 1;
+        private string MoTaPhucVu => LaMangVe ? "Mang về" : $"Bàn {_banDangChon?.SoBan}";
 
         public frmBanHang()
         {
@@ -48,6 +53,25 @@ namespace QuanLyQuanCafe.GUI.BanHang
             btnInTamTinh.Tag = "neutral";
             Theme.Apply(this);
             CaiDatBoCucBanHang();
+            // MANG VE: lựa chọn hình thức nằm trên danh sách bàn / đơn đang mở.
+            var pnlHinhThuc = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 40, Padding = new Padding(4) };
+            pnlHinhThuc.Controls.Add(new Label { Text = "Hình thức", AutoSize = true, Margin = new Padding(3, 6, 6, 3) });
+            _cboHinhThuc.Items.AddRange(new object[] { "Tại quán", "Mang về" });
+            _cboHinhThuc.SelectedIndex = 0;
+            pnlHinhThuc.Controls.Add(_cboHinhThuc);
+            grpSoDoBan.Controls.Add(pnlHinhThuc);
+            grpSoDoBan.Controls.SetChildIndex(pnlHinhThuc, grpSoDoBan.Controls.Count - 1);
+            _cboHinhThuc.SelectedIndexChanged += (s, e) =>
+            {
+                _banDangChon = null;
+                LamMoiHoaDonGiaoDien();
+                _khachDangChon = null;
+                lblThongTinKhach.Text = "Khách vãng lai (Chiết khấu 0%)";
+                pnlFilterBan.Visible = !LaMangVe;
+                grpSoDoBan.Text = LaMangVe ? "01   Đơn mang về đang mở" : "01   Sơ đồ bàn";
+                btnMoBan.Text = btnMoBanNhanh.Text = LaMangVe ? "Tạo đơn mới" : "Mở bàn";
+                RefreshDuLieu();
+            };
 
             this.KeyPreview = true;
             this.KeyDown += FrmBanHang_KeyDown;
@@ -284,7 +308,12 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 NapDanhSachLoaiMon();
                 TimKiemMonNuoc();
 
-                if (!string.IsNullOrEmpty(maBanDangChon) && _dsBan.Any(b => b.MaBan == maBanDangChon))
+                if (LaMangVe)
+                {
+                    string? maHD = _hoaDonHienTai?.MaHD;
+                    ChonDonMangVe(_donMangVe.FirstOrDefault(hd => hd.MaHD == maHD));
+                }
+                else if (!string.IsNullOrEmpty(maBanDangChon) && _dsBan.Any(b => b.MaBan == maBanDangChon))
                 {
                     ChonBan(maBanDangChon);
                 }
@@ -355,12 +384,32 @@ namespace QuanLyQuanCafe.GUI.BanHang
         private void NapDanhSachBan()
         {
             _dsBan = _bll.LayDanhSachBan();
+            if (LaMangVe) _donMangVe = _bll.LayDanhSachDonMangVe();
             NapDanhSachKhuVuc();
             ApDungBoLocBan();
         }
 
         private void ApDungBoLocBan()
         {
+            if (LaMangVe)
+            {
+                // MANG VE: hiển thị từng hóa đơn, cho phép quay lại đơn chưa thanh toán.
+                lblThongKeBan.Text = $"Đơn mang về đang mở: {_donMangVe.Count}";
+                foreach (Control control in flpDanhSachBan.Controls.Cast<Control>().ToArray()) control.Dispose();
+                flpDanhSachBan.Controls.Clear();
+                foreach (var hd in _donMangVe)
+                {
+                    var button = new Button
+                    {
+                        Text = $"Mang về\n{hd.MaHD}\n{hd.NgayLap:HH:mm dd/MM}",
+                        Size = new Size(150, 94), Margin = new Padding(6),
+                        BackColor = Theme.NenTrongHon, Tag = hd
+                    };
+                    button.Click += (s, e) => ChonDonMangVe(hd);
+                    flpDanhSachBan.Controls.Add(button);
+                }
+                return;
+            }
             string khuVuc = cboKhuVuc.SelectedItem?.ToString() ?? "Tất cả khu vực";
             string trangThai = cboTrangThaiBan.SelectedItem?.ToString() ?? "Tất cả trạng thái";
             string tuKhoa = txtTimKiemBan.Text.Trim();
@@ -520,6 +569,33 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 btnThemMon.Enabled = true; // Cho phép bấm thêm món, hệ thống tự mở đơn
                 btnInTamTinh.Enabled = false;
             }
+        }
+
+        private void ChonDonMangVe(HoaDonDTO? hoaDon)
+        {
+            // MANG VE: không tra hóa đơn theo bàn vì bàn này có nhiều đơn đang mở.
+            _banDangChon = new BanDTO { MaBan = BanHangBLL.MaBanMangVe, TenViTri = "Mang về", TrangThai = "TRONG" };
+            LamMoiHoaDonGiaoDien();
+            _hoaDonHienTai = hoaDon;
+            _khachDangChon = null;
+            lblThongTinKhach.Text = "Khách vãng lai (Chiết khấu 0%)";
+            lblBanDangChon.Text = "HÌNH THỨC: Mang về";
+            if (hoaDon == null) lblMaHDHienTai.Text = "Chọn đơn đang mở hoặc bấm Tạo đơn mới";
+            btnMoBan.Enabled = btnMoBanNhanh.Enabled = true;
+            btnChuyenBan.Enabled = btnChuyenBanNhanh.Enabled = false;
+            btnThanhToan.Enabled = btnHuyDon.Enabled = btnInTamTinh.Enabled = hoaDon != null;
+            btnThemMon.Enabled = true;
+            if (hoaDon != null) NapHoaDonCuaBanHienTai();
+            foreach (Control control in flpDanhSachBan.Controls)
+                if (control is Button button && button.Tag is HoaDonDTO hd)
+                    button.BackColor = hd.MaHD == hoaDon?.MaHD ? Color.LightBlue : Theme.NenTrongHon;
+        }
+
+        private void TaoDonMangVe()
+        {
+            string maHD = _bll.TaoDonMangVe(_khachDangChon?.MaKH);
+            NapDanhSachBan();
+            ChonDonMangVe(_donMangVe.FirstOrDefault(hd => hd.MaHD == maHD));
         }
 
         #endregion
@@ -682,7 +758,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 // Nếu bàn chưa có hóa đơn đang mở, hỏi mở bàn
                 if (_hoaDonHienTai == null)
                 {
-                    if (UiHelper.Confirm($"Bàn {_banDangChon.SoBan} đang trống. Bạn có muốn mở bàn và tạo hóa đơn mới không?"))
+                    if (LaMangVe) TaoDonMangVe();
+                    else if (UiHelper.Confirm($"Bàn {_banDangChon.SoBan} đang trống. Bạn có muốn mở bàn và tạo hóa đơn mới không?"))
                     {
                         string? maKH = _khachDangChon?.MaKH;
                         string maHDMoi = _bll.MoBan(_banDangChon.MaBan, maKH);
@@ -756,7 +833,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             try
             {
-                _hoaDonHienTai = _bll.LayHoaDonDangMoTheoBan(_banDangChon.MaBan);
+                if (!LaMangVe) _hoaDonHienTai = _bll.LayHoaDonDangMoTheoBan(_banDangChon.MaBan);
                 if (_hoaDonHienTai != null)
                 {
                     lblMaHDHienTai.Text = $"Mã HĐ: {_hoaDonHienTai.MaHD}";
@@ -1070,6 +1147,12 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private void BtnMoBan_Click(object? sender, EventArgs e)
         {
+            if (LaMangVe)
+            {
+                try { TaoDonMangVe(); }
+                catch (Exception ex) { XuLyLoi(ex); }
+                return;
+            }
             if (_banDangChon == null)
             {
                 UiHelper.ShowWarning("Vui lòng chọn bàn cần mở.");
@@ -1103,6 +1186,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
         private void BtnChuyenBan_Click(object? sender, EventArgs e)
         {
+            if (LaMangVe) return;
             if (_banDangChon == null || _hoaDonHienTai == null)
             {
                 UiHelper.ShowWarning("Vui lòng chọn bàn đang có khách để thực hiện chuyển bàn.");
@@ -1225,7 +1309,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             }
 
             // Mở màn hình xác nhận thanh toán chuyên biệt (frmThanhToan)
-            using var frmTT = new frmThanhToan(_hoaDonHienTai.MaHD, _banDangChon.SoBan.ToString(), _khachDangChon?.MaKH);
+            using var frmTT = new frmThanhToan(_hoaDonHienTai.MaHD, LaMangVe ? "Mang về" : _banDangChon.SoBan.ToString(), _khachDangChon?.MaKH);
             if (frmTT.ShowDialog(this) == DialogResult.OK)
             {
                 // Sau khi thanh toán thành công, nạp lại toàn bộ dữ liệu (Refresh)
@@ -1241,13 +1325,13 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 return;
             }
 
-            if (UiHelper.Confirm($"Bạn có chắc chắn muốn HỦY Hóa đơn '{_hoaDonHienTai.MaHD}' của Bàn {_banDangChon.SoBan} không?\n" +
+            if (UiHelper.Confirm($"Bạn có chắc chắn muốn HỦY Hóa đơn '{_hoaDonHienTai.MaHD}' ({MoTaPhucVu}) không?\n" +
                                 "Toàn bộ nguyên liệu của các món đã gọi sẽ tự động được hoàn trả về kho."))
             {
                 try
                 {
                     _bll.HuyHoaDon(_hoaDonHienTai.MaHD);
-                    UiHelper.ShowInfo("Đã hủy hóa đơn thành công! Bàn đã trở về trạng thái trống.");
+                    UiHelper.ShowInfo(LaMangVe ? "Đã hủy đơn mang về và hoàn nguyên liệu về kho." : "Đã hủy hóa đơn thành công! Bàn đã trở về trạng thái trống.");
                     RefreshDuLieu();
                 }
                 catch (SqlException ex)
@@ -1279,7 +1363,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             sb.AppendLine("=============================================");
             sb.AppendLine("             PHIẾU TẠM TÍNH TIỀN             ");
             sb.AppendLine($"Số HĐ   : {_hoaDonHienTai.MaHD}");
-            sb.AppendLine($"Bàn     : Bàn {_banDangChon.SoBan} ({_banDangChon.TenViTri})");
+            sb.AppendLine($"Phục vụ : {MoTaPhucVu}");
             sb.AppendLine($"Giờ vào : {_hoaDonHienTai.NgayLap:dd/MM/yyyy HH:mm:ss}");
             sb.AppendLine($"Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
             sb.AppendLine($"Thu ngân: {CurrentUser.TenNV}");
