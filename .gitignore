@@ -429,8 +429,9 @@ FodyWeavers.xsd
 *.msp
 
 # ===== Do an QuanLyQuanCafe =====
-# File cau hinh chua mat khau SQL: khong dua len Git
+# File cau hinh va script login chua mat khau SQL: khong dua len Git
 App.config
+database/00_init_local_logins.sql
 # File backup CSDL va file tam cua Word
 *.bak
 ~$*
