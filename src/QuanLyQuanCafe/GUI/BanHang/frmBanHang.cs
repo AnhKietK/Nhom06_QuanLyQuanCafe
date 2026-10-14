@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using System.IO;
 using System.Text;
 using Microsoft.Data.SqlClient;
@@ -610,37 +610,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
 
             try
             {
-                string folder = Path.Combine(AppContext.BaseDirectory, "Images");
-                string fullPath = Path.Combine(folder, tenFile);
-
-                if (!File.Exists(fullPath))
-                {
-                    string pathSub = Path.Combine(folder, "ThucUong", tenFile);
-                    if (File.Exists(pathSub))
-                    {
-                        fullPath = pathSub;
-                    }
-                    else
-                    {
-                        string pathRes = Path.Combine(AppContext.BaseDirectory, "Resources", "Images", tenFile);
-                        if (File.Exists(pathRes))
-                        {
-                            fullPath = pathRes;
-                        }
-                        else
-                        {
-                            string pathResSub = Path.Combine(AppContext.BaseDirectory, "Resources", "Images", "ThucUong", tenFile);
-                            if (File.Exists(pathResSub))
-                            {
-                                fullPath = pathResSub;
-                            }
-                            else if (File.Exists(tenFile))
-                            {
-                                fullPath = tenFile;
-                            }
-                        }
-                    }
-                }
+                string? fullPath = DrinkImages.Resolve(tenFile);
 
                 if (File.Exists(fullPath))
                 {

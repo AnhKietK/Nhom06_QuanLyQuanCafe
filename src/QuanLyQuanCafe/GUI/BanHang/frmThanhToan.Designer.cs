@@ -339,7 +339,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             this.lblQRInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(3)))), ((int)(((byte)(105)))), ((int)(((byte)(161)))));
             this.lblQRInfo.Location = new System.Drawing.Point(0, 0);
             this.lblQRInfo.Padding = new System.Windows.Forms.Padding(6);
-            this.lblQRInfo.Text = "📲 QR Chuyển khoản: VCB 0123456789 - QUAN CAFE NHOM 06\nNội dung: TT [Mã HĐ]";
+            this.lblQRInfo.Text = "QR Chuyển khoản: VCB 1050243586\nNội dung: TT [Mã HĐ]";
 
             // 
             // pnlFooter
