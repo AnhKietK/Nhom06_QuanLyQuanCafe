@@ -1,46 +1,36 @@
-# Nhóm 06 - Quản lý quán cà phê
+# Nhóm 06 - Hệ Thống Quản Lý Quán Cà Phê
 
 Đồ án cuối kỳ môn Hệ quản trị Cơ sở dữ liệu (DBMS330284).
-Ứng dụng C# WinForms (.NET 8) kết nối SQL Server để quản lý quán cà phê:
-bán hàng, kho, nhập hàng, khách hàng, báo cáo, phân quyền theo vai trò.
+Ứng dụng C# WinForms (.NET 10) theo kiến trúc 3 tầng (GUI - BLL - DAL - DTO) kết nối Microsoft SQL Server để quản lý quán cà phê: bán hàng tại quán & mang về, kho, nhập hàng, khách hàng, báo cáo, phân quyền theo vai trò (RBAC).
 
-## Thành viên
-| Thành viên | MSSV | Phụ trách |
-| --- | --- | --- |
-| ... | ... | Nền tảng, bảo mật, quản trị (Quản lý) |
-| ... | ... | Bán hàng (Phục vụ, Thu ngân) |
-| ... | ... | Kho và nhà cung cấp (Thủ kho) |
-| ... | ... | Khách hàng, danh mục, báo cáo (Kế toán) |
+## Thành viên nhóm
+| STT | Thành viên | MSSV | Phụ trách |
+| :---: | :--- | :---: | :--- |
+| 1 | Hoàng Anh Kiệt *(Trưởng nhóm)* | 24110264 | Nền tảng, kiến trúc 3 tầng, bảo mật RBAC, quản trị (Quản lý) |
+| 2 | Nguyễn Anh Duy | 24110196 | Bán hàng tại quán & mang về, hóa đơn, thanh toán VietQR (Phục vụ, Thu ngân) |
+| 3 | Võ Lê Ngọc Hưng | 24110233 | Kho nguyên liệu, nhà cung cấp, công thức, Trigger & Index (Thủ kho) |
+| 4 | Nguyễn Thái Sơn | 24110278 | Khách hàng, danh mục, chi tiền, báo cáo thống kê, View & Function (Kế toán) |
 
-## Công nghệ
-C# WinForms (.NET 8), ADO.NET (Microsoft.Data.SqlClient), Microsoft SQL Server.
+## Công nghệ sử dụng
+* **Ứng dụng:** C# WinForms (.NET 10 - `net10.0-windows`), ADO.NET (`Microsoft.Data.SqlClient`).
+* **Cơ sở dữ liệu:** Microsoft SQL Server (Stored Procedures, Triggers, Views, Functions, Nonclustered Indexes, Transactions, RBAC).
 
-## Cách cài đặt và chạy
-1. Cài SQL Server, bật Mixed Mode (SQL Server and Windows Authentication).
-2. (Tùy chọn) Copy `database/00_init_local_logins.sql.example` thành `database/00_init_local_logins.sql`, đổi mật khẩu cho các login rồi chạy trên SQL Server.
-3. Trong SSMS chạy lần lượt `database/01_schema_full.sql`, rồi `database/02_du_lieu_mau.sql`.
-4. (Tùy chọn) Chạy `database/03_backup_recovery_concurrency.sql` để kiểm tra phân quyền, đo hiệu năng chỉ mục và chạy bộ kiểm thử tự động.
-5. Copy `src/QuanLyQuanCafe/App.config.example` thành `App.config`, điền tên server và mật khẩu khớp với bước trên.
-6. Mở solution bằng Visual Studio 2022, nhấn F5.
+## Cách cài đặt và chạy chương trình
+1. Cài đặt SQL Server, bật chế độ **Mixed Mode** (*SQL Server and Windows Authentication*).
+2. Sao chép `database/00_init_local_logins.sql.example` thành `database/00_init_local_logins.sql` và cấu hình mật khẩu cho 5 SQL Login (`AuthLogin@123`, `QuanTri@123`, `PhucVu@123`, `ThuKho@123`, `KeToan@123`).
+3. Mở SSMS và chạy lần lượt theo thứ tự:
+   * `database/00_init_local_logins.sql` (Tạo 5 Login cấp Server)
+   * `database/01_schema_full.sql` (Tạo CSDL, 16 bảng, ràng buộc, Trigger, View, Function, SP, Index & Role)
+   * `database/02_du_lieu_mau.sql` (Nạp dữ liệu mẫu và hình ảnh thức uống)
+   * `database/03_backup_recovery_concurrency.sql` (Kịch bản Backup/Restore, Concurrency & Kiểm thử phân quyền)
+4. Sao chép `src/QuanLyQuanCafe/App.config.example` thành `src/QuanLyQuanCafe/App.config`, điền tên Server và mật khẩu tương ứng.
+5. Mở Solution bằng Visual Studio 2022, nhấn **F5** (hoặc chạy `dotnet run --project src/QuanLyQuanCafe/QuanLyQuanCafe.csproj`).
 
-## Tài khoản demo (mật khẩu chung: 123456)
-| SĐT | Vai trò |
-| --- | --- |
-| 0901000001 | Quản lý |
-| 0901000002 | Phục vụ |
-| 0901000004 | Thu ngân |
-| 0901000005 | Thủ kho |
-| 0901000006 | Kế toán |
-
-## Chuyển khoản VietQR và ảnh thức uống
-- Chọn **Chuyển khoản** để tải mã VietQR cho Vietcombank (VCB), STK **1050243586**, số tiền sau giảm giá và nội dung "TT <mã hóa đơn>". Cần Internet để tải QR; có nút tải lại khi lỗi mạng. Thu ngân kiểm tra tiền đã nhận trước khi xác nhận.
-- Ảnh trong "src/QuanLyQuanCafe/Resources/Images/ThucUong" được tự sao chép khi build/publish. CSDL chỉ lưu tên file, không dùng đường dẫn ổ D: của một máy. Khi chia sẻ bản build, gửi toàn bộ thư mục đầu ra, bao gồm Resources.
-- Dữ liệu mẫu trong `database/02_du_lieu_mau.sql` đã gắn sẵn tên file ảnh chuẩn cho toàn bộ 16 món.
-- API ảnh dùng VietQR Quick Link: https://www.vietqr.io/qr-dong . PNG hiện được hỗ trợ; VietQR đã thông báo kế hoạch ngừng hỗ trợ PNG/JPEG trong năm 2027: https://www.vietqr.io/thong-bao-cap-nhat .
-
-## Bán tại quán và mang về
-- Toàn bộ logic bán tại quán và mang về đã được tích hợp hoàn chỉnh trong `database/01_schema_full.sql`.
-- Trong màn hình bán hàng, chọn **Tại quán** để chọn bàn, hoặc **Mang về** để xem các đơn mang về đang mở. Bấm **Tạo đơn mới** rồi thêm món; cũng có thể thêm món trực tiếp để tự tạo đơn mang về.
-- Có thể mở nhiều đơn mang về, chuyển sang đơn khác hoặc quay lại sau khi đóng màn hình. Chọn đúng mã hóa đơn trong danh sách để thêm món, thanh toán, hủy hoặc in tạm tính.
-- Mã bàn `B_MANGVE` và vị trí `VT_MANGVE` là dữ liệu quy ước, được tự tạo trong SP khi tạo đơn mang về đầu tiên và ẩn khỏi danh sách bàn. Đơn mang về vẫn trừ/hoàn kho, cộng điểm, giảm giá và dùng VietQR như đơn tại quán.
-- Kịch bản kiểm thử quy trình bán tại quán và mang về được tích hợp ở Phần 6 trong `database/03_backup_recovery_concurrency.sql` (chạy bằng giao dịch rollback tự động dọn dẹp, không để lại dữ liệu rác).
+## Tài khoản nhân viên demo (Mật khẩu chung: `123456`)
+| Số điện thoại | Vai trò | SQL Login tương ứng |
+| :---: | :--- | :--- |
+| `0901000001` | Quản lý | `login_quantri` |
+| `0901000002` | Phục vụ | `login_phucvu` |
+| `0901000004` | Thu ngân | `login_phucvu` |
+| `0901000005` | Thủ kho | `login_thukho` |
+| `0901000006` | Kế toán | `login_ketoan` |
