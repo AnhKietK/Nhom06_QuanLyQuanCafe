@@ -191,8 +191,7 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
 
             try
             {
-                string folder = Path.Combine(AppContext.BaseDirectory, "Images");
-                string fullPath = Path.Combine(folder, tenFile);
+                string? fullPath = DrinkImages.Resolve(tenFile);
                 if (File.Exists(fullPath))
                 {
                     // Đọc file bằng FileStream rồi sao chép sang Bitmap để không khóa file
@@ -225,7 +224,7 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     string sourceFile = ofd.FileName;
-                    string folder = Path.Combine(AppContext.BaseDirectory, "Images");
+                    string folder = DrinkImages.Folder;
                     if (!Directory.Exists(folder))
                     {
                         Directory.CreateDirectory(folder);

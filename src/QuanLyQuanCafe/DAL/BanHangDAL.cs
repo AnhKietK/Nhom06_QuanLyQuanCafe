@@ -262,6 +262,32 @@ namespace QuanLyQuanCafe.DAL
 
         #region 3. Hóa đơn & Gọi món
 
+        // MANG VE: chọn hóa đơn theo MaHD, không dùng TOP 1 theo bàn quy ước.
+        public List<HoaDonDTO> LayDanhSachDonMangVe()
+        {
+            using var conn = new SqlConnection(ConnectionString);
+            using var cmd = new SqlCommand("sp_LayDanhSachDonMangVe", conn)
+            {
+                CommandType = CommandType.StoredProcedure,
+                CommandTimeout = 15
+            };
+            conn.Open();
+            using var reader = cmd.ExecuteReader();
+            var result = new List<HoaDonDTO>();
+            while (reader.Read())
+                result.Add(new HoaDonDTO
+                {
+                    MaHD = reader["MaHD"].ToString() ?? "",
+                    NgayLap = Convert.ToDateTime(reader["NgayLap"]),
+                    MaNV = reader["MaNV"].ToString() ?? "",
+                    MaKH = reader["MaKH"] == DBNull.Value ? null : reader["MaKH"].ToString(),
+                    MaBan = "B_MANGVE",
+                    TienGiamGia = reader["TienGiamGia"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["TienGiamGia"]),
+                    PhuongThucThanhToan = reader["PhuongThucThanhToan"].ToString() ?? "Tiền mặt"
+                });
+            return result;
+        }
+
         public HoaDonDTO? LayHoaDonDangMoTheoBan(string maBan)
         {
             try

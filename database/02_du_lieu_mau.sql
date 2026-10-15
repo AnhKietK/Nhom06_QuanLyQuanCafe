@@ -1,24 +1,15 @@
-﻿-- =====================================================================
--- 02_du_lieu_mau.sql  -  DỮ LIỆU MẪU CHO CSDL quanlyquancafe
--- Chạy SAU file 01_schema_full_sql.sql.
--- Chạy bằng tài khoản quản trị (sa / Windows Authentication) trong SSMS.
---
--- CẢNH BÁO: PHẦN 0 XÓA SẠCH DỮ LIỆU CŨ của mọi bảng và đặt lại các SEQUENCE,
---           để có thể chạy lại script nhiều lần. Nếu đã nhập dữ liệu thật, hãy
---           bỏ phần 0 (comment lại).
---
--- Tài khoản ứng dụng (mật khẩu chung: 123456):
---   0901000001 Quản lý | 0901000002, 0901000003 Phục vụ | 0901000004 Thu ngân
---   0901000005 Thủ kho | 0901000006 Kế toán
--- =====================================================================
+-- 02_du_lieu_mau.sql
+-- Nạp dữ liệu mẫu cho CSDL quanlyquancafe
+-- Chạy sau khi thực thi file 01_schema_full.sql.
+-- Tài khoản nhân viên demo (mật khẩu chung: 123456):
+--   0901000001 (Quản lý) | 0901000002, 0901000003 (Phục vụ) | 0901000004 (Thu ngân)
+--   0901000005 (Thủ kho) | 0901000006 (Kế toán)
 USE quanlyquancafe;
 GO
 SET NOCOUNT ON;
 GO
 
--- =====================================================================
 -- PHẦN 0: XÓA DỮ LIỆU CŨ (theo thứ tự khóa ngoại) VÀ ĐẶT LẠI SEQUENCE
--- =====================================================================
 UPDATE NhanVien SET MaQL = NULL;
 DELETE FROM ChiTietHoaDon;
 DELETE FROM HoaDon;
@@ -43,10 +34,7 @@ ALTER SEQUENCE Seq_Khach    RESTART WITH 1;
 ALTER SEQUENCE Seq_PhieuChi RESTART WITH 1;
 GO
 
--- =====================================================================
 -- PHẦN 1: DANH MỤC CƠ BẢN
--- =====================================================================
-
 -- 1.1 Loại khách (sp_ThemKhachHang mặc định dùng LKH01 nên bắt buộc phải có)
 INSERT INTO LoaiKhach (MaLoaiKH, TenLoai, ChietKhau) VALUES
 ('LKH01', N'Thường',     0),
@@ -121,24 +109,24 @@ INSERT INTO NguyenLieu (MaNL, TenNL, SoLuongTonKho, MucToiThieu, MaLoaiNL) VALUE
 ('NL18', N'Ly nhựa',                 0,  200, 'LNL06'),
 ('NL19', N'Ống hút',                 0,  200, 'LNL06');
 
--- 1.7 Thức uống (HinhAnh để NULL: giao diện phải xử lý được giá trị NULL)
+-- 1.7 Thức uống (lưu tên file trong Resources/Images/ThucUong)
 INSERT INTO ThucUong (MaThucUong, TenThucUong, DonGiaBan, HinhAnh, MaLoaiTU) VALUES
-('TU01', N'Cà phê đen đá',   25000, NULL, 'LTU01'),
-('TU02', N'Cà phê sữa đá',   29000, NULL, 'LTU01'),
-('TU03', N'Bạc xỉu',         32000, NULL, 'LTU01'),
-('TU04', N'Cappuccino',      45000, NULL, 'LTU01'),
-('TU05', N'Latte caramel',   49000, NULL, 'LTU01'),
-('TU06', N'Trà đào cam',     39000, NULL, 'LTU02'),
-('TU07', N'Trà chanh',       25000, NULL, 'LTU02'),
-('TU08', N'Trà sữa trân châu', 39000, NULL, 'LTU02'),
-('TU09', N'Matcha latte',    49000, NULL, 'LTU02'),
-('TU10', N'Sinh tố xoài',    45000, NULL, 'LTU03'),
-('TU11', N'Sinh tố dâu',     49000, NULL, 'LTU03'),
-('TU12', N'Nước cam ép',     35000, NULL, 'LTU03'),
-('TU13', N'Cà phê đá xay',   49000, NULL, 'LTU04'),
-('TU14', N'Matcha đá xay',   52000, NULL, 'LTU04'),
-('TU15', N'Dâu đá xay',      52000, NULL, 'LTU04'),
-('TU16', N'Xoài đá xay',     52000, NULL, 'LTU04');
+('TU01', N'Cà phê đen đá',   25000, N'ca-phe-den-da.jpg', 'LTU01'),
+('TU02', N'Cà phê sữa đá',   29000, N'ca-phe-sua-da.jpg', 'LTU01'),
+('TU03', N'Bạc xỉu',         32000, N'bac-xiu.jpg', 'LTU01'),
+('TU04', N'Cappuccino',      45000, N'capuchino.jpg', 'LTU01'),
+('TU05', N'Latte caramel',   49000, N'latte-caramel.jpg', 'LTU01'),
+('TU06', N'Trà đào cam',     39000, N'tra-dao-cam.jpg', 'LTU02'),
+('TU07', N'Trà chanh',       25000, N'tra-chanh.jpg', 'LTU02'),
+('TU08', N'Trà sữa trân châu', 39000, N'trasuachantrau.jpg', 'LTU02'),
+('TU09', N'Matcha latte',    49000, N'matchalatte.jpg', 'LTU02'),
+('TU10', N'Sinh tố xoài',    45000, N'sinhtoxoai.jpg', 'LTU03'),
+('TU11', N'Sinh tố dâu',     49000, N'sinhtodau.jpg', 'LTU03'),
+('TU12', N'Nước cam ép',     35000, N'nuoc-cam-ep.jpg', 'LTU03'),
+('TU13', N'Cà phê đá xay',   49000, N'caphedaxay.jpg', 'LTU04'),
+('TU14', N'Matcha đá xay',   52000, N'matchadaxay.jpg', 'LTU04'),
+('TU15', N'Dâu đá xay',      52000, N'dau-da-xay.jpg', 'LTU04'),
+('TU16', N'Xoài đá xay',     52000, N'xoai-da-xay.jpg', 'LTU04');
 
 -- 1.8 Công thức (lượng nguyên liệu cho 1 ly, đơn vị theo loại nguyên liệu)
 INSERT INTO CongThuc (MaThucUong, MaNL, SoLuongQuyDinh) VALUES
@@ -190,11 +178,9 @@ INSERT INTO Khach (MaKH, TenKH, SoDienThoai, MaLoaiKH) VALUES
 ALTER SEQUENCE Seq_Khach RESTART WITH 11;
 GO
 
--- =====================================================================
 -- PHẦN 2: NHẬP KHO VÀ CHI TIỀN
 -- Trigger trg_CTPN_CongKho tự cộng tồn kho khi chèn ChiTietPhieuNhap.
 -- Tổng nhập mỗi nguyên liệu đã được tính lớn hơn tổng tiêu hao của 60 hóa đơn mẫu.
--- =====================================================================
 DECLARE @Hom DATE = CAST(GETDATE() AS DATE);
 
 INSERT INTO PhieuNhap (MaPN, NgayNhap, GhiChu, MaNCC, MaNV) VALUES
@@ -265,14 +251,12 @@ INSERT INTO PhieuChi (MaPC, NgayChi, SoTienChi, LyDoChi, MaNCC, MaNV) VALUES
 ALTER SEQUENCE Seq_PhieuChi RESTART WITH 14;
 GO
 
--- =====================================================================
 -- PHẦN 3: HÓA ĐƠN LỊCH SỬ 30 NGÀY (60 hóa đơn, mỗi ngày 2 hóa đơn)
 -- Dữ liệu sinh theo công thức cố định nên chạy lại luôn ra cùng kết quả.
 --  - Chèn HoaDon rồi ChiTietHoaDon: trigger tự trừ kho, đặt bàn COKHACH.
 --  - Sau đó cập nhật trạng thái: trigger tự trả bàn TRONG và cộng điểm khách.
 --  - Hóa đơn thứ 20, 40, 60 bị HỦY để trigger hoàn kho được thể hiện.
 -- Mã hóa đơn lấy từ Seq_HoaDon, giống cách sp_TaoHoaDon sinh mã.
--- =====================================================================
 DECLARE @Hom DATE = CAST(GETDATE() AS DATE);
 DECLARE @i INT = 1, @j INT, @SoDong INT, @Seq BIGINT;
 DECLARE @MaHD VARCHAR(20), @MaBan VARCHAR(20), @MaNV VARCHAR(20), @MaKH VARCHAR(20), @MaTU VARCHAR(20);
@@ -359,21 +343,17 @@ FROM (VALUES
 JOIN ThucUong tu ON tu.MaThucUong = v.MaTU;
 GO
 
--- =====================================================================
 -- PHẦN 4: CHỈNH TỒN KHO ĐỂ DEMO (chỉnh trực tiếp, không qua nghiệp vụ)
 --  - NL16 Dâu tây còn 100g: bán Sinh tố dâu / Dâu đá xay sẽ báo "không đủ nguyên liệu".
 --  - NL04, NL07, NL11 dưới mức tối thiểu: v_TonKhoCanhBao hiển thị cảnh báo.
 --    Sau khi Thủ kho nhập hàng, cảnh báo sẽ biến mất.
--- =====================================================================
 UPDATE NguyenLieu SET SoLuongTonKho = 100 WHERE MaNL = 'NL16';
 UPDATE NguyenLieu SET SoLuongTonKho = 250 WHERE MaNL = 'NL04';
 UPDATE NguyenLieu SET SoLuongTonKho = 400 WHERE MaNL = 'NL07';
 UPDATE NguyenLieu SET SoLuongTonKho = 800 WHERE MaNL = 'NL11';
 GO
 
--- =====================================================================
 -- PHẦN 5: KIỂM TRA KẾT QUẢ
--- =====================================================================
 SELECT N'NhanVien' AS Bang, COUNT(*) AS SoDong FROM NhanVien
 UNION ALL SELECT N'Khach',           COUNT(*) FROM Khach
 UNION ALL SELECT N'Ban',             COUNT(*) FROM Ban

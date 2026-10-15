@@ -1,47 +1,36 @@
 # Nhóm 06 - Hệ Thống Quản Lý Quán Cà Phê
 
-> **Đồ án cuối kỳ môn:** Hệ quản trị Cơ sở dữ liệu (DBMS330284)  
-> **Ứng dụng:** Desktop Application kết nối Microsoft SQL Server  
-> **Kiến trúc:** 3-tier Architecture (GUI - BLL - DAL - DTO)
+Đồ án cuối kỳ môn Hệ quản trị Cơ sở dữ liệu (DBMS330284).
+Ứng dụng C# WinForms (.NET 10) theo kiến trúc 3 tầng (GUI - BLL - DAL - DTO) kết nối Microsoft SQL Server để quản lý quán cà phê: bán hàng tại quán & mang về, kho, nhập hàng, khách hàng, báo cáo, phân quyền theo vai trò (RBAC).
 
----
+## Thành viên nhóm
+| STT | Thành viên | MSSV | Phụ trách |
+| :---: | :--- | :---: | :--- |
+| 1 | Hoàng Anh Kiệt *(Trưởng nhóm)* | 24110264 | Nền tảng, kiến trúc 3 tầng, bảo mật RBAC, quản trị (Quản lý) |
+| 2 | Nguyễn Anh Duy | 24110196 | Bán hàng tại quán & mang về, hóa đơn, thanh toán VietQR (Phục vụ, Thu ngân) |
+| 3 | Võ Lê Ngọc Hưng | 24110233 | Kho nguyên liệu, nhà cung cấp, công thức, Trigger & Index (Thủ kho) |
+| 4 | Nguyễn Thái Sơn | 24110278 | Khách hàng, danh mục, chi tiền, báo cáo thống kê, View & Function (Kế toán) |
 
-## 👥 Thành viên nhóm & Phân công công việc
+## Công nghệ sử dụng
+* **Ứng dụng:** C# WinForms (.NET 10 - `net10.0-windows`), ADO.NET (`Microsoft.Data.SqlClient`).
+* **Cơ sở dữ liệu:** Microsoft SQL Server (Stored Procedures, Triggers, Views, Functions, Nonclustered Indexes, Transactions, RBAC).
 
-| STT | Họ và tên | MSSV | Vai trò | Module & Nghiệp vụ phụ trách |
-| :---: | :--- | :---: | :---: | :--- |
-| 1 | **Hoàng Anh Kiệt** | 24110264 | Trưởng nhóm | Kiến trúc 3 tầng, Base BLL/DAL, Theme Dark/Light, Bảo mật & Phân quyền RBAC, Quản trị hệ thống, Hóa đơn |
-| 2 | **Lê Anh Duy** | 24110180 | Thành viên | Bán hàng (POS), Sơ đồ bàn, Đặt món, Chuyển bàn, Giao diện phục vụ & thu ngân |
-| 3 | **Võ Lê Ngọc Hưng** | 24110233 | Thành viên | Quản lý kho, Nguyên liệu, Nhà cung cấp, Phiếu nhập kho, Công thức định lượng |
-| 4 | **Nguyễn Đặng Khánh Sơn Sơn** | 24110318 | Thành viên | Quản lý khách hàng (CRM), Thẻ thành viên, Phiếu chi, Báo cáo & Thống kê doanh thu |
+## Cách cài đặt và chạy chương trình
+1. Cài đặt SQL Server, bật chế độ **Mixed Mode** (*SQL Server and Windows Authentication*).
+2. Sao chép `database/00_init_local_logins.sql.example` thành `database/00_init_local_logins.sql` và cấu hình mật khẩu cho 5 SQL Login (`AuthLogin@123`, `QuanTri@123`, `PhucVu@123`, `ThuKho@123`, `KeToan@123`).
+3. Mở SSMS và chạy lần lượt theo thứ tự:
+   * `database/00_init_local_logins.sql` (Tạo 5 Login cấp Server)
+   * `database/01_schema_full.sql` (Tạo CSDL, 16 bảng, ràng buộc, Trigger, View, Function, SP, Index & Role)
+   * `database/02_du_lieu_mau.sql` (Nạp dữ liệu mẫu và hình ảnh thức uống)
+   * `database/03_backup_recovery_concurrency.sql` (Kịch bản Backup/Restore, Concurrency & Kiểm thử phân quyền)
+4. Sao chép `src/QuanLyQuanCafe/App.config.example` thành `src/QuanLyQuanCafe/App.config`, điền tên Server và mật khẩu tương ứng.
+5. Mở Solution bằng Visual Studio 2022, nhấn **F5** (hoặc chạy `dotnet run --project src/QuanLyQuanCafe/QuanLyQuanCafe.csproj`).
 
----
-
-## 🛠 Công nghệ sử dụng
-
-* **Nền tảng ứng dụng:** C# WinForms (.NET 10 - `net10.0-windows`)
-* **Hệ quản trị CSDL:** Microsoft SQL Server 2022
-* **Thư viện kết nối:** ADO.NET (`Microsoft.Data.SqlClient`)
-* **Giao diện:** Tùy biến Dark/Light Theme (`Theme.cs`), bố cục tối ưu co giãn, tự động làm mới dữ liệu (`Form_Activated`)
-* **Bảo mật CSDL:** Role-Based Access Control (RBAC), Stored Procedures với tham số an toàn (Parameterization), `BEGIN TRY...BEGIN CATCH` và Transaction Control
-
----
-
-## 🚀 Hướng dẫn cài đặt & Khởi chạy
-
-### 1. Chuẩn bị Cơ sở dữ liệu (SQL Server)
-1. Mở **SQL Server Management Studio (SSMS)** và đăng nhập bằng quyền Windows Authentication.
-2. Bật chế độ xác thực kép:
-   * Chuột phải vào tên Server $\rightarrow$ chọn **Properties** $\rightarrow$ chọn tab **Security**.
-   * Chọn **SQL Server and Windows Authentication mode** $\rightarrow$ nhấn **OK**.
-   * Chuột phải vào Server $\rightarrow$ chọn **Restart**.
-3. Chạy lần lượt các script trong thư mục `database/`:
-   * `01_schema_full.sql`: Khởi tạo database, bảng, ràng buộc 3NF, view, function, SP và phân quyền RBAC.
-   * `02_du_lieu_mau.sql`: Nạp dữ liệu mẫu ban đầu (danh mục, đồ uống, bàn, nhân viên, nguyên liệu).
-   * `03_backup_recovery_concurrency.sql`: Kịch bản kiểm thử phục hồi, sao lưu (Full/Diff/Log) và minh chứng xử lý tranh chấp đồng thời (Concurrency).
-
-### 2. Cấu hình kết nối ứng dụng
-1. Vào thư mục `src/QuanLyQuanCafe/`.
-2. Sao chép file `App.config.example` thành file `App.config`:
-   ```powershell
-   Copy-Item src/QuanLyQuanCafe/App.config.example src/QuanLyQuanCafe/App.config
+## Tài khoản nhân viên demo (Mật khẩu chung: `123456`)
+| Số điện thoại | Vai trò | SQL Login tương ứng |
+| :---: | :--- | :--- |
+| `0901000001` | Quản lý | `login_quantri` |
+| `0901000002` | Phục vụ | `login_phucvu` |
+| `0901000004` | Thu ngân | `login_phucvu` |
+| `0901000005` | Thủ kho | `login_thukho` |
+| `0901000006` | Kế toán | `login_ketoan` |

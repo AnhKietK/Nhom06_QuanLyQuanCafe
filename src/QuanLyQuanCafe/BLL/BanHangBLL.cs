@@ -12,6 +12,17 @@ namespace QuanLyQuanCafe.BLL
 
         #region 1. Nghiệp vụ Quản lý Bàn
 
+        // MANG VE: mã bàn quy ước giữ nguyên schema và liên kết khóa ngoại hiện tại.
+        public const string MaBanMangVe = "B_MANGVE";
+        public List<HoaDonDTO> LayDanhSachDonMangVe() => _dal.LayDanhSachDonMangVe();
+
+        public string TaoDonMangVe(string? maKH = null)
+        {
+            if (string.IsNullOrWhiteSpace(CurrentUser.MaNV))
+                throw new InvalidOperationException("Chưa xác định nhân viên đăng nhập.");
+            return _dal.TaoHoaDon(maKH, CurrentUser.MaNV, MaBanMangVe);
+        }
+
         public List<BanDTO> LayDanhSachBan()
         {
             return _dal.LayDanhSachBan();
@@ -60,6 +71,9 @@ namespace QuanLyQuanCafe.BLL
         /// </summary>
         public void ChuyenBan(string maHD, string maBanCu, string maBanMoi)
         {
+            // MANG VE: không dùng luồng chuyển bàn cho bàn quy ước.
+            if (maBanCu == MaBanMangVe || maBanMoi == MaBanMangVe)
+                throw new InvalidOperationException("Đơn mang về không sử dụng chức năng chuyển bàn.");
             ValidationHelper.BatBuocNhap(maHD, "Mã hóa đơn");
             ValidationHelper.BatBuocNhap(maBanCu, "Mã bàn hiện tại");
             ValidationHelper.BatBuocNhap(maBanMoi, "Mã bàn đích");

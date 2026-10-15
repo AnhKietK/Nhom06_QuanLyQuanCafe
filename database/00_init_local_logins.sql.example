@@ -1,0 +1,65 @@
+-- 00_init_local_logins.sql.example
+-- Khởi tạo các Login trên SQL Server cho hệ thống Quản lý Quán Cà phê.
+--
+-- Hướng dẫn:
+-- 1. Sao chép file này thành "00_init_local_logins.sql" trong cùng thư mục (file này được .gitignore bỏ qua).
+-- 2. Thay đổi các mật khẩu mẫu bên dưới cho khớp với chuỗi kết nối trong file App.config máy bạn.
+-- 3. Mở file trong SSMS bằng tài khoản sa (hoặc Windows Authentication) và thực thi (F5).
+
+USE master;
+GO
+
+-- 1. Login phục vụ form xác thực đăng nhập
+IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_auth')
+BEGIN
+    CREATE LOGIN login_auth WITH PASSWORD = '<MAT_KHAU_AUTH>', CHECK_POLICY = OFF;
+END
+ELSE
+BEGIN
+    ALTER LOGIN login_auth WITH PASSWORD = '<MAT_KHAU_AUTH>';
+END
+GO
+
+-- 2. Login Quản trị hệ thống (toàn quyền db_owner)
+IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_quantri')
+BEGIN
+    CREATE LOGIN login_quantri WITH PASSWORD = '<MAT_KHAU_QUANTRI>', CHECK_POLICY = OFF;
+END
+ELSE
+BEGIN
+    ALTER LOGIN login_quantri WITH PASSWORD = '<MAT_KHAU_QUANTRI>';
+END
+GO
+
+-- 3. Login Nhân viên phục vụ & Thu ngân
+IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_phucvu')
+BEGIN
+    CREATE LOGIN login_phucvu WITH PASSWORD = '<MAT_KHAU_PHUCVU>', CHECK_POLICY = OFF;
+END
+ELSE
+BEGIN
+    ALTER LOGIN login_phucvu WITH PASSWORD = '<MAT_KHAU_PHUCVU>';
+END
+GO
+
+-- 4. Login Thủ kho
+IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_thukho')
+BEGIN
+    CREATE LOGIN login_thukho WITH PASSWORD = '<MAT_KHAU_THUKHO>', CHECK_POLICY = OFF;
+END
+ELSE
+BEGIN
+    ALTER LOGIN login_thukho WITH PASSWORD = '<MAT_KHAU_THUKHO>';
+END
+GO
+
+-- 5. Login Kế toán
+IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_ketoan')
+BEGIN
+    CREATE LOGIN login_ketoan WITH PASSWORD = '<MAT_KHAU_KETOAN>', CHECK_POLICY = OFF;
+END
+ELSE
+BEGIN
+    ALTER LOGIN login_ketoan WITH PASSWORD = '<MAT_KHAU_KETOAN>';
+END
+GO

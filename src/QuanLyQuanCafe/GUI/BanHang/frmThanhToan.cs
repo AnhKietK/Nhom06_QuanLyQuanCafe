@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using Microsoft.Data.SqlClient;
+using System.Globalization;
+using System.Net.Http;
 using QuanLyQuanCafe.BLL;
 using QuanLyQuanCafe.DAL;
 using QuanLyQuanCafe.DTO;
@@ -13,12 +15,19 @@ namespace QuanLyQuanCafe.GUI.BanHang
         private readonly BanHangBLL _bll = new();
         private string _maHD = "";
         private string _soBan = "";
+        // MANG VE: hiển thị hình thức phục vụ, không thông báo trả bàn cho đơn mang về.
+        private string MoTaPhucVu => _soBan == "Mang về" ? "Mang về" : $"Bàn {(string.IsNullOrEmpty(_soBan) ? "--" : _soBan)}";
         private string? _maKH = null;
 
         private decimal _tienHang = 0;
         private decimal _tongCong = 0;
         private List<ChiTietHoaDonDTO> _dsChiTiet = new();
         private KhachHangDTO? _khachHang = null;
+        private static readonly HttpClient QrClient = new() { Timeout = TimeSpan.FromSeconds(15) };
+        private readonly PictureBox _picQR = new() { Dock = DockStyle.Left, Width = 224, SizeMode = PictureBoxSizeMode.Zoom, BackColor = Color.White };
+        private readonly Button _btnTaiLaiQR = new() { Dock = DockStyle.Bottom, Height = 30, Text = "Tải lại QR" };
+        private CancellationTokenSource? _qrCancellation;
+        private string? _qrUrl;
 
         public frmThanhToan() : this("", "")
         {
@@ -44,6 +53,23 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 else control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             }
             Theme.Apply(this);
+            var thanhToanScroll = new Panel { Dock = DockStyle.Fill, AutoScroll = true };
+            grpThanhToan.Controls.Remove(tlpThanhToan);
+            grpThanhToan.Controls.Add(thanhToanScroll);
+            thanhToanScroll.Controls.Add(tlpThanhToan);
+            tlpThanhToan.Dock = DockStyle.Top;
+            pnlQR.Dock = DockStyle.Fill;
+            tlpThanhToan.SetColumn(pnlQR, 0);
+            tlpThanhToan.SetColumnSpan(pnlQR, 2);
+            pnlQR.Controls.Add(_picQR);
+            pnlQR.Controls.Add(_btnTaiLaiQR);
+            _btnTaiLaiQR.Click += async (s, e) => await TaiVietQrAsync(true);
+            this.FormClosed += (s, e) =>
+            {
+                HuyTaiQR();
+                _picQR.Image?.Dispose();
+                _picQR.Image = null;
+            };
 
             _maHD = maHD;
             _soBan = soBan ?? "";
@@ -130,7 +156,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 return;
             }
 
-            lblThongTinDon.Text = $"Hóa đơn: {_maHD} | Bàn: {(!string.IsNullOrEmpty(_soBan) ? _soBan : "--")} | Thu ngân: {(string.IsNullOrEmpty(CurrentUser.TenNV) ? "Trần Thị Bình" : CurrentUser.TenNV)}";
+            lblThongTinDon.Text = $"Hóa đơn: {_maHD} | {MoTaPhucVu} | Thu ngân: {(string.IsNullOrEmpty(CurrentUser.TenNV) ? "Trần Thị Bình" : CurrentUser.TenNV)}";
 
             TaiChiTietHoaDon();
         }
@@ -197,8 +223,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
             lblTongCong.Text = $"{_tongCong:N0} đ";
 
             // Cập nhật thông tin QR chuyển khoản
-            lblQRInfo.Text = $"📲 QR Chuyển khoản: Vietcombank - STK: 0123456789 (QUAN CAFE NHOM 06)\n" +
-                             $"Số tiền: {_tongCong:N0} đ | Nội dung: TT {_maHD}";
+            lblQRInfo.Text = ThongTinChuyenKhoan();
+            _ = TaiVietQrAsync();
 
             string pt = cboPhuongThuc.SelectedItem?.ToString() ?? "Tiền mặt";
             if (pt == "Tiền mặt")
@@ -250,6 +276,16 @@ namespace QuanLyQuanCafe.GUI.BanHang
             numTienKhachDua.Enabled = isTienMat;
             pnlTienNhanh.Enabled = isTienMat;
             pnlQR.Visible = isChuyenKhoan;
+            tlpThanhToan.RowStyles[8].Height = isChuyenKhoan ? 260 : 0;
+            tlpThanhToan.Height = isChuyenKhoan ? 540 : 290;
+            if (isChuyenKhoan) _ = TaiVietQrAsync();
+            else
+            {
+                HuyTaiQR();
+                _qrUrl = null;
+                _picQR.Image?.Dispose();
+                _picQR.Image = null;
+            }
 
             if (!isTienMat)
             {
@@ -261,6 +297,56 @@ namespace QuanLyQuanCafe.GUI.BanHang
             else
             {
                 CapNhatTienThoi();
+            }
+        }
+
+        private string ThongTinChuyenKhoan() =>
+            $"Vietcombank (VCB)\nSTK: 1050243586\nSố tiền: {_tongCong:N0} đ\nNội dung: TT {_maHD}\n\nKiểm tra tiền đã vào tài khoản trước khi xác nhận thanh toán.";
+
+        private void HuyTaiQR()
+        {
+            _qrCancellation?.Cancel();
+            _qrCancellation?.Dispose();
+            _qrCancellation = null;
+        }
+
+        private async Task TaiVietQrAsync(bool taiLai = false)
+        {
+            if (cboPhuongThuc.SelectedItem?.ToString() != "Chuyển khoản" || IsDisposed) return;
+            if (_tongCong <= 0 || string.IsNullOrWhiteSpace(_maHD))
+            {
+                HuyTaiQR();
+                _qrUrl = null;
+                _picQR.Image?.Dispose();
+                _picQR.Image = null;
+                lblQRInfo.Text = ThongTinChuyenKhoan() + "\nKhông tạo QR khi chưa có số tiền cần chuyển.";
+                return;
+            }
+
+            string amount = decimal.Round(_tongCong, 0, MidpointRounding.AwayFromZero).ToString("0", CultureInfo.InvariantCulture);
+            string url = $"https://img.vietqr.io/image/VCB-1050243586-qr_only.png?amount={amount}&addInfo={Uri.EscapeDataString("TT " + _maHD)}";
+            if (!taiLai && _qrUrl == url) return;
+            HuyTaiQR();
+            _qrCancellation = new CancellationTokenSource();
+            var token = _qrCancellation.Token;
+            _qrUrl = url;
+            _picQR.Image?.Dispose();
+            _picQR.Image = null;
+            lblQRInfo.Text = ThongTinChuyenKhoan() + "\nĐang tải mã VietQR...";
+            try
+            {
+                byte[] data = await QrClient.GetByteArrayAsync(url, token);
+                using var stream = new MemoryStream(data);
+                using var image = Image.FromStream(stream);
+                if (token.IsCancellationRequested || IsDisposed) return;
+                _picQR.Image = new Bitmap(image);
+                lblQRInfo.Text = ThongTinChuyenKhoan();
+            }
+            catch (Exception ex) when (ex is HttpRequestException or OperationCanceledException or ArgumentException)
+            {
+                if (token.IsCancellationRequested || IsDisposed) return;
+                _qrUrl = null;
+                lblQRInfo.Text = ThongTinChuyenKhoan() + "\nKhông tải được QR. Kiểm tra Internet và bấm Tải lại QR.";
             }
         }
 
@@ -289,7 +375,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 decimal tienThoi = (phuongThuc == "Tiền mặt") ? (numTienKhachDua.Value - tongThanhToanThucTe) : 0;
 
                 string thongBao = $"Thanh toán Hóa đơn {_maHD} thành công!\n" +
-                                  $"Bàn {(!string.IsNullOrEmpty(_soBan) ? _soBan : "--")} đã được giải phóng về trạng thái Trống.\n\n" +
+                                  (_soBan == "Mang về" ? "Đơn mang về đã hoàn tất.\n\n" : $"{MoTaPhucVu} đã được giải phóng về trạng thái Trống.\n\n") +
                                   $"Phương thức: {phuongThuc}\n" +
                                   $"Tổng thanh toán: {tongThanhToanThucTe:N0} đ";
 
@@ -339,7 +425,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
             sb.AppendLine("=============================================");
             sb.AppendLine("             HÓA ĐƠN BÁN HÀNG               ");
             sb.AppendLine($"Số HĐ   : {_maHD}");
-            sb.AppendLine($"Bàn     : Bàn {(!string.IsNullOrEmpty(_soBan) ? _soBan : "--")}");
+            sb.AppendLine($"Phục vụ : {MoTaPhucVu}");
             sb.AppendLine($"Thời gian: {DateTime.Now:dd/MM/yyyy HH:mm:ss}");
             sb.AppendLine($"Thu ngân: {(string.IsNullOrEmpty(CurrentUser.TenNV) ? "Trần Thị Bình" : CurrentUser.TenNV)}");
             sb.AppendLine($"Khách   : {(_khachHang != null ? _khachHang.TenKH : "Khách vãng lai")}");

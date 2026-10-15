@@ -1,6 +1,6 @@
--- quanlyquancafe: bảng, view, trigger, function, stored procedure, phân quyền
--- Chạy lại được nhiều lần: mỗi lần chạy sẽ xóa CSDL cũ rồi tạo lại từ đầu.
--- Chạy xong file này thì chạy tiếp 02_du_lieu_mau.sql để nạp dữ liệu.
+-- 01_schema_full.sql
+-- CSDL quanlyquancafe: Bảng, Ràng buộc, View, Trigger, Index, Function, Stored Procedure, Phân quyền Role.
+-- Thứ tự thực thi: 00_init_local_logins.sql (tùy chọn) -> 01_schema_full.sql -> 02_du_lieu_mau.sql -> 03_backup_recovery_concurrency.sql
 
 USE master;
 GO
@@ -17,15 +17,16 @@ GO
 
 USE quanlyquancafe;
 GO
+-- A. Danh sách các bảng dữ liệu
 
--- A. Bảng
-
+-- 1. Bảng Loại khách hàng
 CREATE TABLE LoaiKhach (
     MaLoaiKH VARCHAR(20) PRIMARY KEY CHECK (MaLoaiKH LIKE 'LKH%'),
     TenLoai NVARCHAR(100) NOT NULL,
     ChietKhau DECIMAL(5, 2) DEFAULT 0 CHECK (ChietKhau >= 0 AND ChietKhau <= 100) 
 );
 
+-- 2. Bảng Nhân viên
 CREATE TABLE NhanVien (
     MaNV VARCHAR(20) PRIMARY KEY CHECK (MaNV LIKE 'NV%'),
     TenNV NVARCHAR(100) NOT NULL,
@@ -42,24 +43,28 @@ CREATE TABLE NhanVien (
     CONSTRAINT CK_NhanVien_MaQL CHECK (MaQL IS NULL OR MaQL <> MaNV)
 );
 
+-- 3. Bảng Vị trí bàn
 CREATE TABLE ViTriBan (
     MaViTri VARCHAR(20) PRIMARY KEY CHECK (MaViTri LIKE 'VT%'),
     TenViTri NVARCHAR(100) NOT NULL,
     MoTa NVARCHAR(255)
 );
 
+-- 4. Bảng Loại thức uống
 CREATE TABLE LoaiThucUong (
     MaLoaiTU VARCHAR(20) PRIMARY KEY CHECK (MaLoaiTU LIKE 'LTU%'),
     TenLoai NVARCHAR(100) NOT NULL,
     MoTa NVARCHAR(255)
 );
 
+-- 5. Bảng Loại nguyên liệu
 CREATE TABLE LoaiNguyenLieu (
     MaLoaiNL VARCHAR(20) PRIMARY KEY CHECK (MaLoaiNL LIKE 'LNL%'),
     TenLoai NVARCHAR(100) NOT NULL,
     DonViTinh NVARCHAR(50) NOT NULL
 );
 
+-- 6. Bảng Nhà cung cấp
 CREATE TABLE NhaCungCap (
     MaNCC VARCHAR(20) PRIMARY KEY CHECK (MaNCC LIKE 'NCC%'),
     TenNCC NVARCHAR(150) NOT NULL,
@@ -68,6 +73,7 @@ CREATE TABLE NhaCungCap (
     Email VARCHAR(100)
 );
 
+-- 7. Bảng Khách hàng
 CREATE TABLE Khach (
     MaKH VARCHAR(20) PRIMARY KEY CHECK (MaKH LIKE 'KH%'),
     TenKH NVARCHAR(100) NOT NULL,
@@ -80,6 +86,7 @@ CREATE TABLE Khach (
         ON DELETE NO ACTION
 );
 
+-- 8. Bảng Bàn
 CREATE TABLE Ban (
     MaBan VARCHAR(20) PRIMARY KEY CHECK (MaBan LIKE 'B%'),
     SoBan INT NOT NULL,
@@ -93,6 +100,7 @@ CREATE TABLE Ban (
         ON DELETE NO ACTION
 );
 
+-- 9. Bảng Thức uống
 CREATE TABLE ThucUong (
     MaThucUong VARCHAR(20) PRIMARY KEY CHECK (MaThucUong LIKE 'TU%'),
     TenThucUong NVARCHAR(150) NOT NULL,
@@ -105,6 +113,7 @@ CREATE TABLE ThucUong (
         ON DELETE NO ACTION
 );
 
+-- 10. Bảng Nguyên liệu
 CREATE TABLE NguyenLieu (
     MaNL VARCHAR(20) PRIMARY KEY CHECK (MaNL LIKE 'NL%'),
     TenNL NVARCHAR(150) NOT NULL,
@@ -117,6 +126,7 @@ CREATE TABLE NguyenLieu (
         ON DELETE NO ACTION
 );
 
+-- 11. Bảng Phiếu chi
 CREATE TABLE PhieuChi (
     MaPC VARCHAR(20) PRIMARY KEY CHECK (MaPC LIKE 'PC%'),
     NgayChi DATETIME NOT NULL DEFAULT GETDATE(),
@@ -134,6 +144,7 @@ CREATE TABLE PhieuChi (
         ON DELETE NO ACTION
 );
 
+-- 12. Bảng Phiếu nhập
 CREATE TABLE PhieuNhap (
     MaPN VARCHAR(20) PRIMARY KEY CHECK (MaPN LIKE 'PN%'),
     NgayNhap DATETIME NOT NULL DEFAULT GETDATE(),
@@ -150,6 +161,7 @@ CREATE TABLE PhieuNhap (
         ON DELETE NO ACTION
 );
 
+-- 13. Bảng Hóa đơn
 CREATE TABLE HoaDon (
     MaHD VARCHAR(20) PRIMARY KEY CHECK (MaHD LIKE 'HD%'),
     NgayLap DATETIME NOT NULL DEFAULT GETDATE(),
@@ -177,6 +189,7 @@ CREATE TABLE HoaDon (
         ON DELETE NO ACTION
 );
 
+-- 14. Bảng Chi tiết hóa đơn
 CREATE TABLE ChiTietHoaDon (
     MaHD VARCHAR(20),
     MaThucUong VARCHAR(20),
@@ -194,6 +207,7 @@ CREATE TABLE ChiTietHoaDon (
         ON DELETE NO ACTION
 );
 
+-- 15. Bảng Công thức pha chế
 CREATE TABLE CongThuc (
     MaThucUong VARCHAR(20),
     MaNL VARCHAR(20),
@@ -209,6 +223,7 @@ CREATE TABLE CongThuc (
         ON DELETE NO ACTION
 );
 
+-- 16. Bảng Chi tiết phiếu nhập
 CREATE TABLE ChiTietPhieuNhap (
     MaPN VARCHAR(20),
     MaNL VARCHAR(20),
@@ -227,8 +242,8 @@ CREATE TABLE ChiTietPhieuNhap (
         ON DELETE NO ACTION
 );
 GO
-
--- Sequence sinh mã
+GO
+-- B. Khởi tạo Sequence sinh mã tự động
 
 CREATE SEQUENCE Seq_HoaDon
     START WITH 1
@@ -253,9 +268,9 @@ CREATE SEQUENCE Seq_PhieuChi
     INCREMENT BY 1
     NO CYCLE;
 GO
+-- C. Danh sách các View (Khung nhìn)
 
--- B. View
-
+-- 1. View phiếu nhập tổng hợp
 CREATE OR ALTER VIEW v_PhieuNhap AS
 SELECT 
     pn.MaPN,
@@ -269,6 +284,7 @@ LEFT JOIN ChiTietPhieuNhap ct ON pn.MaPN = ct.MaPN
 GROUP BY pn.MaPN, pn.NgayNhap, pn.GhiChu, pn.MaNCC, pn.MaNV;
 GO
 
+-- 2. View hóa đơn thanh toán
 CREATE OR ALTER VIEW v_HoaDon AS
 SELECT 
     hd.MaHD,
@@ -294,6 +310,7 @@ GROUP BY
     hd.TienGiamGia, hd.DiemTichLuyCong;
 GO
 
+-- 3. View món bán chạy
 CREATE OR ALTER VIEW v_MonBanChay AS
 SELECT
     tu.MaThucUong,
@@ -307,6 +324,7 @@ WHERE hd.TrangThai = N'Đã thanh toán'
 GROUP BY tu.MaThucUong, tu.TenThucUong;
 GO
 
+-- 4. View nguyên liệu chạm ngưỡng cảnh báo tồn kho
 CREATE OR ALTER VIEW v_TonKhoCanhBao AS
 SELECT
     nl.MaNL,
@@ -319,6 +337,7 @@ JOIN LoaiNguyenLieu lnl ON lnl.MaLoaiNL = nl.MaLoaiNL
 WHERE nl.SoLuongTonKho < nl.MucToiThieu;
 GO
 
+-- 5. View doanh thu theo ngày
 CREATE OR ALTER VIEW v_DoanhThuTheoNgay AS
 SELECT
     CAST(hd.NgayLap AS DATE) AS Ngay,
@@ -330,6 +349,7 @@ WHERE hd.TrangThai = N'Đã thanh toán'
 GROUP BY CAST(hd.NgayLap AS DATE);
 GO
 
+-- 6. View khách hàng thân thiết
 CREATE OR ALTER VIEW v_KhachHangThanThiet AS
 SELECT
     kh.MaKH,
@@ -340,9 +360,9 @@ SELECT
 FROM Khach kh
 JOIN LoaiKhach lkh ON lkh.MaLoaiKH = kh.MaLoaiKH;
 GO
+-- D. Danh sách các Trigger nghiệp vụ
 
--- C. Trigger
-
+-- 1. Trigger trừ tồn kho khi thêm chi tiết hóa đơn
 CREATE OR ALTER TRIGGER trg_CTHD_TruKho
 ON ChiTietHoaDon
 AFTER INSERT
@@ -376,6 +396,7 @@ BEGIN
 END
 GO
 
+-- 2. Trigger cộng tồn kho khi thêm chi tiết phiếu nhập
 CREATE OR ALTER TRIGGER trg_CTPN_CongKho
 ON ChiTietPhieuNhap
 AFTER INSERT
@@ -394,6 +415,7 @@ BEGIN
 END
 GO
 
+-- 3. Trigger cập nhật trạng thái bàn khi tạo hóa đơn (hỗ trợ mang về)
 CREATE OR ALTER TRIGGER trg_HoaDon_TaoDon_CapNhatBan
 ON HoaDon
 AFTER INSERT
@@ -405,10 +427,12 @@ BEGIN
     SET b.TrangThai = N'COKHACH'
     FROM Ban b
     JOIN inserted i ON i.MaBan = b.MaBan
-    WHERE b.TrangThai = N'TRONG';
+    -- MANG VE: bàn quy ước luôn trống, cho phép nhiều hóa đơn độc lập.
+    WHERE b.TrangThai = N'TRONG' AND b.MaBan <> 'B_MANGVE';
 END
 GO
 
+-- 4. Trigger cập nhật bàn và tích điểm khi thanh toán
 CREATE OR ALTER TRIGGER trg_HoaDon_ThanhToan_CapNhatBanVaDiem
 ON HoaDon
 AFTER UPDATE
@@ -424,7 +448,9 @@ BEGIN
         JOIN inserted i ON i.MaBan = b.MaBan
         JOIN deleted d ON d.MaHD = i.MaHD
         WHERE i.TrangThai = N'Đã thanh toán'
-          AND d.TrangThai <> N'Đã thanh toán';
+          AND d.TrangThai <> N'Đã thanh toán'
+          -- MANG VE: không cập nhật trạng thái bàn quy ước.
+          AND b.MaBan <> 'B_MANGVE';
 
         UPDATE kh
         SET kh.DiemTichLuy = kh.DiemTichLuy + i.DiemTichLuyCong
@@ -438,7 +464,7 @@ BEGIN
 END
 GO
 
--- hủy hóa đơn: hoàn kho, trả bàn
+-- 5. Trigger hoàn kho và trả bàn khi hủy hóa đơn
 CREATE OR ALTER TRIGGER trg_HoaDon_Huy_HoanKho
 ON HoaDon
 AFTER UPDATE
@@ -466,12 +492,14 @@ BEGIN
         FROM Ban b
         JOIN inserted i ON i.MaBan = b.MaBan
         JOIN deleted d ON d.MaHD = i.MaHD
-        WHERE i.TrangThai = N'Đã hủy' AND d.TrangThai <> N'Đã hủy';
+        -- MANG VE: vẫn hoàn kho, chỉ bỏ qua việc trả bàn quy ước.
+        WHERE i.TrangThai = N'Đã hủy' AND d.TrangThai <> N'Đã hủy'
+          AND b.MaBan <> 'B_MANGVE';
     END
 END
 GO
 
--- sửa/xóa chi tiết hóa đơn: điều chỉnh kho
+-- 6. Trigger điều chỉnh tồn kho khi cập nhật hoặc xóa chi tiết hóa đơn
 CREATE OR ALTER TRIGGER trg_CTHD_DieuChinhKho
 ON ChiTietHoaDon
 AFTER UPDATE, DELETE
@@ -511,26 +539,30 @@ BEGIN
     END
 END
 GO
+-- E. Danh sách các Chỉ mục (Indexes)
 
--- D. Index
-
+-- 1. Index tìm kiếm hóa đơn theo ngày lập
 CREATE INDEX IX_HoaDon_NgayLap ON HoaDon(NgayLap);
 GO
 
+-- 2. Index tra cứu hóa đơn theo khách hàng
 CREATE INDEX IX_HoaDon_MaKH ON HoaDon(MaKH);
 GO
 
+-- 3. Index thống kê chi tiết hóa đơn theo thức uống
 CREATE INDEX IX_CTHD_MaThucUong ON ChiTietHoaDon(MaThucUong);
 GO
 
+-- 4. Index kiểm tra nguyên liệu theo số lượng tồn kho
 CREATE INDEX IX_NguyenLieu_TonKho ON NguyenLieu(SoLuongTonKho);
 GO
 
+-- 5. Index quản lý hạn sử dụng chi tiết phiếu nhập
 CREATE INDEX IX_CTPN_HanSuDung ON ChiTietPhieuNhap(HanSuDung);
 GO
+-- F. Danh sách các Hàm (Functions)
 
--- E. Function
-
+-- 1. Hàm tính tổng tiền của hóa đơn
 CREATE OR ALTER FUNCTION fn_TinhThanhTienHoaDon (@MaHD VARCHAR(20))
 RETURNS DECIMAL(12,2)
 AS
@@ -541,6 +573,7 @@ BEGIN
 END
 GO
 
+-- 2. Hàm kiểm tra kho có đủ nguyên liệu pha chế
 CREATE OR ALTER FUNCTION fn_KiemTraDuNguyenLieu (@MaThucUong VARCHAR(20), @SoLuong INT)
 RETURNS BIT
 AS
@@ -560,6 +593,7 @@ BEGIN
 END
 GO
 
+-- 3. Hàm lấy phần trăm chiết khấu theo loại khách hàng
 CREATE OR ALTER FUNCTION fn_ChietKhauTheoLoaiKH (@MaKH VARCHAR(20))
 RETURNS DECIMAL(5,2)
 AS
@@ -573,6 +607,7 @@ BEGIN
 END
 GO
 
+-- 4. Hàm lấy danh sách món bán chạy trong khoảng ngày
 CREATE OR ALTER FUNCTION fn_MonBanChayNhat (@TuNgay DATE, @DenNgay DATE)
 RETURNS TABLE
 AS
@@ -591,6 +626,7 @@ RETURN
 );
 GO
 
+-- 5. Hàm tra cứu lịch sử mua hàng của khách hàng
 CREATE OR ALTER FUNCTION fn_LichSuMuaHang (@MaKH VARCHAR(20))
 RETURNS TABLE
 AS
@@ -606,6 +642,7 @@ RETURN
 );
 GO
 
+-- 6. Hàm tự sinh mã với tiền tố quy định
 CREATE OR ALTER FUNCTION fn_SinhMaTuDong (@TienTo VARCHAR(5))
 RETURNS VARCHAR(20)
 AS
@@ -624,8 +661,7 @@ BEGIN
     RETURN @MaMoi;
 END
 GO
-
--- F. Stored procedure
+-- G. Danh sách các Thủ tục lưu trữ (Stored Procedures)
 
 -- 1. Tạo hóa đơn
 CREATE OR ALTER PROCEDURE sp_TaoHoaDon
@@ -640,7 +676,28 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        IF EXISTS (SELECT 1 FROM Ban WHERE MaBan = @MaBan AND TrangThai <> N'TRONG')
+        -- MANG VE: tạo dữ liệu bàn quy ước, không thêm cột/bảng hoặc đổi khóa ngoại.
+        -- Khóa phạm vi để hai thu ngân tạo đơn đầu tiên không thêm trùng bàn.
+        IF @MaBan = 'B_MANGVE'
+        BEGIN
+            IF NOT EXISTS (SELECT 1 FROM ViTriBan WITH (UPDLOCK, HOLDLOCK) WHERE MaViTri = 'VT_MANGVE')
+                INSERT INTO ViTriBan (MaViTri, TenViTri, MoTa)
+                VALUES ('VT_MANGVE', N'Mang về', N'Vị trí quy ước cho đơn mang về');
+            IF NOT EXISTS (SELECT 1 FROM Ban WITH (UPDLOCK, HOLDLOCK) WHERE MaBan = 'B_MANGVE')
+            BEGIN
+                DECLARE @SoBanMangVe INT;
+                SELECT @SoBanMangVe = CASE WHEN MIN(SoBan) < 0 THEN MIN(SoBan) - 1 ELSE -1 END
+                FROM Ban WITH (UPDLOCK, HOLDLOCK);
+                INSERT INTO Ban (MaBan, SoBan, SoChoNgoi, TrangThai, MaViTri)
+                VALUES ('B_MANGVE', @SoBanMangVe, 1, N'TRONG', 'VT_MANGVE');
+            END
+        END
+
+        -- MANG VE: bỏ kiểm tra chiếm bàn cho đơn mang về; bàn tại quán vẫn khóa
+        -- đến hết giao dịch để tránh hai thu ngân mở cùng một bàn.
+        IF NOT EXISTS (SELECT 1 FROM Ban WITH (UPDLOCK, HOLDLOCK) WHERE MaBan = @MaBan)
+            THROW 50000, N'Bàn không tồn tại.', 1;
+        IF @MaBan <> 'B_MANGVE' AND EXISTS (SELECT 1 FROM Ban WITH (UPDLOCK, HOLDLOCK) WHERE MaBan = @MaBan AND TrangThai <> N'TRONG')
         BEGIN
             THROW 50000, N'Bàn đang có khách hoặc đã được đặt trước.', 1;
         END
@@ -984,6 +1041,8 @@ BEGIN
     SELECT b.MaBan, b.SoBan, b.SoChoNgoi, b.TrangThai, b.MaViTri, vt.TenViTri
     FROM Ban b
     JOIN ViTriBan vt ON vt.MaViTri = b.MaViTri
+    -- MANG VE: ẩn bàn quy ước khỏi sơ đồ và danh sách quản lý bàn.
+    WHERE b.MaBan <> 'B_MANGVE'
     ORDER BY b.SoBan;
 END
 GO
@@ -996,7 +1055,8 @@ BEGIN
     SET NOCOUNT ON;
     SELECT TOP 1 MaHD, NgayLap, MaNV, MaKH, TienGiamGia, PhuongThucThanhToan
     FROM HoaDon
-    WHERE MaBan = @MaBan AND TrangThai = N'Chưa thanh toán';
+    -- MANG VE: không lấy TOP 1 của nhiều đơn mang về, tránh chọn nhầm hóa đơn.
+    WHERE MaBan = @MaBan AND @MaBan <> 'B_MANGVE' AND TrangThai = N'Chưa thanh toán';
 END
 GO
 
@@ -1793,40 +1853,34 @@ BEGIN
 END
 GO
 
--- G. Login, user, role, phân quyền
+-- 51. Lấy danh sách các đơn mang về đang mở
+CREATE OR ALTER PROCEDURE sp_LayDanhSachDonMangVe
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT MaHD, NgayLap, MaNV, MaKH, TienGiamGia, PhuongThucThanhToan, MaBan, TrangThai
+    FROM dbo.HoaDon
+    WHERE MaBan = 'B_MANGVE' AND TrangThai = N'Chưa thanh toán'
+    ORDER BY NgayLap, MaHD;
+END
+GO
+-- H. Phân quyền vai trò và ánh xạ người dùng (Roles & Users)
 
--- login cho form đăng nhập
-IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_auth')
-    CREATE LOGIN login_auth WITH PASSWORD = 'AuthLogin@123';
-GO
-IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_auth')
-    CREATE USER user_auth FOR LOGIN login_auth;
-GO
-GRANT EXECUTE ON sp_DangNhap TO user_auth;
-GO
-
--- quản trị: toàn quyền
-IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_quantri')
-    CREATE LOGIN login_quantri WITH PASSWORD = 'QuanTri@123';
-GO
-IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_quantri')
-    CREATE USER user_quantri FOR LOGIN login_quantri;
-GO
-ALTER ROLE db_owner ADD MEMBER user_quantri;
-GO
-
--- phục vụ / thu ngân
-IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_phucvu')
-    CREATE LOGIN login_phucvu WITH PASSWORD = 'PhucVu@123';
-GO
-IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_phucvu')
-    CREATE USER user_phucvu FOR LOGIN login_phucvu;
-GO
+-- 1. Tạo các Database Role theo vai trò nghiệp vụ
 IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'NhanVienPhucVu' AND type = 'R')
     CREATE ROLE NhanVienPhucVu;
 GO
 
--- bảng, view
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'ThuKho' AND type = 'R')
+    CREATE ROLE ThuKho;
+GO
+
+IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'KeToan' AND type = 'R')
+    CREATE ROLE KeToan;
+GO
+
+-- 2. Cấp quyền cho vai trò Phục vụ & Thu ngân (NhanVienPhucVu)
+-- Bảng và View
 GRANT SELECT, INSERT, UPDATE ON Ban                   TO NhanVienPhucVu;
 GRANT SELECT, INSERT, UPDATE ON HoaDon                TO NhanVienPhucVu;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ChiTietHoaDon TO NhanVienPhucVu;
@@ -1838,11 +1892,11 @@ GRANT SELECT                 ON LoaiKhach             TO NhanVienPhucVu;
 GRANT SELECT                 ON v_KhachHangThanThiet  TO NhanVienPhucVu;
 GRANT SELECT                 ON v_HoaDon              TO NhanVienPhucVu;
 
--- sequence
+-- Sequence
 GRANT UPDATE ON Seq_HoaDon TO NhanVienPhucVu;
 GRANT UPDATE ON Seq_Khach  TO NhanVienPhucVu;
 
--- stored procedure
+-- Stored Procedure
 GRANT EXECUTE ON sp_TaoHoaDon                   TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_ThemMonVaoHoaDon            TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_ThanhToanHoaDon             TO NhanVienPhucVu;
@@ -1860,28 +1914,18 @@ GRANT EXECUTE ON sp_LayDanhSachLoaiThucUong     TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_LayDanhSachViTriBan         TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_LayDanhSachLoaiKhach        TO NhanVienPhucVu;
 GRANT EXECUTE ON sp_DoiMatKhau                  TO NhanVienPhucVu;
+GRANT EXECUTE ON sp_LayDanhSachDonMangVe        TO NhanVienPhucVu;
 
--- function
+-- Function
 GRANT EXECUTE ON dbo.fn_SinhMaTuDong       TO NhanVienPhucVu;
 GRANT EXECUTE ON dbo.fn_KiemTraDuNguyenLieu TO NhanVienPhucVu;
 GRANT EXECUTE ON dbo.fn_TinhThanhTienHoaDon TO NhanVienPhucVu;
 GRANT EXECUTE ON dbo.fn_ChietKhauTheoLoaiKH TO NhanVienPhucVu;
 GRANT SELECT  ON dbo.fn_LichSuMuaHang      TO NhanVienPhucVu;
-
-ALTER ROLE NhanVienPhucVu ADD MEMBER user_phucvu;
 GO
 
--- thủ kho
-IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_thukho')
-    CREATE LOGIN login_thukho WITH PASSWORD = 'ThuKho@123';
-GO
-IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_thukho')
-    CREATE USER user_thukho FOR LOGIN login_thukho;
-GO
-IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'ThuKho' AND type = 'R')
-    CREATE ROLE ThuKho;
-GO
-
+-- 3. Cấp quyền cho vai trò Thủ kho (ThuKho)
+-- Bảng và View
 GRANT SELECT, INSERT, UPDATE, DELETE ON NguyenLieu        TO ThuKho;
 GRANT SELECT, INSERT, UPDATE, DELETE ON PhieuNhap         TO ThuKho;
 GRANT SELECT, INSERT, UPDATE, DELETE ON ChiTietPhieuNhap  TO ThuKho;
@@ -1892,8 +1936,10 @@ GRANT SELECT ON CongThuc TO ThuKho;
 GRANT SELECT ON v_TonKhoCanhBao TO ThuKho;
 GRANT SELECT ON v_PhieuNhap     TO ThuKho;
 
+-- Sequence
 GRANT UPDATE ON Seq_PhieuNhap TO ThuKho;
 
+-- Stored Procedure và Function
 GRANT EXECUTE ON sp_NhapKho                TO ThuKho;
 GRANT EXECUTE ON sp_ThemChiTietPhieuNhap    TO ThuKho;
 GRANT EXECUTE ON sp_ThemNguyenLieu         TO ThuKho;
@@ -1913,21 +1959,10 @@ GRANT EXECUTE ON sp_XoaNCC                 TO ThuKho;
 GRANT EXECUTE ON sp_NhapKhoTronGoi         TO ThuKho;
 GRANT EXECUTE ON sp_DoiMatKhau             TO ThuKho;
 GRANT EXECUTE ON dbo.fn_SinhMaTuDong        TO ThuKho;
-
-ALTER ROLE ThuKho ADD MEMBER user_thukho;
 GO
 
--- kế toán
-IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_ketoan')
-    CREATE LOGIN login_ketoan WITH PASSWORD = 'KeToan@123';
-GO
-IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_ketoan')
-    CREATE USER user_ketoan FOR LOGIN login_ketoan;
-GO
-IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'KeToan' AND type = 'R')
-    CREATE ROLE KeToan;
-GO
-
+-- 4. Cấp quyền cho vai trò Kế toán (KeToan)
+-- Bảng và View
 GRANT SELECT ON v_HoaDon            TO KeToan;
 GRANT SELECT ON v_DoanhThuTheoNgay  TO KeToan;
 GRANT SELECT ON v_MonBanChay         TO KeToan;
@@ -1936,8 +1971,10 @@ GRANT SELECT, INSERT ON PhieuChi     TO KeToan;
 GRANT SELECT ON NhaCungCap           TO KeToan;
 GRANT SELECT ON LoaiKhach            TO KeToan;
 
+-- Sequence
 GRANT UPDATE ON Seq_PhieuChi TO KeToan;
 
+-- Stored Procedure và Function
 GRANT EXECUTE ON sp_ChiTienNCC       TO KeToan;
 GRANT EXECUTE ON sp_ThongKeDoanhThu  TO KeToan;
 GRANT EXECUTE ON sp_LayDanhSachPhieuChi TO KeToan;
@@ -1945,6 +1982,50 @@ GRANT EXECUTE ON sp_LayDanhSachNCC   TO KeToan;
 GRANT EXECUTE ON sp_LayDanhSachLoaiKhach TO KeToan;
 GRANT EXECUTE ON sp_DoiMatKhau       TO KeToan;
 GRANT SELECT  ON dbo.fn_MonBanChayNhat TO KeToan;
+GO
 
-ALTER ROLE KeToan ADD MEMBER user_ketoan;
+-- 5. Ánh xạ Database User vào Server Login (nếu Login đã được khởi tạo trên SQL Server)
+-- Login xác thực đăng nhập
+IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_auth')
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_auth')
+        CREATE USER user_auth FOR LOGIN login_auth;
+    GRANT EXECUTE ON dbo.sp_DangNhap TO user_auth;
+END
+GO
+
+-- Login Quản trị (toàn quyền db_owner)
+IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_quantri')
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_quantri')
+        CREATE USER user_quantri FOR LOGIN login_quantri;
+    ALTER ROLE db_owner ADD MEMBER user_quantri;
+END
+GO
+
+-- Login Phục vụ / Thu ngân
+IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_phucvu')
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_phucvu')
+        CREATE USER user_phucvu FOR LOGIN login_phucvu;
+    ALTER ROLE NhanVienPhucVu ADD MEMBER user_phucvu;
+END
+GO
+
+-- Login Thủ kho
+IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_thukho')
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_thukho')
+        CREATE USER user_thukho FOR LOGIN login_thukho;
+    ALTER ROLE ThuKho ADD MEMBER user_thukho;
+END
+GO
+
+-- Login Kế toán
+IF EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'login_ketoan')
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM sys.database_principals WHERE name = 'user_ketoan')
+        CREATE USER user_ketoan FOR LOGIN login_ketoan;
+    ALTER ROLE KeToan ADD MEMBER user_ketoan;
+END
 GO
