@@ -1,33 +1,6 @@
 USE quanlyquancafe;
 GO
-
-/*
-PHẦN 1: CƠ SỞ LÝ THUYẾT PHỤC HỒI (RECOVERY) VÀ ĐỐI CHIẾU VỚI SQL SERVER
-(Dùng đưa vào Chương 4 báo cáo đồ án)
-
-1.1. Lịch trình khả phục hồi (Recoverable Schedules)
-- Định nghĩa: Một lịch trình S được gọi là khả phục hồi nếu với mọi cặp giao dịch Ti và Tj, nếu Tj đọc dữ liệu do Ti ghi, thì commit của Ti phải diễn ra trước commit của Tj.
-- Tránh phục hồi dây chuyền (Cascading Rollback): Chỉ đọc dữ liệu từ các giao dịch đã commit.
-- Trong SQL Server: Mức cô lập mặc định READ COMMITTED và kĩ thuật khóa Shared Lock đảm bảo lịch trình khả phục hồi.
-
-1.2. Tổng quan về phục hồi
-- Đảm bảo tính Bền vững (Durability) và Toàn vẹn (Atomicity) theo chuẩn ACID. Khi gặp sự cố hệ thống (System Crash) hoặc Rollback, DBMS đưa CSDL về trạng thái nhất quán.
-
-1.3. Kỹ thuật Write-Ahead Logging (WAL)
-- Mọi thay đổi dữ liệu trên bộ nhớ đệm (Buffer Pool) phải ghi vào Transaction Log trên đĩa trước khi các trang dữ liệu (Data Pages) được ghi xuống tệp MDF/NDF.
-- SQL Server thực hiện WAL thông qua LSN (Log Sequence Number) và tiến trình Checkpoint.
-
-1.4. Phục hồi dựa trên Hoãn cập nhật (Deferred Update - NO-UNDO / REDO)
-- Các cập nhật chỉ ghi vào CSDL sau khi giao dịch commit thành công. Khi gặp sự cố, chỉ cần REDO các giao dịch đã commit, không cần UNDO giao dịch chưa commit.
-
-1.5. Phục hồi dựa trên Cập nhật ngay (Immediate Update - UNDO / REDO)
-- Dữ liệu sửa đổi có thể được ghi xuống đĩa trước khi commit. SQL Server dùng cơ chế này kết hợp giải thuật ARIES: UNDO các giao dịch chưa commit và REDO các giao dịch đã commit.
-
-1.6. Kỹ thuật Shadow Paging (Trang bóng)
-- Duy trì 2 bảng trang: Current Page Table (phục vụ giao dịch hiện hành) và Shadow Page Table (trỏ đến khối dữ liệu cũ). Khi commit, con trỏ gốc chuyển sang trang mới. Nếu crash, con trỏ vẫn trỏ về trang bóng cũ.
-*/
-
--- PHẦN 2: KỊCH BẢN BACKUP VÀ RESTORE CSDL TRÊN SQL SERVER
+-- KỊCH BẢN BACKUP VÀ RESTORE CSDL TRÊN SQL SERVER
 
 -- 2.1. Cấu hình CSDL sang chế độ FULL Recovery Model
 USE master;
@@ -47,7 +20,7 @@ GO
 -- Bước 2: Sao lưu vi sai (Differential Backup) cuối ngày
 BACKUP DATABASE quanlyquancafe
 TO DISK = 'C:\Backup\quanlyquancafe_Diff.bak'
-WITH FORMAT, INIT,
+WITH DIFFERENTIAL, FORMAT, INIT,
      NAME = 'quanlyquancafe - Differential Backup',
      DESCRIPTION = N'Sao lưu vi sai các thay đổi trong ngày';
 GO
@@ -60,33 +33,40 @@ WITH FORMAT, INIT,
      DESCRIPTION = N'Sao lưu nhật ký giao dịch';
 GO
 
--- 2.3. Quy trình Restore khi gặp sự cố (tham khảo)
 /*
+-- 2.3. Minh họa kịch bản Phục hồi CSDL khi gặp sự cố (Disaster Recovery)
+-- Giả lập phục hồi CSDL về trạng thái mới nhất từ chuỗi bản sao lưu
 USE master;
-ALTER DATABASE quanlyquancafe SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+GO
 
--- 1. Restore bản Full gần nhất
+-- Chuyển database sang SINGLE_USER để ngắt toàn bộ kết nối hiện hành
+ALTER DATABASE quanlyquancafe SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+GO
+
+-- Bước 1: Khôi phục bản Full Backup gần nhất (giữ trạng thái NORECOVERY để nạp tiếp)
 RESTORE DATABASE quanlyquancafe
 FROM DISK = 'C:\Backup\quanlyquancafe_Full.bak'
 WITH NORECOVERY, REPLACE;
+GO
 
--- 2. Restore bản Differential gần nhất
+-- Bước 2: Khôi phục bản Differential Backup gần nhất
 RESTORE DATABASE quanlyquancafe
 FROM DISK = 'C:\Backup\quanlyquancafe_Diff.bak'
 WITH NORECOVERY;
+GO
 
--- 3. Restore chuỗi Log Backup và mở lại CSDL
+-- Bước 3: Khôi phục bản Log Backup và hoàn tất mở CSDL (RECOVERY)
 RESTORE LOG quanlyquancafe
 FROM DISK = 'C:\Backup\quanlyquancafe_Log.trn'
 WITH RECOVERY;
-
-ALTER DATABASE quanlyquancafe SET MULTI_USER;
-*/
 GO
 
+-- Mở lại chế độ đa người dùng
+ALTER DATABASE quanlyquancafe SET MULTI_USER;
+GO
+*/
+
 -- PHẦN 3: MINH HỌA VÀ XỬ LÝ TRANH CHẤP TRUY CẬP ĐỒNG THỜI (CONCURRENCY CONTROL)
--- Nghiệp vụ: Tránh xung đột Lost Update và Dirty Read khi hai nhân viên cùng gọi món
--- Sử dụng mức cô lập REPEATABLE READ kết hợp khóa UPDLOCK, HOLDLOCK
 USE quanlyquancafe;
 GO
 
