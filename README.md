@@ -30,22 +30,6 @@ Khi mở phần mềm, sử dụng các tài khoản nhân viên dưới đây �
 | `0901000005` | `123456` | Lê Hoàng Long | **Thủ kho** | Quản lý Nguyên liệu, Nhà cung cấp, lập Phiếu nhập kho trọn gói, quản lý Thức uống & Công thức định lượng |
 | `0901000006` | `123456` | Vũ Thu Thảo | **Kế toán** | Xem Báo cáo doanh thu theo ngày, thống kê món bán chạy, nhật ký hóa đơn, lập Phiếu chi tiền nhà cung cấp & vận hành |
 
----
-
-## 🔒 Tài khoản phân quyền cấp Cơ sở dữ liệu (SQL Server RBAC)
-
-Sau khi nhân viên đăng nhập thành công trên giao diện, ứng dụng sẽ tự động chuyển đổi chuỗi kết nối sang đúng **SQL Server Login** tương ứng với vai trò của nhân viên đó:
-
-| SQL Server Login | Mật khẩu SQL | Database User | Database Role | Chuỗi kết nối (`App.config`) | Quyền hạn dưới SQL Server |
-| :--- | :---: | :--- | :---: | :---: | :--- |
-| `login_auth` | `AuthLogin@123` | `user_auth` | *(Không có)* | `AuthConn` | Chỉ có duy nhất quyền `EXECUTE` trên `sp_DangNhap` để kiểm tra đăng nhập ban đầu |
-| `login_quantri` | `QuanTri@123` | `user_quantri` | `db_owner` | `QuanLyConn` | Toàn quyền quản trị CSDL (`db_owner`) |
-| `login_phucvu` | `PhucVu@123` | `user_phucvu` | `NhanVienPhucVu` | `PhucVuConn` | Thực thi các SP bán hàng/thanh toán/khách hàng; bị `DENY` xóa `HoaDon` và xem bảng `NhanVien` |
-| `login_thukho` | `ThuKho@123` | `user_thukho` | `ThuKho` | `ThuKhoConn` | Thao tác bảng kho, nguyên liệu, nhà cung cấp, công thức; thực thi `sp_NhapKhoTronGoi` |
-| `login_ketoan` | `KeToan@123` | `user_ketoan` | `KeToan` | `KeToanConn` | Truy vấn các View thống kê (`v_DoanhThuTheoNgay`, `v_MonBanChay`, `v_HoaDon`) và thực thi `sp_ChiTienNCC` |
-
----
-
 ## 🚀 Cách cài đặt và chạy chương trình
 
 ### Bước 1: Chuẩn bị Cơ sở dữ liệu (SQL Server)
