@@ -7,10 +7,10 @@
 
 | STT | Họ và tên | MSSV | Vai trò | Module & Nghiệp vụ phụ trách |
 | :---: | :--- | :---: | :---: | :--- |
-| 1 | **Hoàng Anh Kiệt** | 24110264 | Trưởng nhóm | Thiết kế CSDL & ERD, Nền tảng Frontend (`Theme.cs`) & Backend (`FormDangNhap`, `FormMain`, `FormNhanVien`, `FormBan`), Đơn mang về, API VietQR, Bảo mật RBAC, Backup/Restore (Quản lý) |
+| 1 | **Hoàng Anh Kiệt** | 24110264 | Trưởng nhóm | Thiết kế CSDL & ERD, Nền tảng Frontend (`Theme.cs`) & Backend (`FormDangNhap`, `FormMain`, `FormNhanVien`, `FormBan`,  `FormDoiMatKhau`), Đơn mang về, API VietQR, Bảo mật RBAC, Backup/Restore (Quản lý) |
 | 2 | **Lê Anh Duy** | 24110180 | Thành viên | Bán hàng tại quán & mang về (POS), hóa đơn, thanh toán (`frmBanHang`, `frmThanhToan`, `frmXemHoaDon`), Giao dịch bán hàng & Xử lý tranh chấp đồng thời (Phục vụ, Thu ngân) |
 | 3 | **Võ Lê Ngọc Hưng** | 24110233 | Thành viên | Kho nguyên liệu, nhập kho, nhà cung cấp, thức uống, công thức (`FormNguyenLieu`, `FormNhapKho`, `FormNhaCungCap`, `FormThucUong`, `FormCongThuc`), Ràng buộc, Trigger & Index (Thủ kho) |
-| 4 | **Nguyễn Đặng Khánh Sơn** | 24110318 | Thành viên | Khách hàng, chi tiền, báo cáo thống kê, đổi mật khẩu (`FormBaoCao`, `FormChiTien`, `FormKhach`, `FormDoiMatKhau`), View, Function & Tầng tiện ích DAL (Kế toán) |
+| 4 | **Nguyễn Đặng Khánh Sơn** | 24110318 | Thành viên | Khách hàng, chi tiền, báo cáo thống kê, đổi mật khẩu (`FormBaoCao`, `FormChiTien`, `FormKhach`), View, Function & Tầng tiện ích DAL (Kế toán) |
 
 ## 🛠 Công nghệ sử dụng
 - **Ứng dụng:** C# WinForms (.NET 10 - `net10.0-windows`), ADO.NET (`Microsoft.Data.SqlClient`).
