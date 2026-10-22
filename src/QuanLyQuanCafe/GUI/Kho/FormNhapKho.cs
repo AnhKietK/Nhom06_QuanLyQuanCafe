@@ -23,6 +23,11 @@ namespace QuanLyQuanCafe.GUI.Kho
 
         private void KhoiTaoCacDieuKhien()
         {
+            cboNguyenLieu.DisplayMember = nameof(NguyenLieuDTO.TenNL);
+            cboNguyenLieu.ValueMember = nameof(NguyenLieuDTO.MaNL);
+            pnlLapPhieuLeft.AutoScroll = true;
+            grbChiTietDong.Dock = DockStyle.Top;
+            grbChiTietDong.Height = LogicalToDeviceUnits(310);
             this.Load += FormNhapKho_Load;
         }
 

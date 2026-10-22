@@ -347,6 +347,12 @@ namespace QuanLyQuanCafe.Utils
             c.BackColor = The;
             c.ForeColor = Chu;
 
+            // GroupBox does not clip its child windows like Panel does. Painting
+            // the entire client area in Paint can erase buttons and input text.
+            // Let WinForms draw its frame/title without painting over children.
+            if (c is GroupBox)
+                return;
+
             if (_styledControls.Contains(c))
             {
                 c.Invalidate();

@@ -114,7 +114,7 @@ namespace QuanLyQuanCafe.GUI.BaoCao
             // 
             // pnlLapPhieuContent
             // 
-            this.pnlLapPhieuContent.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.pnlLapPhieuContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlLapPhieuContent.Controls.Add(this.grbThongTinChi);
             this.pnlLapPhieuContent.Location = new System.Drawing.Point(134, 20);
             this.pnlLapPhieuContent.Name = "pnlLapPhieuContent";

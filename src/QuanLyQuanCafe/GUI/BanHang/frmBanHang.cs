@@ -54,10 +54,18 @@ namespace QuanLyQuanCafe.GUI.BanHang
             Theme.Apply(this);
             CaiDatBoCucBanHang();
             // MANG VE: lựa chọn hình thức nằm trên danh sách bàn / đơn đang mở.
-            var pnlHinhThuc = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 40, Padding = new Padding(4) };
+            var pnlHinhThuc = new TableLayoutPanel
+            {
+                Dock = DockStyle.Top, Height = 40, Padding = new Padding(4),
+                ColumnCount = 2, RowCount = 1
+            };
+            pnlHinhThuc.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 86));
+            pnlHinhThuc.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100));
+            pnlHinhThuc.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
             pnlHinhThuc.Controls.Add(new Label { Text = "Hình thức", AutoSize = true, Margin = new Padding(3, 6, 6, 3) });
             _cboHinhThuc.Items.AddRange(new object[] { "Tại quán", "Mang về" });
             _cboHinhThuc.SelectedIndex = 0;
+            _cboHinhThuc.Dock = DockStyle.Fill;
             pnlHinhThuc.Controls.Add(_cboHinhThuc);
             grpSoDoBan.Controls.Add(pnlHinhThuc);
             grpSoDoBan.Controls.SetChildIndex(pnlHinhThuc, grpSoDoBan.Controls.Count - 1);
@@ -82,10 +90,26 @@ namespace QuanLyQuanCafe.GUI.BanHang
         private void CaiDatBoCucBanHang()
         {
             lblTitle.Text = "Bán hàng & gọi món";
+            // A default AutoSize table row grows beyond the MDI viewport.
+            pnlMain.RowCount = 1;
+            pnlMain.RowStyles.Clear();
+            pnlMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            // Preserve space for invoice lines on short screens; all actions
+            // remain reachable through the workspace scrollbar.
+            var workspace = new Panel { Dock = DockStyle.Fill, AutoScroll = true, BackColor = Theme.Nen };
+            int mainIndex = Controls.GetChildIndex(pnlMain);
+            Controls.Remove(pnlMain);
+            Controls.Add(workspace);
+            Controls.SetChildIndex(workspace, mainIndex);
+            workspace.Controls.Add(pnlMain);
+            pnlMain.Dock = DockStyle.Top;
+            void ResizeWorkspace() => pnlMain.Height = Math.Max(LogicalToDeviceUnits(650), workspace.ClientSize.Height);
+            workspace.Resize += (_, _) => ResizeWorkspace();
+            ResizeWorkspace();
             pnlActionMon.Height = 92;
-            pnlTinhTien.Height = 254;
+            pnlTinhTien.Height = 260;
             pnlTinhTien.BorderStyle = BorderStyle.None;
-            tlpTinhTien.RowStyles[5].Height = 64;
+            tlpTinhTien.RowStyles[5].Height = 70;
             pnlTienNhanh.Dock = DockStyle.Fill;
             foreach (Control control in tlpTinhTien.Controls)
                 if (control != pnlTienNhanh) control.Anchor = AnchorStyles.Left | AnchorStyles.Right;
@@ -95,6 +119,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 btnLamMoiToanBo.Bounds = new Rectangle(pnlTopHeader.Width - 124, 12, 108, 36);
                 btnHuongDan.Bounds = new Rectangle(pnlTopHeader.Width - 252, 12, 120, 36);
                 lblClock.Bounds = new Rectangle(pnlTopHeader.Width - 470, 16, 200, 28);
+                txtTimKiemMon.Width = Math.Max(0, pnlFilterMon.ClientSize.Width - txtTimKiemMon.Left - 4);
+                cboLoaiMon.Width = Math.Max(0, pnlFilterMon.ClientSize.Width - cboLoaiMon.Left - 4);
                 int width = pnlActionBan.ClientSize.Width;
                 btnMoBanNhanh.Bounds = new Rectangle(4, 8, (width - 14) / 2, 36);
                 btnChuyenBanNhanh.Bounds = new Rectangle(width / 2 + 2, 8, (width - 14) / 2, 36);
@@ -117,7 +143,7 @@ namespace QuanLyQuanCafe.GUI.BanHang
                 btnThemKhachNhanh.Bounds = new Rectangle(btnTimKhach.Right + 4, 4, 40, 28);
                 btnBoChonKhach.Bounds = new Rectangle(btnThemKhachNhanh.Right + 4, 4, 40, 28);
             }
-            foreach (var panel in new[] { pnlTopHeader, pnlActionBan, pnlActionMon, pnlActionHD, pnlDieuChinhCT, pnlKhachHang })
+            foreach (var panel in new[] { pnlTopHeader, pnlFilterMon, pnlActionBan, pnlActionMon, pnlActionHD, pnlDieuChinhCT, pnlKhachHang })
                 panel.Resize += (_, _) => Arrange();
             Arrange();
         }

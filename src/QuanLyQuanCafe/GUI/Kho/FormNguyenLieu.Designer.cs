@@ -71,11 +71,11 @@ namespace QuanLyQuanCafe.GUI.Kho
             this.pnlTop.Controls.Add(this.lblTongCanhBao);
             this.pnlTop.Controls.Add(this.lblTieuDeTrang);
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTop.Height = 52;
+            this.pnlTop.Height = 96;
             this.pnlTop.Location = new System.Drawing.Point(12, 12);
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.Padding = new System.Windows.Forms.Padding(4, 4, 4, 8);
-            this.pnlTop.Size = new System.Drawing.Size(1076, 52);
+            this.pnlTop.Size = new System.Drawing.Size(1076, 96);
             this.pnlTop.TabIndex = 0;
 
             // lblTieuDeTrang
@@ -105,11 +105,12 @@ namespace QuanLyQuanCafe.GUI.Kho
             this.lblTongCanhBao.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 
             // pnlSearch
-            this.pnlSearch.AutoSize = true;
+            this.pnlSearch.AutoSize = false;
             this.pnlSearch.Controls.Add(this.txtTimKiem);
             this.pnlSearch.Controls.Add(this.lblTimKiem);
             this.pnlSearch.Controls.Add(this.chkChiCanhBao);
-            this.pnlSearch.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlSearch.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlSearch.Height = 40;
             this.pnlSearch.Location = new System.Drawing.Point(546, 4);
             this.pnlSearch.Name = "pnlSearch";
             this.pnlSearch.Padding = new System.Windows.Forms.Padding(0, 4, 0, 4);

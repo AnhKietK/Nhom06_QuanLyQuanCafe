@@ -30,6 +30,10 @@ namespace QuanLyQuanCafe.GUI.DanhMuc
 
         private void KhoiTaoCacDieuKhien()
         {
+            cboNguyenLieu.DisplayMember = nameof(NguyenLieuDTO.TenNL);
+            cboNguyenLieu.ValueMember = nameof(NguyenLieuDTO.MaNL);
+            cboLoaiThucUong.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            txtTimKiem.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             this.Load += FormCongThuc_Load;
         }
 
