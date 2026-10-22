@@ -42,6 +42,14 @@ namespace QuanLyQuanCafe.GUI.BanHang
             btnXacNhan.Tag = "success";
             btnDong.Tag = "neutral";
             ClientSize = new Size(760, 740);
+            // Keep confirmation outside the scrolling receipt/payment details.
+            pnlFooter.Height = 82;
+            pnlFooter.AutoScroll = true;
+            btnXacNhan.Left = 16;
+            btnXemHoaDon.Left = 286;
+            btnDong.Left = 476;
+            pnlFooter.AutoScrollMinSize = new Size(610, 0);
+            ScrollableFormLayout.Install(this, pnlFooter);
             grpChiTiet.Height = 180;
             foreach (Control control in tlpThanhToan.Controls)
             {
@@ -58,6 +66,8 @@ namespace QuanLyQuanCafe.GUI.BanHang
             grpThanhToan.Controls.Add(thanhToanScroll);
             thanhToanScroll.Controls.Add(tlpThanhToan);
             tlpThanhToan.Dock = DockStyle.Top;
+            tlpThanhToan.Height = LogicalToDeviceUnits(290);
+            pnlTienNhanh.Dock = DockStyle.Fill;
             pnlQR.Dock = DockStyle.Fill;
             tlpThanhToan.SetColumn(pnlQR, 0);
             tlpThanhToan.SetColumnSpan(pnlQR, 2);

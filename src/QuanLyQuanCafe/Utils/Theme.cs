@@ -608,6 +608,7 @@ namespace QuanLyQuanCafe.Utils
         public static void Apply(Form f)
         {
             if (f == null) return;
+            ScrollableFormLayout.Install(f);
 
             try
             {
